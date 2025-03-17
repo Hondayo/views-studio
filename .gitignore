@@ -1,0 +1,6 @@
+# mode_modulesを除外
+node_modules
+
+# package-lock.json
+package-lock.json
+
