@@ -1,0 +1,74 @@
+<!-- views/contents.ejs -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ショートコンテンツ一覧</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <!-- サイドバー -->
+  <%- include('partials/sidebar') %>
+
+  <div class="contents-page">
+    <h1>あなたのショートコンテンツ</h1>
+    <!-- コンテンツ一覧を横並び or 縦並びに -->
+    <div class="contents-list">
+      <% videos.forEach(video => { %>
+        <div class="content-item">
+          <!-- サムネイル or 動画イメージ -->
+          <!-- Cloudinaryからサムネ取得しているなら video.cloudinaryUrl のサムネを作るか、
+               ここでは動画URLをそのまま画像の代わりにしている例です -->
+          <img
+            src="<%= video.thumbnailUrl || '/default-thumbnail.png' %>"
+            alt="thumbnail"
+            class="thumbnail"
+          >
+          
+          <!-- タイトルなど -->
+          <div class="content-info">
+            <p class="content-title"><%= video.title %></p>
+            <p class="content-description"><%= video.description %></p>
+            <p class="content-tags">タグ: <%= video.tags.join(' / ') %></p>
+          </div>
+
+          <!-- 分析＆削除ボタン -->
+          <div class="content-actions">
+            <button class="analyze-btn">分析</button>
+            <button
+              class="delete-btn"
+              onclick="deleteVideo('<%= video._id %>', '<%= video.publicId %>')"
+            >
+              削除
+            </button>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+  <!-- 削除処理用のスクリプト -->
+  <script>
+    async function deleteVideo(videoId, publicId) {
+      if (!confirm('本当に削除しますか？')) return;
+      try {
+        // クエリパラメータに publicId を付けてサーバーに送る例
+        const res = await fetch(`/api/video/${videoId}?publicId=${publicId}`, {
+          method: 'DELETE'
+        });
+        const data = await res.json();
+        if (res.ok) {
+          alert('削除しました');
+          // 再読み込み or リストの再描画
+          window.location.reload();
+        } else {
+          alert('削除失敗: ' + data.message);
+        }
+      } catch (err) {
+        console.error(err);
+        alert('通信エラーが発生しました');
+      }
+    }
+  </script>
+</body>
+</html>

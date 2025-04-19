@@ -1,0 +1,95 @@
+<!-- views/new.ejs -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Views Studio - アップロード</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <!-- サイドバー -->
+  <%- include('partials/sidebar') %>
+
+  <!-- (1) .main-content で両UIを囲む -->
+  <div class="main-content">
+
+    <!-- (A) アップロードUIセクション -->
+    <div id="uploadSection">
+      <div class="upload-wrapper">
+        <div class="upload-box" id="dropZone">
+          <h3>アップロードする動画を選択</h3>
+          <p>ここにドラッグ＆ドロップ</p>
+          <!-- 動画を選択ボタン -->
+          <button id="selectBtn">動画を選択</button>
+          <input
+            id="fileInput"
+            type="file"
+            accept="video/*"
+            style="display: none;"
+          >
+          <div id="fileInfo" class="file-info"></div>
+
+          <!-- 進捗表示 -->
+          <div id="uploadStatus" class="upload-status" style="display:none;">
+            <p>アップロード中...</p>
+            <progress id="uploadProgress" value="0" max="100" style="width: 100%;"></progress>
+          </div>
+          <div id="uploadResult" class="upload-result" style="display:none;"></div>
+
+        </div> <!-- /upload-box -->
+      </div> <!-- /upload-wrapper -->
+    </div> <!-- /#uploadSection -->
+
+    <!-- (B) アップロード後フォーム + 右側スマホプレビュー -->
+    <div id="formSection" style="display: none;">
+      <div class="upload-info">
+        <h4><span id="videoFilename"></span></h4>
+        <p id="videoLine" style="color: green;">
+          <span id="videoStatus"></span> (<span id="videoSize"></span>)
+        </p>
+      </div>
+
+      <div class="post-upload-container2">
+        <div class="form-left">
+          <h3>動画情報を入力してください</h3>
+          <label>タイトル</label>
+          <input
+            type="text"
+            id="titleInput"
+            placeholder="例）ワンピース最新考察動画"
+          >
+
+          <label>説明</label>
+          <textarea
+            id="descInput"
+            rows="3"
+            placeholder="どんな内容の動画か？視聴者に伝えたいポイントは？"
+          ></textarea>
+
+          <label>#ハッシュタグ</label>
+          <textarea
+            id="tagsInput"
+            rows="3"
+            placeholder="#ワンピース #考察 #ジャンプ"
+          ></textarea>
+        </div> <!-- /form-left -->
+
+        <!-- 右側: スマホフレームプレビュー -->
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <video id="previewVideo" controls></video>
+            <div id="previewTitle" class="preview-title"></div>
+            <div id="previewDesc" class="preview-desc"></div>
+            <div id="previewTags" class="preview-tags"></div>
+          </div>
+        </div> <!-- /phone-frame -->
+      </div> <!-- /post-upload-container2 -->
+
+      <button id="nextBtn" style="margin-top: 16px;">投稿する</button>
+    </div> <!-- /#formSection -->
+
+  </div> <!-- /.main-content -->
+
+  <script src="/script.js"></script>
+</body>
+</html>
