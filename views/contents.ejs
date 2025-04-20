@@ -1,74 +1,103 @@
-<!-- views/contents.ejs -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>ショートコンテンツ一覧</title>
+  <title>コンテンツ一覧</title>
   <link rel="stylesheet" href="/styles.css">
+  <!-- 必要ならsidebar.css等を読み込み -->
+  <link rel="stylesheet" href="/sidebar.css">
 </head>
 <body>
   <!-- サイドバー -->
   <%- include('partials/sidebar') %>
 
   <div class="contents-page">
-    <h1>あなたのショートコンテンツ</h1>
-    <!-- コンテンツ一覧を横並び or 縦並びに -->
+    <h1>あなたのコンテンツ</h1>
+
+    <p>
+      <a href="/newImage">漫画</a>
+    </p>
+    <p>
+      <a href="/newVideo">アニメ</a>
+    </p>
+
     <div class="contents-list">
-      <% videos.forEach(video => { %>
-        <div class="content-item">
-          <!-- サムネイル or 動画イメージ -->
-          <!-- Cloudinaryからサムネ取得しているなら video.cloudinaryUrl のサムネを作るか、
-               ここでは動画URLをそのまま画像の代わりにしている例です -->
-          <img
-            src="<%= video.thumbnailUrl || '/default-thumbnail.png' %>"
-            alt="thumbnail"
-            class="thumbnail"
-          >
-          
-          <!-- タイトルなど -->
-          <div class="content-info">
-            <p class="content-title"><%= video.title %></p>
-            <p class="content-description"><%= video.description %></p>
-            <p class="content-tags">タグ: <%= video.tags.join(' / ') %></p>
-          </div>
-
-          <!-- 分析＆削除ボタン -->
-          <div class="content-actions">
-            <button class="analyze-btn">分析</button>
-            <button
-              class="delete-btn"
-              onclick="deleteVideo('<%= video._id %>', '<%= video.publicId %>')"
+      <!-- (A) 動画リスト: videos配列をループ -->
+      <% if (videos && videos.length > 0) { %>
+        <% videos.forEach(video => { %>
+          <div class="content-item">
+            <!-- サムネイル or 何らかのプレビュー。例: video.cloudinaryUrl を img化 -->
+            <img
+              src="<%= video.thumbnailUrl || '/default-video-thumb.jpg' %>"
+              alt="video-thumb"
+              class="thumbnail"
             >
-              削除
-            </button>
+            <div class="content-info">
+              <p class="content-title"><%= video.title %></p>
+              <p class="content-description"><%= video.description %></p>
+              <p class="content-tags">
+                タグ:
+                <% if (video.tags && video.tags.length > 0) { %>
+                  <%= video.tags.join(' / ') %>
+                <% } else { %>
+                  (なし)
+                <% } %>
+              </p>
+            </div>
+            <div class="content-actions">
+              <button class="analyze-btn">分析</button>
+              <button
+                class="delete-btn"
+                onclick="deleteVideo('<%= video._id %>', '<%= video.publicId %>')"
+              >
+                削除
+              </button>
+            </div>
           </div>
-        </div>
-      <% }) %>
-    </div>
-  </div>
+        <% }) %>
+      <% } %>
 
-  <!-- 削除処理用のスクリプト -->
-  <script>
-    async function deleteVideo(videoId, publicId) {
-      if (!confirm('本当に削除しますか？')) return;
-      try {
-        // クエリパラメータに publicId を付けてサーバーに送る例
-        const res = await fetch(`/api/video/${videoId}?publicId=${publicId}`, {
-          method: 'DELETE'
-        });
-        const data = await res.json();
-        if (res.ok) {
-          alert('削除しました');
-          // 再読み込み or リストの再描画
-          window.location.reload();
-        } else {
-          alert('削除失敗: ' + data.message);
-        }
-      } catch (err) {
-        console.error(err);
-        alert('通信エラーが発生しました');
-      }
-    }
-  </script>
+      <!-- (B) 画像リスト: images配列をループ -->
+      <% if (images && images.length > 0) { %>
+        <h2>画像一覧</h2>
+        <% images.forEach(image => { %>
+          <div class="content-item">
+            <!-- 画像プレビュー: cloudinaryUrl に直接アクセス -->
+            <img
+              src="<%= image.cloudinaryUrl %>"
+              alt="image"
+              class="thumbnail"
+            >
+            <div class="content-info">
+              <p class="content-title"><%= image.title %></p>
+              <p class="content-description"><%= image.description %></p>
+              <p class="content-tags">
+                タグ:
+                <% if (image.tags && image.tags.length > 0) { %>
+                  <%= image.tags.join(' / ') %>
+                <% } else { %>
+                  (なし)
+                <% } %>
+              </p>
+            </div>
+            <div class="content-actions">
+              <button class="analyze-btn">分析</button>
+              <button
+                class="delete-btn"
+                onclick="deleteImage('<%= image._id %>', '<%= image.publicId %>')"
+              >
+                削除
+              </button>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+
+    </div> <!-- /.contents-list -->
+  </div> <!-- /.contents-page -->
+
+  <!-- 削除処理用のスクリプト (別ファイル) -->
+  <script src="/contentsScript.js"></script>
+  <script src="/sidebar.js"></script>
 </body>
 </html>
