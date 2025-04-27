@@ -1,0 +1,153 @@
+/* ───────── カラー変数 ───────── */
+:root{
+  --bg-main : #fff;
+  --bg-card : #f5f5f5;
+  --text-main: #222;
+  --text-sub : #666;
+  --accent   : #0066ff;
+}
+body.dark, .viewer-page.dark{
+  --bg-main : #000;
+  --bg-card : #1e1e1e;
+  --text-main: #fff;
+  --text-sub : #aaa;
+}
+
+/* ───────── レイアウト共通 ───────── */
+.viewer-page         { background:var(--bg-main); color:var(--text-main); }
+.viewer-page         { display:block; }
+.viewer-page.edit-mode{ display:flex; height:100%; }
+
+.top-right-panel {
+  position: fixed;
+  top: 6px;       
+  right: 16px;     
+  display: flex;
+  gap: 20px;        
+  align-items: center;
+  z-index: 1000;
+
+  background: #f5f5f5;              
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+/* 従来の共通ボタンスタイル */
+.tool-btn {
+  background: none;
+  border: none;
+  color: var(--text-main);
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* ★編集ボタンを黒文字に */
+#editBtn {
+  color: #000; /* 黒文字 */
+}
+
+/* ★画面切り替えボタンの文字(📱/💻)を黒に */
+#deviceBtn {
+  color: #000; /* スラッシュを含め、テキスト全体を黒に */
+}
+
+
+/* 編集フォーム ---------------------------------------------------------- */
+.edit-pane{
+  flex:0 0 360px; 
+  padding:56px 20px 24px;
+  background:#fff; 
+  color:#222; 
+  overflow-y:auto;
+  border-right:1px solid rgba(0,0,0,.1);
+  display:none;
+  z-index:999;
+}
+.edit-pane input,
+.edit-pane textarea,
+.edit-pane select{
+  background:#fff; 
+  color:#222; 
+  border:1px solid #ccc;
+}
+.viewer-page.edit-mode .edit-pane{ display:block; }
+
+/* プレビューペイン ------------------------------------------------------ */
+.preview-pane{
+  flex:1 1 auto; 
+  padding:56px 24px 24px; 
+  overflow-y:auto;
+}
+
+/* PC プレビュー本体 ----------------------------------------------------- */
+.viewer-inner{ display:block; }
+
+/* スマホフレーム本体 ---------------------------------------------------- */
+.phone-frame{
+  /* iPhone15に近いサイズ */
+  width:390px;
+  height:844px;
+  margin:0 auto;
+  background:#000;
+  border-radius:40px; /* 少し大きめに丸み */
+  box-shadow:0 4px 14px rgba(0,0,0,.4);
+  position:relative;
+  overflow:hidden;
+  display:none; /* デフォルト非表示 */
+}
+.phone-notch{
+  position:absolute;
+  top:0; 
+  left:50%;
+  width:160px;
+  height:36px;
+  background:#000;
+  border-radius:0 0 16px 16px;
+  translate:-50% 0;
+}
+.phone-screen{
+  position:absolute; 
+  inset:48px 0 0;
+  padding:12px; 
+  overflow-y:auto;
+  /* もし常に黒で表示したいなら強制指定 */
+  background: #000;
+  /* ダーク/ライトテーマに追随させたいなら下記のように戻す
+     background: var(--bg-main);
+  */
+}
+
+/* スマホ内サイズ調整 */
+.phone-screen .hero-thumbnail{ width:100%; max-height:240px; object-fit:cover; }
+.phone-screen .hero-section   { flex-direction:column; gap:12px; }
+.phone-screen .episode-thumb  { width:100%; height:auto; }
+
+/* 表示切替（必ず最後に） ----------------------------------------------- */
+/* PC (デフォルト) */
+.viewer-inner { display:block; }
+.phone-frame  { display:none;  }
+
+/* Mobile モード時: 外側を白背景にし、スマホフレームを表示する */
+.preview-pane.mobile {
+  background: #fff;   /* ★ "外側"を白に */
+}
+.preview-pane.mobile > .viewer-inner {
+  display:none; 
+}
+.preview-pane.mobile .phone-frame {
+  display:flex;
+  /* background指定は削除し、黒いままにする */
+}
+
+/* 既存の hero / episode レイアウトなどはそのまま ------------------------- */
+.hero-section{ display:flex; gap:24px; flex-wrap:wrap; }
+.hero-thumbnail{ width:40%; min-width:240px; border-radius:12px; object-fit:cover; }
+.hero-info{ flex:1; }
+.hero-title{ margin:0; }
+.hero-play-btn{ background:var(--accent); color:#fff; border:none; padding:8px 18px; border-radius:6px; }
+.work-meta{ font-size:.9rem; color:var(--text-sub); }
+.work-description{ line-height:1.6; margin-top:12px; }
+
+.episode-list{ display:flex; flex-direction:column; gap:18px; margin-top:16px; }
+.episode-card{ display:flex; gap:12px; }
+.episode-thumb{ width:120px; height:68px; border-radius:6px; object-fit:cover; }

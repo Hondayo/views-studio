@@ -1,0 +1,240 @@
+/* ============================= */
+/* 2カラムレイアウト           */
+/* ============================= */
+.page-container {
+  display: flex;
+  gap: 40px;
+  padding: 30px 40px;
+  align-items: flex-start;
+}
+
+/* 左：フォーム */
+.episode-form {
+  flex: 1 1 420px;
+  max-width: 600px;
+  text-align: left; /* 左寄せ */
+}
+
+/* 右：プレビュー固定 */
+.preview-pane {
+  flex: 0 0 390px;
+  position: sticky;
+  top: 30px;
+}
+
+/* レスポンシブ */
+@media (max-width: 900px) {
+  .page-container {
+    flex-direction: column;
+  }
+  .episode-form,
+  .preview-pane {
+    max-width: 100%;
+    flex: none;
+  }
+  .preview-pane {
+    position: static;
+  }
+}
+
+/* ============================= */
+/* スマホ風のプレビュー枠       */
+/* ============================= */
+.preview-phone-frame {
+  max-width: 390px;
+  width: 100%;
+  height: 700px;
+  border-radius: 40px;
+  overflow: hidden;
+  padding: 14px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-phone-screen {
+  background: #111;
+  flex: 1;
+  border-radius: 28px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+/* ============================= */
+/* 作品サムネイル (16:9)       */
+/* ============================= */
+.preview-thumbnail-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 */
+  background: #222;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.preview-thumbnail {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.placeholder-overlay {
+  color: #ccc;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; 
+  height: 100%;
+}
+
+/* 作品タイトル */
+.preview-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+/* ============================= */
+/* エピソード用サムネ (16:9)   */
+/* ============================= */
+.episode-thumb {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 */
+  background: #333;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.episode-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================= */
+/* タイトル + あらすじ (2行まで) */
+/* ============================= */
+.episode-info-line {
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 6px;
+
+  /* ここで2行までの表示に制限 */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; 
+  line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+  max-height: calc(1.4em * 2); /* 2行分の高さ */
+  position: relative;
+  word-break: break-word;
+}
+
+/* 「---続きを見る---」リンク */
+.toggle-link {
+  color: #00d2ff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-bottom: 6px;
+}
+.toggle-link:hover {
+  text-decoration: underline;
+}
+.hidden {
+  display: none !important;
+}
+
+/* ============================= */
+/* 時間/価格 (1行: 左-右)      */
+/* ============================= */
+.episode-extra-line {
+  display: flex;
+  justify-content: space-between; /* 左→時間 / 右→価格 */
+  align-items: center;
+  margin-bottom: 12px;
+}
+.episode-time,
+.episode-price {
+  font-size: 0.9rem;
+  color: #ccc;
+  white-space: nowrap;
+}
+
+/* ============================= */
+/* D&D領域                       */
+/* ============================= */
+.drop-full {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 50px 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.drop-full.dragover {
+  background-color: #f0f6ff;
+  border-color: #007bff;
+}
+.drop-message {
+  color: #666;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+.drop-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+/* ============================= */
+/* フォームUI                    */
+/* ============================= */
+.form-group {
+  margin-bottom: 1rem;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+input, textarea {
+  width: 100%;
+  padding: 8px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+.btn-primary {
+  background: #007bff;
+  color: #fff;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.btn-primary:hover {
+  background: #0056b3;
+}
+.preview-extra {
+  /* 例: 追加のスタイル */
+  color: #ccc;
+  background: #222;
+  padding: 10px;
+  border-radius: 6px;
+  margin: 10px 0;
+}
+.preview-extra.hidden {
+  display: none;
+}

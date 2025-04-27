@@ -1,0 +1,50 @@
+/* ───────── サイドバー 基本 ───────── */
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  background: var(--bg-sidebar);      /* 例: #fafafa */
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: width 0.25s ease;
+}
+
+/* ロゴ */
+.brand {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-decoration: none;
+  padding: 1.2rem 1rem 1rem;
+}
+
+/* ───────── ナビ ───────── */
+.nav { list-style: none; margin: 0; padding: 0; }
+
+.nav li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.9rem 1.2rem;
+  color: var(--text-main);
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+.nav li a:hover { background: #e6e6e6; }
+
+.icon  { width: 24px; text-align: center; font-size: 1.2rem; }
+.label { white-space: nowrap; }
+
+/* ───────── 折りたたみ状態 ───────── */
+.sidebar.collapsed { width: 72px; }
+
+.sidebar.collapsed .label { display: none; }
+.sidebar.collapsed .brand {
+  font-size: 1.6rem;
+  text-align: center;
+  padding-left: 0;
+}

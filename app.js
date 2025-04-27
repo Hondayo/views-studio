@@ -1,58 +1,54 @@
-// app.js
-
 require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const path = require('path');
-const cloudinary = require('cloudinary').v2;
+const express         = require('express');
+const expressLayouts  = require('express-ejs-layouts');
+const mongoose        = require('mongoose');
+const path            = require('path');
+const methodOverride  = require('method-override');
 
-// ルートファイルを読み込み
-const videoRoutes = require('./routes/videoRoutes');
-const imageRoutes = require('./routes/imageRoutes'); // ← 新規: 画像用ルート
+const Work    = require('./models/Work');
+const Episode = require('./models/Episode');
+const contentsRoutes = require('./routes/contentsRoutes');
 
 const app = express();
 
-// JSONボディ等の設定
+/* ---------- ミドルウェア ---------- */
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));                 // ① body 先にパース
+app.use(methodOverride('_method', { methods: ['POST', 'GET'] })); // ② _method=DELETE を変換
 
-// 1) MongoDB接続
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB接続成功'))
-  .catch(err => console.error('MongoDB接続失敗:', err));
+/* ---------- レイアウト ---------- */
+app.use(expressLayouts);
+app.set('layout', 'layout');
 
-// 2) Cloudinary設定
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET
-});
-
-// 3) EJS, 静的ファイル
+/* ---------- テンプレート / 静的 ---------- */
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
-// stylesheet/ にCSS/JSを置いている場合:
 app.use(express.static(path.join(__dirname, 'stylesheet')));
+app.use(express.static(path.join(__dirname, 'public'))); 
 
-// 4) 画面表示ルート (HTML/EJS のみ)
-app.get('/', (req, res) => {
-  res.render('home');  
-});
-app.get('/newImage', (req, res) => {
-  res.render('newImage');
-});
-app.get('/newVideo', (req, res) => {
-  res.render('newVideo');
+/* ---------- DB ---------- */
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB 接続成功'))
+  .catch(err  => console.error('MongoDB 接続失敗:', err));
+
+/* ---------- ルート ---------- */
+app.use('/', contentsRoutes);
+
+/* ホームだけ直書き */
+app.get('/', async (req, res) => {
+  const totalWorks    = await Work.countDocuments();
+  const totalEpisodes = await Episode.countDocuments();
+  const paidEpisodes  = await Episode.find({ isPaid: true });
+  const totalRevenue  = paidEpisodes.reduce((s, ep) => s + (ep.price || 0), 0);
+
+  res.render('partials/home', {
+    layout: 'layout',
+    title: 'ホーム',
+    pageStyle: 'home',
+    stats: { totalWorks, totalEpisodes, totalRevenue }
+  });
 });
 
-// 5) ルートを適用
-app.use('/', videoRoutes);  // 動画アップロード・編集・削除など
-app.use('/', imageRoutes);  // 画像アップロードなど
- 
-
-// サーバー起動
+/* ---------- サーバ ---------- */
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
-});
+app.listen(port, () => console.log(`Server started on port ${port}`));

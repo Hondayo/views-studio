@@ -39,4 +39,25 @@ async function deleteVideo(videoId, publicId) {
       alert('通信エラーが発生しました (画像削除)');
     }
   }
+  // タブ切り替えロジック
+document.addEventListener('DOMContentLoaded', () => {
+    const tabVideo = document.getElementById('tab-video');
+    const tabImage = document.getElementById('tab-image');
+    const videoSection = document.getElementById('video-section');
+    const imageSection = document.getElementById('image-section');
+  
+    tabVideo.addEventListener('click', () => {
+      tabVideo.classList.add('active');
+      tabImage.classList.remove('active');
+      videoSection.classList.remove('hidden');
+      imageSection.classList.add('hidden');
+    });
+  
+    tabImage.addEventListener('click', () => {
+      tabImage.classList.add('active');
+      tabVideo.classList.remove('active');
+      imageSection.classList.remove('hidden');
+      videoSection.classList.add('hidden');
+    });
+  });
   

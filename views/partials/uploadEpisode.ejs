@@ -1,0 +1,122 @@
+<div class="page-container"><!-- 2カラムレイアウト -->
+
+  <!-- === 左カラム：フォーム === -->
+  <div class="episode-form">
+    <h2>エピソードを追加</h2>
+
+    <form id="episodeForm"
+          class="upload-form"
+          action="/works/<%= work._id %>/episodes" 
+          method="POST" 
+          enctype="multipart/form-data">
+
+      <!-- 1) ドラッグ＆ドロップ領域: 動画ファイルを選択 -->
+      <div id="mainDrop" class="drop-full">
+        <div class="drop-message">
+          <div class="drop-icon">⬆</div>
+          <p>ここに動画ファイルをドラッグ＆ドロップ<br>またはクリックしてファイルを選択</p>
+        </div>
+        <!-- 動画のみ許可 -->
+        <input type="file" id="contentFile" name="contentFile" hidden accept="video/*">
+      </div>
+
+      <!-- 2) 詳細入力 (初期非表示) -->
+      <div id="details" class="details hidden">
+        <div class="ep-form">
+
+          <div class="form-group">
+            <label for="title">エピソードタイトル *</label>
+            <input type="text" id="title" name="title" required>
+          </div>
+
+          <div class="form-group">
+            <label for="description">あらすじ</label>
+            <textarea id="description" name="description" rows="3"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="duration">動画時間（分）</label>
+            <input type="number" id="duration" name="duration" min="0" placeholder="例: 24">
+          </div>
+
+          <div class="form-group">
+            <label for="price">価格（円）</label>
+            <input type="number" id="price" name="price" min="0" placeholder="0 で無料">
+          </div>
+
+        </div><!-- /.ep-form -->
+      </div><!-- /#details -->
+
+      <!-- 3) 送信ボタン -->
+      <button type="submit" class="btn-primary">エピソードを保存</button>
+    </form>
+  </div><!-- /.episode-form -->
+
+
+  <!-- === 右カラム：プレビュー === -->
+  <aside class="preview-pane">
+    <div class="preview-phone-frame">
+      <div class="preview-phone-screen">
+        
+        <!-- ▼ 作品のサムネイル (前画面で決定した画像) 16:9推奨 -->
+        <div class="preview-thumbnail-wrapper">
+          <% if (work.thumbnailUrl) { %>
+            <img 
+              src="<%= work.thumbnailUrl %>" 
+              alt="<%= work.title %>" 
+              class="preview-thumbnail">
+          <% } else { %>
+            <div class="placeholder-overlay">
+              作品サムネイルが未設定です
+            </div>
+          <% } %>
+        </div>
+
+
+        <div class="title-row">
+          <div class="preview-title" id="previewTitle"><%= work.title %></div>
+          <button type="button" id="toggleExtra" class="extra-toggle-btn">詳細</button>
+        </div>
+
+        <!-- 公開年 + レーティング + キャスト / スタジオ -->
+        <dl id="previewExtra" class="preview-extra hidden">
+          <dd class="year-label">
+            <%= work.releaseDate && work.releaseDate.trim() !== '' 
+                 ? work.releaseDate 
+                 : '未設定' %>
+          </dd>
+          <dd class="rating-badge">
+            <%= work.rating && work.rating.trim() !== ''
+                 ? work.rating
+                 : '未設定' %>
+          </dd>
+          <dt>キャスト</dt>
+          <dd><%= work.cast && work.cast.trim() !== '' ? work.cast : '未設定' %></dd>
+          <dt>制作</dt>
+          <dd><%= work.studio && work.studio.trim() !== '' ? work.studio : '未設定' %></dd>
+        </dl>
+
+
+        <div class="episode-thumb" id="previewArea">
+        </div>
+
+        <div class="episode-info-line clamp-2" id="episodeInfoLine">
+          <span id="combinedText"></span>
+        </div>
+
+        <div class="toggle-link hidden" id="toggleMore">---続きを見る---</div>
+
+        <div class="episode-extra-line">
+          <span class="episode-time" id="previewDuration">0分</span>
+          <span class="episode-price" id="previewPrice">無料</span>
+        </div>
+
+      </div><!-- /.preview-phone-screen -->
+    </div><!-- /.preview-phone-frame -->
+  </aside><!-- /preview-pane -->
+
+</div><!-- /.page-container -->
+
+<script src="/js/uploadEpisode.js"></script>
+
+

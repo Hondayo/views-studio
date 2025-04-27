@@ -1,0 +1,111 @@
+<% /* workDetail.ejs – 通常表示 + 編集モード */ %>
+<div class="viewer-page <%= bodyClass || '' %>" id="viewerPage">
+
+  <div class="top-right-panel">
+    <button id="deviceBtn" class="tool-btn" title="デバイス切替">📱/💻</button>
+    <button id="editBtn"   class="tool-btn" title="編集">✏</button>
+  </div>
+
+  <!-- ───── 左：編集フォーム（デフォルト非表示） ───── -->
+  <aside class="edit-pane" id="editPane">
+    <form action="/works/<%= work._id %>?_method=PUT"
+          method="POST" enctype="multipart/form-data" id="editForm">
+      <input type="hidden" name="_method" value="PUT">
+
+      <label>作品タイトル</label>
+      <input  type="text" name="title" id="titleInput" value="<%= work.title %>" required>
+
+      <label>説明</label>
+      <textarea name="description" id="descInput" rows="4"><%= work.description %></textarea>
+
+      <label>タグ（カンマ区切り）</label>
+      <input  type="text" name="tags"  id="tagsInput" value="<%= work.tags.join(', ') %>">
+
+      <label>部門</label>
+      <select name="category" id="catSelect">
+        <option value="story" <%= work.category==='story'?'selected':'' %>>ストーリー</option>
+        <option value="movie" <%= work.category==='movie'?'selected':'' %>>映画</option>
+      </select>
+
+      <label>サムネイル画像</label>
+      <input type="file" name="thumbnail" id="thumbInput" accept="image/*">
+
+      <button class="btn save-btn">💾 保存</button>
+    </form>
+  </aside>
+
+  <!-- ───── 右：プレビュー ───── -->
+  <main class="preview-pane" id="previewPane">
+
+    <!-- PCプレビュー用ラッパ -->
+    <div class="viewer-inner" id="viewerInner">
+      <section class="hero-section">
+        <img id="previewThumb"
+             src="<%= work.thumbnailUrl || '/default-thumb.jpg' %>"
+             alt="thumb" class="hero-thumbnail">
+        <div class="hero-info">
+          <h2 id="previewTitle" class="hero-title"><%= work.title %></h2>
+          <button class="hero-play-btn">▶ 次のエピソード</button>
+          <p id="previewMeta" class="work-meta">
+            <span id="previewYear"><%= new Date().getFullYear() %></span> /
+            <span id="previewCat"><%= work.category==='story'?'ストーリー':'映画' %></span> /
+            <span id="previewTags"><%= work.tags.join(', ') %></span>
+          </p>
+          <p id="previewDesc" class="work-description"><%= work.description %></p>
+        </div>
+      </section>
+      <section class="episode-section">
+        <h3>エピソード</h3>
+        <div class="episode-list">
+          <% episodes.forEach(ep => { %>
+            <div class="episode-card">
+              <% if (ep.contentType === 'video') { %>
+                <video src="<%= ep.cloudinaryUrl %>"
+                       controls class="episode-thumb"></video>
+              <% } else { %>
+                <img src="<%= ep.cloudinaryUrl %>" class="episode-thumb">
+              <% } %>
+              <div class="episode-info">
+                <p class="episode-title"><%= ep.title %></p>
+                <p class="episode-meta"><%= ep.isPaid ? '¥'+ep.price : '無料' %></p>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </section>
+    </div>
+
+    <!-- スマホフレーム -->
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <!-- ※ ルート要素のIDは変えて重複を防ぐ（中の要素IDはそのまま） -->
+      <div class="phone-screen" id="phoneScreen">
+        <!-- JSで複製を注入（viewerInnerPhoneに） -->
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<% /* workDetail.ejs */ %>
+<h1><%= work.title %></h1>
+<!-- 略: 作品情報・エピソード一覧など -->
+
+<% if (created) { %>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const answer = confirm("コンテンツが公開されました。続けてエピソードを公開しますか？");
+  if (answer) {
+    // 「はい」→ エピソード画面へ
+    location.href = "/works/<%= work._id %>/episodes/new";
+  } else {
+    // 「いいえ」→ コンテンツ一覧
+    location.href = "/contents";
+  }
+});
+</script>
+<% } %>
+
+
+<script src="/js/workDetail.js"></script>
+

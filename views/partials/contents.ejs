@@ -1,0 +1,43 @@
+<!-- ========= works.ejs : 作品一覧グリッド ========= -->
+<link rel="stylesheet" href="/stylesheet/pages/works.css">
+
+<h1 class="page-title">あなたの作品</h1>
+
+<div class="new-work">
+  <a href="/works/new" class="btn-primary">＋ 新しい作品を作る</a>
+</div>
+
+<!-- ========== グリッド ========== -->
+<div class="works-grid">
+  <% works.forEach(work => { %>
+    <div class="work-card">
+      <!-- サムネイル -->
+      <div class="thumb-box">
+        <img src="<%= work.thumbnailUrl || '/default-thumb.jpg' %>" alt="thumbnail">
+        <!-- 単発作品: 再生ボタン overlay -->
+        <% if (work.category === 'single') { %>
+          <span class="play-overlay">▶︎</span>
+        <% } %>
+      </div>
+
+      <!-- メタ情報 -->
+      <h3 class="title"><%= work.title %></h3>
+
+      <!-- 部門バッジ -->
+      <span class="badge <%= work.category === 'story' ? 'badge-story' : 'badge-single' %>">
+        <%= work.category === 'story' ? 'ストーリー' : '単発' %>
+      </span>
+
+      <!-- あらすじ（2 行） -->
+      <p class="synopsis clamp-2"><%= work.description || '（説明未入力）' %></p>
+
+      <!-- ホバー時オーバーレイ(編集など) -->
+      <div class="overlay">
+        <a href="/works/<%= work._id %>" class="ov-btn">📄 作品ページ</a>
+        <form action="/works/<%= work._id %>?_method=DELETE" method="POST" onsubmit="return confirm('削除しますか?')">
+          <button type="submit" class="ov-btn danger">🗑 削除</button>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+</div>
