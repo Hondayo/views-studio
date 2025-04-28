@@ -238,3 +238,26 @@ input, textarea {
 .preview-extra.hidden {
   display: none;
 }
+
+/* 大きな見出しを表示するためのサンプル */
+.page-header {
+  background: #007bff; /* 任意 */
+  color: #fff;
+  padding: 30px;
+  text-align: center;
+}
+.main-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: bold;
+}
+.sub-info {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.section-desc {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1rem;
+}

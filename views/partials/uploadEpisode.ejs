@@ -1,8 +1,22 @@
+<!-- ページ見出し: 大きくエピソード追加を明示 -->
+<div class="page-header">
+  <h1 class="main-title">エピソード追加ページ</h1>
+  <p class="sub-info">
+    ここでは作品にエピソードを追加できます。<br>
+    <strong>あらすじ以外はすべて必須</strong> なのでご注意ください。
+  </p>
+</div>
+
 <div class="page-container"><!-- 2カラムレイアウト -->
 
   <!-- === 左カラム：フォーム === -->
   <div class="episode-form">
-    <h2>エピソードを追加</h2>
+    <!-- セクション見出しを入れてもOK -->
+    <h2>新しいエピソードを追加する</h2>
+    <p class="section-desc">
+      動画ファイル、エピソードタイトル、時間、価格などを入力してください。<br>
+      あらすじは任意です。
+    </p>
 
     <form id="episodeForm"
           class="upload-form"
@@ -10,38 +24,42 @@
           method="POST" 
           enctype="multipart/form-data">
 
-      <!-- 1) ドラッグ＆ドロップ領域: 動画ファイルを選択 -->
+      <!-- 1) 動画ファイル (必須化) -->
       <div id="mainDrop" class="drop-full">
         <div class="drop-message">
           <div class="drop-icon">⬆</div>
           <p>ここに動画ファイルをドラッグ＆ドロップ<br>またはクリックしてファイルを選択</p>
         </div>
-        <!-- 動画のみ許可 -->
-        <input type="file" id="contentFile" name="contentFile" hidden accept="video/*">
+        <!-- ★ 'required' を付与 -->
+        <input type="file" id="contentFile" name="contentFile" hidden accept="video/*" required>
       </div>
 
-      <!-- 2) 詳細入力 (初期非表示) -->
+      <!-- 2) 詳細入力 (最初は非表示、動画を選んだら表示) -->
       <div id="details" class="details hidden">
         <div class="ep-form">
 
+          <!-- (必須) エピソードタイトル -->
           <div class="form-group">
-            <label for="title">エピソードタイトル *</label>
+            <label for="title">エピソードタイトル <span style="color: red;">*</span></label>
             <input type="text" id="title" name="title" required>
           </div>
 
+          <!-- (任意) あらすじ -->
           <div class="form-group">
             <label for="description">あらすじ</label>
             <textarea id="description" name="description" rows="3"></textarea>
           </div>
 
+          <!-- (必須) 動画時間 -->
           <div class="form-group">
-            <label for="duration">動画時間（分）</label>
-            <input type="number" id="duration" name="duration" min="0" placeholder="例: 24">
+            <label for="duration">動画時間（分） <span style="color: red;">*</span></label>
+            <input type="number" id="duration" name="duration" min="0" placeholder="例: 24" required>
           </div>
 
+          <!-- (必須) 価格 -->
           <div class="form-group">
-            <label for="price">価格（円）</label>
-            <input type="number" id="price" name="price" min="0" placeholder="0 で無料">
+            <label for="price">価格（円） <span style="color: red;">*</span></label>
+            <input type="number" id="price" name="price" min="0" placeholder="0 で無料" required>
           </div>
 
         </div><!-- /.ep-form -->
@@ -72,7 +90,6 @@
           <% } %>
         </div>
 
-
         <div class="title-row">
           <div class="preview-title" id="previewTitle"><%= work.title %></div>
           <button type="button" id="toggleExtra" class="extra-toggle-btn">詳細</button>
@@ -96,9 +113,7 @@
           <dd><%= work.studio && work.studio.trim() !== '' ? work.studio : '未設定' %></dd>
         </dl>
 
-
-        <div class="episode-thumb" id="previewArea">
-        </div>
+        <div class="episode-thumb" id="previewArea"></div>
 
         <div class="episode-info-line clamp-2" id="episodeInfoLine">
           <span id="combinedText"></span>
@@ -117,6 +132,5 @@
 
 </div><!-- /.page-container -->
 
+<!-- 既存のJSはそのまま -->
 <script src="/js/uploadEpisode.js"></script>
-
-
