@@ -1,4 +1,29 @@
-/* ---------- 全体レイアウト (2カラム) ---------- */
+/* 全体レイアウト */
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background-color: #f9f9f9;
+}
+
+/* ページヘッダー部分 */
+.page-header {
+  background: #007bff; /* お好み */
+  color: #fff;
+  padding: 40px;
+  text-align: center;
+}
+.main-title {
+  margin: 0 0 10px 0;
+  font-size: 2rem;
+  font-weight: bold;
+}
+.sub-info {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* 2カラムレイアウト */
 .page-container {
   display: flex;
   gap: 40px;
@@ -6,26 +31,20 @@
   align-items: flex-start;
   flex-wrap: nowrap;
 }
-
-/* 左：フォーム */
-.wizard-container {
+.form-section {
   flex: 1 1 420px;
   max-width: 600px;
 }
-
-/* 右：プレビュー */
 .preview-pane {
   flex: 0 0 390px;
   position: sticky;
   top: 30px;
 }
-
-/* レスポンシブ時 */
 @media (max-width: 900px) {
   .page-container {
     flex-direction: column;
   }
-  .wizard-container, .preview-pane {
+  .form-section, .preview-pane {
     flex: none;
     max-width: 100%;
   }
@@ -34,128 +53,42 @@
   }
 }
 
-/* ---------- iPhone風プレビュー ---------- */
-.preview-phone-frame {
-  max-width: 390px;
-  width: 100%;
-  height: 700px;
-  border-radius: 40px;
-  overflow: hidden;
-  padding: 14px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
+/* 見出し・説明 */
+.section-title {
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+.section-desc {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 1rem;
 }
 
-/* ★ プレビュー内はデフォルト左寄せに */
-.preview-phone-screen {
-  background: #111;
-  flex: 1;
-  border-radius: 28px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  text-align: left; /* ← 全体を左寄せ */
+/* 入力フォーム */
+.wizard-container {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
 }
-
-/* サムネイル部分（未選択時はオーバーレイを中央寄せ） */
-.preview-thumbnail-wrapper {
-  position: relative;
-  width: 100%;
-  padding-top: 56.25%;
-  background: #222;
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 12px;
+.form-group {
+  margin-bottom: 1.2rem;
 }
-.preview-thumbnail {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.play-overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 48px;
-  color: rgba(255,255,255,0.9);
-  pointer-events: none;
-}
-
-/* タイトル行だけ「左：タイトル / 右：詳細ボタン」 */
-.title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* タイトルとボタンを両端に分ける */
-  margin-bottom: 8px;
-}
-/* タイトル自体は左 */
-.preview-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #fff;
-  margin: 0;
-  text-align: left; /* 念のため */
-}
-/* 詳細ボタンは右に寄る (title-rowのspace-between効果で右端) */
-.extra-toggle-btn {
-  background: #444;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 4px 8px;
-  cursor: pointer;
-  font-size: 0.8rem;
-}
-.extra-toggle-btn:hover {
-  background: #555;
-}
-
-/* あらすじ (左寄せ) */
-.preview-description {
-  font-size: 0.9rem;
-  color: #eee;
-  margin-bottom: 8px;
-  word-break: break-word;
-  display: -webkit-box;
-  -webkit-line-clamp: 2; 
-  line-clamp: 2; 
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-align: left;
-}
-
-/* 公開年・レーティングも左寄せ(インラインでもOK) */
-.year-label, .rating-badge {
-  margin-right: 8px;
-  /* left align if needed */
-}
-
-/* キャスト/制作 (左寄せ) */
-.preview-extra {
-  font-size: 0.85rem;
-  color: #ccc;
-  line-height: 1.4;
-  text-align: left; 
-}
-.preview-extra dt {
+.label-title {
   font-weight: bold;
+  margin-bottom: 0.3rem;
+  display: inline-block;
+}
+.required {
+  color: red;
+}
+.help-text {
+  display: block;
+  font-size: 0.8rem;
+  color: #666;
   margin-top: 4px;
 }
-.preview-extra dd {
-  margin-left: 0;
-  margin-bottom: 4px;
-}
-.preview-extra.hidden {
-  display: none;
-}
-
-/* ---------- 共通 ---------- */
-.hidden { display: none !important; }
-.form-group { margin-bottom: 1rem; }
 input[type="text"],
 input[type="file"],
 textarea,
@@ -175,6 +108,7 @@ select {
   border-radius: 6px;
   cursor: pointer;
   font-size: 1rem;
+  font-weight: bold;
 }
 .btn-primary:hover {
   background: #0056b3;
@@ -183,37 +117,46 @@ select {
   width: 100%;
 }
 
-.rating-badge, .year-label {
-  color: #fff;
-  font-size: 1.0rem;
-  padding: 2px 6px;
-  border-radius: 4px;
-  border: 1px solid #aaa;
+/* プレビュー枠(iPhone風など) */
+.preview-phone-frame {
+  max-width: 390px;
+  width: 100%;
+  height: 700px;
+  border-radius: 40px;
+  overflow: hidden;
+  padding: 14px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background: #333; /* 外周用背景(お好み) */
+}
+.preview-phone-screen {
+  background: #111;
+  flex: 1;
+  border-radius: 28px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  color: #eee; /* テキスト色 */
 }
 
-.detail-group details {
-  margin-bottom: 1rem;
-}
-.detail-group summary {
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 1rem;
-  outline: none;
-}
-.detail-fields {
-  margin-top: 8px;
-}
-
-.form-subgroup {
+/* サムネイル部分 */
+.preview-thumbnail-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  background: #222;
+  border-radius: 12px;
+  overflow: hidden;
   margin-bottom: 12px;
 }
-.form-subgroup label {
-  display: block;
-  margin-bottom: 4px;
-  font-weight: 600;
+.preview-thumbnail {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-
-/* サムネイルオーバーレイは中央寄せ */
 .placeholder-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -225,10 +168,101 @@ select {
   background: rgba(0,0,0,0.5);
   font-size: 1rem;
 }
-/* 未選択時の枠 */
 .empty-thumb {
   border: 2px dashed #666;
 }
 .placeholder-overlay.hidden {
   display: none;
+}
+.play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  color: rgba(255,255,255,0.9);
+  pointer-events: none;
+}
+
+/* タイトル行 */
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.preview-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  text-align: left;
+}
+.extra-toggle-btn {
+  background: #444;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+.extra-toggle-btn:hover {
+  background: #555;
+}
+
+/* 詳細表示 */
+.preview-extra {
+  font-size: 0.85rem;
+  color: #ccc;
+  line-height: 1.4;
+  text-align: left;
+}
+.preview-extra dt {
+  font-weight: bold;
+  margin-top: 4px;
+}
+.preview-extra dd {
+  margin-left: 0;
+  margin-bottom: 4px;
+}
+.preview-extra.hidden {
+  display: none;
+}
+.year-label, .rating-badge {
+  color: #fff;
+  font-size: 1.0rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #aaa;
+  margin-right: 8px;
+}
+.hidden { display: none !important; }
+
+/* ----- ローディングオーバーレイ (多重クリック防止) ----- */
+.loading-overlay {
+  position: fixed; 
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.loading-overlay.hidden {
+  display: none;
+}
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 6px solid #ccc;
+  border-top: 6px solid #007bff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-bottom: 16px;
+}
+@keyframes spin {
+  100% { transform: rotate(360deg); }
 }
