@@ -1,25 +1,71 @@
-// models/Work.js
 const mongoose = require('mongoose');
 
-const WorkSchema = new mongoose.Schema({
-  title:  { type: String, required: true },
-  description: String,
-  category: {
+const workSchema = new mongoose.Schema({
+  // ▼ 既存フィールド (変更せず)
+  title: {
     type: String,
-    enum: ['story', 'single', 'imageStory', 'videoStory', 'singleVideo'],
     required: true
   },
-  thumbnailUrl: String,
-  tags: [String],
-  singleUrl:   String,
-  singleType:  { type: String, enum: ['video', 'image'] },
-  durationMin: Number,
+  description: {
+    type: String
+  },
+  category: {
+    type: String
+  },
+  thumbnailUrl: {
+    type: String,
+    default: ''
+  },
+  tags: [{
+    type: String
+  }],
+  rating: {
+    type: String
+  },
+  releaseDate: {
+    type: String
+  },
+  cast: {
+    type: String
+  },
+  studio: {
+    type: String
+  },
 
-  // ★ 追加フィールド
-  rating:      String, // 例: "G" "PG-12" "R15+" など
-  releaseDate: String, // 例: "2023"
-  cast:        String, // 例: "佐藤健, 有村架純"
-  studio:      String, // 例: "東映アニメーション"
-}, { timestamps: true });
+  // ▼ 新しく追加したいフィールド
+  //    (旧スキーマには無かったが、新たに使いたい項目)
+  genre: {
+    type: String
+  },
+  broadcastDate: {
+    type: String
+  },
+  views: {
+    type: Number,
+    default: 0
+  },
 
-module.exports = mongoose.model('Work', WorkSchema);
+  // ▼ 表示制御用フラグ (オプション部分)
+  showDescription: {
+    type: Boolean,
+    default: false
+  },
+  showGenre: {
+    type: Boolean,
+    default: false
+  },
+  showBroadcastDate: {
+    type: Boolean,
+    default: false
+  },
+  showViews: {
+    type: Boolean,
+    default: false
+  },
+
+  // 必要に応じてここで showRating, showReleaseDate, showCast, showStudio など追加可能
+}, {
+  timestamps: true // createdAt, updatedAt を自動で管理
+});
+
+module.exports = mongoose.model('Work', workSchema);

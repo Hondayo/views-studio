@@ -344,7 +344,7 @@ router.post('/works/:id/episodes', upload.single('contentFile'), async (req, res
     isPaid       : isPaid === 'true',
     price        : isPaid === 'true' ? parseInt(price, 10) : 0
   }).save();
-
+  console.log('Uploaded file URL:', result.secure_url);
   res.redirect(`/works/${req.params.id}`);
 });
 
