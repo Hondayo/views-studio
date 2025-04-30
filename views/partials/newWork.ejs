@@ -1,145 +1,181 @@
-  <!-- ▼ ページ全体の見出しエリア ▼ -->
-  <header class="page-header">
-    <h1 class="main-title">新規作品を公開しよう</h1>
-    <p class="sub-info">
-      ここでは、あなたの作品を投稿し、多くのユーザーに見てもらうことができます。<br>
-      必要事項を入力したら、右側のプレビューで最終チェックをしましょう！
+<!-- newWork.ejs -->
+
+<!-- ▼ ページ全体の見出しエリア ▼ -->
+<header class="page-header">
+  <h1 class="main-title">新規作品を公開しよう</h1>
+  <p class="sub-info">
+    ここでは、あなたの作品を投稿し、多くのユーザーに見てもらうことができます。<br>
+    必要事項を入力したら、右側のプレビューで最終チェックをしましょう！
+  </p>
+</header>
+
+<!-- ▼ メインコンテンツ ▼ -->
+<div class="page-container"> 
+  <!-- ===== 左：入力フォーム ===== -->
+  <section class="form-section">
+    <h2 class="section-title">作品情報入力フォーム</h2>
+    <p class="section-desc">
+      公開したい作品のタイトル、サムネイル、カテゴリーなどを入力してください。
     </p>
-  </header>
 
-  <!-- ▼ メインコンテンツ ▼ -->
-  <div class="page-container"> 
-    <!-- ===== 左：入力フォーム ===== -->
-    <section class="form-section">
-      <h2 class="section-title">作品情報入力フォーム</h2>
-      <p class="section-desc">
-        公開したい作品のタイトル、サムネイル、カテゴリーなどを入力してください。
-      </p>
-      <form id="workForm" class="wizard-container work-form" action="/works" method="POST" enctype="multipart/form-data">
-        
-        <!-- 1. サムネイル -->
-        <div class="form-group thumb-group">
-          <label for="thumbnail" class="label-title">サムネイル <span class="required">*</span></label>
-          <input type="file" id="thumbnail" name="thumbnail" accept="image/*" required>
-          <small class="help-text">
-            作品を代表する画像をアップロードしてください。（JPEG, PNGなど）
-          </small>
-        </div>
+    <form id="workForm" class="wizard-container work-form" action="/works" method="POST" enctype="multipart/form-data">
+      
+      <!-- サムネイル画像 -->
+      <div class="form-group thumb-group">
+        <label class="label-title" for="thumbnail">
+          サムネイル画像 <span class="required">*</span>
+        </label>
+        <!-- 非表示のファイル選択 -->
+        <input 
+          type="file" 
+          id="thumbnail" 
+          name="thumbnail" 
+          accept="image/*" 
+          required 
+          style="display: none;"
+        >
+        <!-- カスタムボタン & 選択中ファイル表示 -->
+        <button type="button" id="thumbnailSelectBtn" class="btn-select-file">ファイル選択</button>
+        <span id="thumbnailFileName" class="file-name-label">選択されていません</span>
 
-        <!-- 2. タイトル -->
-        <div class="form-group">
-          <label for="title" class="label-title">タイトル <span class="required">*</span></label>
-          <input type="text" id="title" name="title" required>
-          <small class="help-text">作品の正式なタイトルを入力してください。</small>
-        </div>
-
-        <!-- 3. 「詳細」 (レーティング・公開年・キャスト・制作会社) -->
-        <div class="form-group detail-group">
-          <details open>
-            <summary>詳細情報</summary>
-            <div class="detail-fields">
-              <!-- レーティング -->
-              <div class="form-subgroup">
-                <label for="rating">レーティング</label>
-                <select id="rating" name="rating">
-                  <option value="">-- 選択 --</option>
-                  <option value="G">G</option>
-                  <option value="PG-12">PG-12</option>
-                  <option value="R15+">R15+</option>
-                  <option value="R18+">R18+</option>
-                </select>
-                <small class="help-text">
-                  視聴制限がある場合は指定してください。
-                </small>
-              </div>
-              
-              <!-- 公開年 -->
-              <div class="form-subgroup">
-                <label for="releaseDate">公開年</label>
-                <input type="text" id="releaseDate" placeholder="公開年 (数字のみ)">
-                <small class="help-text">
-                  例：2024
-                </small>
-              </div>
-
-              <!-- キャスト -->
-              <div class="form-subgroup">
-                <label for="cast">キャスト (カンマ区切り)</label>
-                <input type="text" id="cast" name="cast">
-              </div>
-
-              <!-- 制作会社 -->
-              <div class="form-subgroup">
-                <label for="studio">制作会社</label>
-                <input type="text" id="studio" name="studio">
-              </div>
-            </div>
-          </details>
-        </div>
-
-        <!-- 4. カテゴリー & タグ（任意） -->
-        <div class="form-group">
-          <label for="category" class="label-title">カテゴリー <span class="required">*</span></label>
-          <select id="category" name="category" required>
-            <option value="videoStory">動画ストーリー（アニメ、ドラマなど）</option>
-            <option value="imageStory">漫画ストーリー（漫画、小説など）</option>
-            <option value="singleVideo">単発動画（映画、コンサートなど）</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="tags" class="label-title">タグ (カンマ区切り)</label>
-          <input type="text" id="tags" name="tags">
-          <small class="help-text">
-            例：SF,アクション,ロマンス（検索や並び替えに利用されます）
-          </small>
-        </div>
-
-        <!-- 作品を公開ボタン -->
-        <button type="submit" class="btn-primary w-full" id="publishButton">作品を公開</button>
-      </form>
-    </section>
-
-    <!-- ===== 右：プレビュー ===== -->
-    <aside class="preview-pane">
-      <h2 class="section-title">プレビュー（最終確認）</h2>
-      <p class="section-desc">
-        入力内容がどのように表示されるか、実際のサムネイル・タイトルなどを確認してください。
-      </p>
-      <div class="preview-phone-frame">
-        <div class="preview-phone-screen">
-
-          <!-- サムネイル + 再生アイコン (単発用) -->
-          <div class="preview-thumbnail-wrapper">
-            <img id="previewImage" class="preview-thumbnail" src="" alt="">
-            <div id="placeholderOverlay" class="placeholder-overlay">
-              サムネイルを追加する
-            </div>
-            <div id="playOverlay" class="play-overlay" style="display:none;">▶︎</div>
-          </div>
-
-          <!-- タイトル -->
-          <div class="title-row">
-            <div class="preview-title" id="previewTitle">作品タイトル</div>
-            <button type="button" id="toggleExtra" class="extra-toggle-btn">詳細</button>
-          </div>
-
-          <!-- 公開年 + レーティング + キャスト / スタジオ -->
-          <dl id="previewExtra" class="preview-extra hidden">
-            <span id="previewYear" class="year-label hidden"></span>
-            <span id="previewRating" class="rating-badge hidden"></span>
-            <dt>キャスト</dt><dd id="previewCast">-</dd>
-            <dt>制作</dt><dd id="previewStudio">-</dd>
-          </dl>
-
-        </div>
+        <small class="help-text">
+          作品を代表する画像をアップロードしてください。（JPEG, PNGなど）
+        </small>
       </div>
-    </aside>
-  </div>
 
-  <!-- ローディングオーバーレイ(多重クリック防止) -->
-  <div id="loadingOverlay" class="loading-overlay hidden">
-    <div class="spinner"></div>
-    <p>アップロード中...</p>
-  </div>
+      <!-- サムネイル動画 -->
+      <div class="form-group thumb-group">
+        <label class="label-title" for="thumbnailVideo">
+          サムネイル動画（任意）
+        </label>
+        <!-- 非表示のファイル選択 -->
+        <input 
+          type="file" 
+          id="thumbnailVideo" 
+          name="thumbnailVideo" 
+          accept="video/*" 
+          style="display: none;"
+        >
+        <!-- カスタムボタン & 選択中ファイル表示 -->
+        <button type="button" id="thumbnailVideoSelectBtn" class="btn-select-file">ファイル選択</button>
+        <span id="thumbnailVideoFileName" class="file-name-label">選択されていません</span>
+        
+        <small class="help-text">
+          マウスオーバー時に再生される短い動画をアップロードします。（MP4 / WebMなど）
+        </small>
+      </div>
 
-  <script src="/js/newWork.js"></script>
+      <!-- タイトル -->
+      <div class="form-group">
+        <label for="title" class="label-title">
+          タイトル <span class="required">*</span>
+        </label>
+        <input type="text" id="title" name="title" required>
+        <small class="help-text">作品の正式なタイトルを入力してください。</small>
+      </div>
+
+      <!-- 詳細情報 (レーティング・公開年・キャスト・制作会社) -->
+      <div class="form-group detail-group">
+        <details open>
+          <summary>詳細情報</summary>
+          <div class="detail-fields">
+            <!-- レーティング -->
+            <div class="form-subgroup">
+              <label for="rating">レーティング</label>
+              <select id="rating" name="rating">
+                <option value="">-- 選択 --</option>
+                <option value="G">G</option>
+                <option value="PG-12">PG-12</option>
+                <option value="R15+">R15+</option>
+                <option value="R18+">R18+</option>
+              </select>
+              <small class="help-text">
+                視聴制限がある場合は指定してください。
+              </small>
+            </div>
+            
+            <!-- 公開年 -->
+            <div class="form-subgroup">
+              <label for="releaseDate">公開年</label>
+              <input type="text" id="releaseDate"  name="releaseDate" placeholder="公開年 (数字のみ)">
+              <small class="help-text">例：2024</small>
+            </div>
+
+            <!-- キャスト -->
+            <div class="form-subgroup">
+              <label for="cast">キャスト (カンマ区切り)</label>
+              <input type="text" id="cast" name="cast">
+            </div>
+
+            <!-- 制作会社 -->
+            <div class="form-subgroup">
+              <label for="studio">制作会社</label>
+              <input type="text" id="studio" name="studio">
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="form-group">
+        <label for="tags" class="label-title">タグ (カンマ区切り)</label>
+        <input type="text" id="tags" name="tags">
+        <small class="help-text">
+          例：SF,アクション,ロマンス（検索や並び替えに利用されます）
+        </small>
+      </div>
+
+      <!-- 作品を公開ボタン -->
+      <button type="submit" class="btn-primary w-full" id="publishButton">作品を公開</button>
+    </form>
+  </section>
+
+  <!-- ===== 右：プレビュー ===== -->
+  <aside class="preview-pane">
+    <h2 class="section-title">プレビュー（最終確認）</h2>
+    <p class="section-desc">
+      入力内容がどのように表示されるか、実際のサムネイル・タイトルなどを確認してください。
+    </p>
+    <div class="preview-phone-frame">
+      <div class="preview-phone-screen">
+
+        <!-- サムネイル画像＆動画のプレビュー -->
+        <div class="preview-thumbnail-wrapper" id="previewWrapper">
+          <img id="previewImage" class="preview-thumbnail" src="" alt="">
+          <div id="placeholderOverlay" class="placeholder-overlay">
+            サムネイルを追加する
+          </div>
+          <video 
+            id="previewVideo"
+            class="preview-thumbnail hidden"
+            muted
+            preload="metadata"
+            playsinline
+          ></video>
+        </div>
+
+        <!-- タイトル & 詳細切り替えボタン -->
+        <div class="title-row">
+          <div class="preview-title" id="previewTitle">作品タイトル</div>
+          <button type="button" id="toggleExtra" class="extra-toggle-btn">詳細</button>
+        </div>
+
+        <!-- 公開年 + レーティング + キャスト / スタジオ -->
+        <dl id="previewExtra" class="preview-extra hidden">
+          <span id="previewYear" class="year-label hidden"></span>
+          <span id="previewRating" class="rating-badge hidden"></span>
+          <dt>キャスト</dt><dd id="previewCast">-</dd>
+          <dt>制作</dt><dd id="previewStudio">-</dd>
+        </dl>
+
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- ローディングオーバーレイ(多重クリック防止) -->
+<div id="loadingOverlay" class="loading-overlay hidden">
+  <div class="spinner"></div>
+  <p>アップロード中...</p>
+</div>
+
+<script src="/js/newWork.js"></script>

@@ -1,3 +1,4 @@
+<!-- uploadEpisode.ejs -->
 <!-- ページ見出し: 大きくエピソード追加を明示 -->
 <div class="page-header">
   <h1 class="main-title">エピソード追加ページ</h1>
@@ -46,21 +47,22 @@
 
           <!-- (任意) あらすじ -->
           <div class="form-group">
-            <label for="description">あらすじ</label>
+            <label for="description">あらすじ(任意)</label>
             <textarea id="description" name="description" rows="3"></textarea>
           </div>
 
           <!-- (必須) 動画時間 -->
-          <div class="form-group">
-            <label for="duration">動画時間（分） <span style="color: red;">*</span></label>
+          <div class="form-group" style="display: none;"><!-- 非表示 -->
+            <label for="duration">動画時間（分）</label>
             <input type="number" id="duration" name="duration" min="0" placeholder="例: 24" required>
           </div>
 
           <!-- (必須) 価格 -->
           <div class="form-group">
-            <label for="price">価格（円） <span style="color: red;">*</span></label>
+            <label for="price">価格（円） <span style="color:red;">*</span></label>
             <input type="number" id="price" name="price" min="0" placeholder="0 で無料" required>
           </div>
+          
 
         </div><!-- /.ep-form -->
       </div><!-- /#details -->

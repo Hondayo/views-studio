@@ -5,10 +5,11 @@ const thumbnailInput   = document.getElementById('thumbnail');
 const titleInput       = document.getElementById('title');
 const ratingSelect     = document.getElementById('rating');
 const releaseDateInput = document.getElementById('releaseDate');
-// const synopsisInput    = document.getElementById('synopsis'); // ← 削除
 const castInput        = document.getElementById('cast');
 const studioInput      = document.getElementById('studio');
 const categorySelect   = document.getElementById('category');
+const thumbnailFileName       = document.getElementById('thumbnailFileName');
+const thumbnailVideoFileName  = document.getElementById('thumbnailVideoFileName');
 
 // === プレビュー要素の取得 ===
 const previewImage    = document.getElementById('previewImage');
@@ -21,32 +22,35 @@ const previewCast     = document.getElementById('previewCast');
 const previewStudio   = document.getElementById('previewStudio');
 const toggleExtraBtn  = document.getElementById('toggleExtra');
 const placeholderOverlay = document.getElementById('placeholderOverlay');
+const previewVideo       = document.getElementById('previewVideo');
+const thumbnailVideoInput = document.getElementById('thumbnailVideo'); // 新規追加
+const previewWrapper      = document.getElementById('previewWrapper');
+
 
 // ---------------------------------------------
 // 1. サムネイル画像プレビュー
 // ---------------------------------------------
-const previewThumbnailWrapper = document.querySelector('.preview-thumbnail-wrapper');
-previewThumbnailWrapper.addEventListener('click', () => {
-  thumbnailInput.click();
-});
-previewImage.addEventListener('click', () => {
-  thumbnailInput.click();
-});
+thumbnailSelectBtn.addEventListener('click', () => {
+    thumbnailInput.click();
+  });
+  thumbnailVideoSelectBtn.addEventListener('click', () => {
+    thumbnailVideoInput.click();
+  });
 
 thumbnailInput.addEventListener('change', () => {
-  const file = thumbnailInput.files[0];
-  if (!file) {
-    previewImage.src = '';
-    previewImage.classList.add('hidden');
-    previewThumbnailWrapper.classList.add('empty-thumb');
-    placeholderOverlay.classList.remove('hidden');
-    return;
-  }
-  const reader = new FileReader();
-  reader.onload = e => {
-    previewImage.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
+    // ファイルが選択されていなければ何もしない
+    if (!thumbnailInput.files || thumbnailInput.files.length === 0) {
+      return; // ここで処理打ち切り
+    }
+  
+    // ファイルがある場合のみプレビュー更新
+    const file = thumbnailInput.files[0];
+    thumbnailFileName.textContent = `選択中: ${file.name}`;
+    const reader = new FileReader();
+    reader.onload = e => {
+      previewImage.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
 
   previewImage.classList.remove('hidden');
   placeholderOverlay.classList.add('hidden');
@@ -189,3 +193,38 @@ workForm.addEventListener('submit', (event) => {
   // AJAXの場合は event.preventDefault() して fetch / axios で送信し、
   // 成功時に画面遷移等を行う
 });
+
+thumbnailVideoInput.addEventListener('change', () => {
+    if (!thumbnailVideoInput.files || thumbnailVideoInput.files.length === 0) {
+      return; // キャンセルされた場合は何もしない
+    }
+  
+    // ファイルが選択されたときのみプレビューを更新
+    const file = thumbnailVideoInput.files[0];
+    thumbnailVideoFileName.textContent = `選択中: ${file.name}`;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      previewVideo.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+    
+    previewVideo.classList.remove('hidden');
+  });
+  previewWrapper.addEventListener('mouseenter', () => {
+    // 動画ファイルがあれば
+    if (previewVideo.src) {
+      previewImage.classList.add('hidden');  // 画像を隠す
+      previewVideo.classList.remove('hidden');
+      previewVideo.currentTime = 0; // 冒頭に戻しておく
+      previewVideo.play();         // 再生
+    }
+  });
+  
+  previewWrapper.addEventListener('mouseleave', () => {
+    // 再生を止めて画像に戻す
+    previewVideo.pause();
+    previewVideo.currentTime = 0;
+    previewVideo.classList.add('hidden');
+    previewImage.classList.remove('hidden');
+  });
+  

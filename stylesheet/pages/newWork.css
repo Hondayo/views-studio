@@ -1,13 +1,16 @@
-/* 全体レイアウト */
+/* newWork.css */
+
+/* ------------------------------
+   ページ全体の基本デザイン
+------------------------------ */
 body {
   margin: 0;
   font-family: sans-serif;
   background-color: #f9f9f9;
 }
 
-/* ページヘッダー部分 */
 .page-header {
-  background: #007bff; /* お好み */
+  background: #007bff;
   color: #fff;
   padding: 40px;
   text-align: center;
@@ -23,7 +26,9 @@ body {
   line-height: 1.4;
 }
 
-/* 2カラムレイアウト */
+/* ------------------------------
+   2カラムレイアウト
+------------------------------ */
 .page-container {
   display: flex;
   gap: 40px;
@@ -53,7 +58,9 @@ body {
   }
 }
 
-/* 見出し・説明 */
+/* ------------------------------
+   セクションタイトル / 説明
+------------------------------ */
 .section-title {
   font-size: 1.5rem;
   margin-top: 0;
@@ -66,7 +73,9 @@ body {
   margin-bottom: 1rem;
 }
 
-/* 入力フォーム */
+/* ------------------------------
+   入力フォーム関連
+------------------------------ */
 .wizard-container {
   padding: 20px;
   background: #fff;
@@ -116,8 +125,15 @@ select {
 .w-full {
   width: 100%;
 }
+.file-name-label {
+  margin-left: 8px;
+  font-size: 0.9rem;
+  color: #555;
+}
 
-/* プレビュー枠(iPhone風など) */
+/* ------------------------------
+   プレビュー枠 (スマホ風)
+------------------------------ */
 .preview-phone-frame {
   max-width: 390px;
   width: 100%;
@@ -128,7 +144,7 @@ select {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  background: #333; /* 外周用背景(お好み) */
+  background: #333;
 }
 .preview-phone-screen {
   background: #111;
@@ -137,25 +153,28 @@ select {
   padding: 12px;
   display: flex;
   flex-direction: column;
-  color: #eee; /* テキスト色 */
+  color: #eee;
 }
 
 /* サムネイル部分 */
 .preview-thumbnail-wrapper {
   position: relative;
   width: 100%;
-  padding-top: 56.25%;
+  padding-top: 56.25%; /* 16:9 */
   background: #222;
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 12px;
 }
 .preview-thumbnail {
-  position: absolute;
+  position: absolute; 
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+.empty-thumb {
+  border: 2px dashed #666;
 }
 .placeholder-overlay {
   position: absolute;
@@ -168,23 +187,16 @@ select {
   background: rgba(0,0,0,0.5);
   font-size: 1rem;
 }
-.empty-thumb {
-  border: 2px dashed #666;
-}
 .placeholder-overlay.hidden {
   display: none;
 }
-.play-overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 48px;
-  color: rgba(255,255,255,0.9);
-  pointer-events: none;
+.hidden {
+  display: none !important;
 }
 
-/* タイトル行 */
+/* ------------------------------
+   タイトル & 詳細トグル
+------------------------------ */
 .title-row {
   display: flex;
   align-items: center;
@@ -194,7 +206,6 @@ select {
 .preview-title {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #fff;
   margin: 0;
   text-align: left;
 }
@@ -211,7 +222,7 @@ select {
   background: #555;
 }
 
-/* 詳細表示 */
+/* レーティングや公開年など */
 .preview-extra {
   font-size: 0.85rem;
   color: #ccc;
@@ -237,13 +248,15 @@ select {
   border: 1px solid #aaa;
   margin-right: 8px;
 }
-.hidden { display: none !important; }
 
-/* ----- ローディングオーバーレイ (多重クリック防止) ----- */
+/* ------------------------------
+   ローディングオーバーレイ
+------------------------------ */
 .loading-overlay {
   position: fixed; 
   top: 0; left: 0;
-  width: 100%; height: 100%;
+  width: 100%; 
+  height: 100%;
   background: rgba(0,0,0,0.6);
   display: flex;
   flex-direction: column;
@@ -265,4 +278,15 @@ select {
 }
 @keyframes spin {
   100% { transform: rotate(360deg); }
+}
+
+/* ------------------------------
+   動画プレビューを重ねる
+------------------------------ */
+#previewVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

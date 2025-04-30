@@ -27,3 +27,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+const cards = document.querySelectorAll('.work-card');
+cards.forEach(card => {
+  const img = card.querySelector('.static-image');
+  const vid = card.querySelector('.hover-video');
+  if (!vid) return; // 動画がない場合
+
+  card.addEventListener('mouseenter', () => {
+    img.classList.add('hidden');
+    vid.classList.remove('hidden');
+    vid.currentTime = 0;
+    vid.play();
+  });
+  card.addEventListener('mouseleave', () => {
+    vid.pause();
+    vid.currentTime = 0;
+    vid.classList.add('hidden');
+    img.classList.remove('hidden');
+  });
+});

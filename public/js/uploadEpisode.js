@@ -1,3 +1,4 @@
+/* uplodeEpisode.js */
 document.addEventListener('DOMContentLoaded', () => {
     /* --------------------------------------------------
      * A) 動画ファイル → サムネイル画像
@@ -75,6 +76,49 @@ document.addEventListener('DOMContentLoaded', () => {
         video.onerror = err => reject(err);
       });
     }
+
+    function generateThumbnail(file) {
+      return new Promise((resolve, reject) => {
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        video.muted = true;
+        video.playsInline = true;
+        video.src = URL.createObjectURL(file);
+    
+        video.addEventListener('loadedmetadata', () => {
+          // 1) 合計秒数を取得
+          const totalSeconds = Math.floor(video.duration);
+          // 2) 分に変換
+          const minutes = Math.floor(totalSeconds / 60);
+    
+          // 3) フォームの input#duration にセット
+          const durIn = document.getElementById('duration');
+          durIn.value = minutes;
+    
+          // 4) プレビューを更新するため、既存の input イベントを発火させる
+          durIn.dispatchEvent(new Event('input'));
+    
+          // 先頭フレームに移動 (サムネイル生成用)
+          video.currentTime = 0;
+        });
+    
+        video.addEventListener('seeked', () => {
+          try {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataURL = canvas.toDataURL('image/jpeg', 0.7);
+            resolve(dataURL);
+          } catch (e) {
+            reject(e);
+          }
+        });
+        video.onerror = err => reject(err);
+      });
+    }
+    
   
     /* --------------------------------------------------
      * B) タイトル + あらすじ → 2行まで表示 & 続きを見るトグル

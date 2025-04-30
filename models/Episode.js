@@ -10,7 +10,11 @@ const episodeSchema = new mongoose.Schema({
   thumbnailUrl: String,
   description: String,
   isPaid: { type: Boolean, default: false },
-  price: Number,
+  price:  { type: Number, default: 0 },
+  duration: { 
+  type: String, 
+  default: 0  // 単位は「分」で保持
+  },
   createdAt: { type: Date, default: Date.now }
 });
 

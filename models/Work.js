@@ -1,3 +1,4 @@
+/* Work.js */
 const mongoose = require('mongoose');
 
 const workSchema = new mongoose.Schema({
@@ -13,6 +14,10 @@ const workSchema = new mongoose.Schema({
     type: String
   },
   thumbnailUrl: {
+    type: String,
+    default: ''
+  },
+  thumbnailVideoUrl: {
     type: String,
     default: ''
   },

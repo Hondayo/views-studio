@@ -1,77 +1,99 @@
+<!-- workDetail.ejs -->
 <div id="globalOverlay">
   <button id="toggleDeviceBtn" class="btn popup-btn">📱/💻</button>
   <a id="popupEditBtn" href="/edit" class="btn popup-btn">✏️</a>
 </div>
 
 <div class="viewer-page">
-
-
-  <!-- デスクトップ版 -->
-  <div id="desktopView" class="desktop-view">
-    <section class="hero-section">
-      <div class="hero-poster-wrapper">
-        <img 
-          src="<%= work.thumbnailUrl || '/images/default-poster.png' %>" 
-          alt="作品ポスター" 
-          class="hero-poster"
-        >
-      </div>
-      <div class="hero-info">
-        <h1 class="work-title"><%= work.title %></h1>
-        
-        <!-- 詳細ボタン -->
-        <button id="toggleDetailBtn" class="btn detail-btn">詳細</button>
-
-        <!-- 詳細エリア(初期非表示) -->
-        <div id="detailArea" class="hidden">
-          <% if (work.releaseDate) { %>
-            <p>公開年: <%= work.releaseDate %></p>
-          <% } %>
-          <% if (work.rating) { %>
-            <p>レーティング: <%= work.rating %></p>
-          <% } %>
-          <% if (work.cast) { %>
-            <p>キャスト: <%= work.cast %></p>
-          <% } %>
-          <% if (work.studio) { %>
-            <p>制作会社: <%= work.studio %></p>
+  
+  <!-- ▼ ラップコンテナを追加 (任意のクラス名でOK) -->
+  <div class="viewer-container">
+  
+    <!-- デスクトップ版 -->
+    <div id="desktopView" class="desktop-view">
+      
+      <div class="work-card">
+        <div class="thumbnail-wrapper">
+          <img src="<%= work.thumbnailUrl %>" alt="<%= work.title %>" class="static-image" />
+          <% if (work.thumbnailVideoUrl) { %>
+            <video 
+              src="<%= work.thumbnailVideoUrl %>"
+              muted
+              playsinline
+              preload="metadata"
+              class="hover-video hidden"
+            ></video>
           <% } %>
         </div>
-      </div>
-    </section>
-
-    <section class="episode-section">
-      <h2>エピソード</h2>
-      <% if (episodes && episodes.length > 0) { %>
-        <% episodes.forEach(function(ep, i) { %>
-          <div class="episode-card">
-            <div class="episode-thumb-wrapper">
-              <!-- 動画として再生する場合の例 -->
-              <video controls src="<%= ep.cloudinaryUrl %>" class="episode-video"></video>
-            </div>
-            <div class="episode-info">
-              <h3>第<%= i + 1 %>話: <%= ep.title || '無題' %></h3>
-            </div>
+        
+        <div class="hero-info">
+          <h1 class="work-title"><%= work.title %></h1>
+          <button id="toggleDetailBtn" class="btn detail-btn">詳細を見る</button>
+          <div id="detailArea" class="hidden">
+            <% if (work.releaseDate) { %>
+              <p>公開年: <%= work.releaseDate %></p>
+            <% } %>
+            <% if (work.rating) { %>
+              <p>レーティング: <%= work.rating %></p>
+            <% } %>
+            <% if (work.cast) { %>
+              <p>キャスト: <%= work.cast %></p>
+            <% } %>
+            <% if (work.studio) { %>
+              <p>制作会社: <%= work.studio %></p>
+            <% } %>
           </div>
-        <% }) %>
-      <% } else { %>
-        <p>エピソードがまだありません。</p>
-      <% } %>
-    </section>
-  </div><!-- /#desktopView -->
+        </div>
+      </div><!-- /.work-card -->
 
-  <!-- モバイル版 -->
-  <div id="mobileView" class="mobile-view hidden">
-    <div class="phone-frame">
-      <div class="phone-notch"></div>
-      <div class="phone-screen">
-        <!-- ここで同様の情報をモバイル向けに表示してもOK -->
-        <!-- 省略 -->
+      <section class="episode-section">
+        <h2>エピソード</h2>
+        <% if (episodes && episodes.length > 0) { %>
+          <% episodes.forEach((ep, i) => { %>
+            <div class="episode-card">
+              <div class="episode-thumb-wrapper">
+                <video controls src="<%= ep.cloudinaryUrl %>" class="episode-video"></video>
+              </div>
+              <div class="episode-info">
+                <h3><%= ep.title || '無題' %></h3>
+      
+                <!-- ▼ あらすじ -->
+                <% if (ep.description) { %>
+                  <p><%= ep.description %></p>
+                <% } %>
+      
+                <!-- ▼ 動画時間 -->
+                <% if (ep.duration) { %>
+                  <p><%= ep.duration %> 分</p>
+                <% } %>
+      
+                <!-- ▼ 金額 (有料/無料) -->
+                <% if (ep.price) { %>
+                  <p><%= ep.price %> 円</p>
+                <% } else { %>
+                  <p>無料</p>
+                <% } %>
+              </div>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <p>エピソードがまだありません。</p>
+        <% } %>
+      </section>
+      
+    </div><!-- /#desktopView -->
+
+    <!-- モバイル版 -->
+    <div id="mobileView" class="mobile-view hidden">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <!-- 省略 or 同様のデザインで表示 -->
+        </div>
       </div>
-    </div>
-  </div><!-- /#mobileView -->
-
+    </div><!-- /#mobileView -->
+    
+  </div><!-- /.viewer-container -->
 </div>
 
-<!-- ※ JS は外部ファイルに任せるため、ここでは読み込むだけ -->
 <script src="/js/workDetail.js"></script>
