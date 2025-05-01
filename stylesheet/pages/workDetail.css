@@ -1,9 +1,11 @@
 /* =========================================================================
-   workDetail.css  (rebuilt & aligned – 2025-04-29)
+   workDetail.css (Cleaned Up)
    ========================================================================= */
 
 /* ---------- Utilities -------------------------------------------------- */
-.hidden { display: none !important; }
+.hidden { 
+  display: none !important; 
+}
 
 /* ---------- Base ------------------------------------------------------- */
 .viewer-page {
@@ -13,102 +15,127 @@
   font-family: sans-serif;
 }
 
-/* ラップコンテナに最大幅を設定 & 水平中央寄せ */
 .viewer-container {
-  max-width: 960px; /* お好みで 1080px や 1200px など */
-  margin: 0 auto;   /* 横中央寄せ */
-  padding: 0 16px;  /* 端がくっつかないよう適度に余白 */
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
-.desktop-view { display: block; }
-.mobile-view  { display: block; } /* JS で .hidden を付け外し */
+/* ---------- Desktop View ---------------------------------------------- */
+.desktop-view { 
+  display: block; 
+}
 
-/* ---------- Common Buttons -------------------------------------------- */
+/* ---------- Buttons ---------------------------------------------------- */
 .btn {
   appearance: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: .25em;
-  padding: .5em 1em;
-  font-size: .9rem;
+  gap: 0.25em;
+  padding: 0.5em 1em;
+  font-size: 0.9rem;
   font-weight: 600;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: opacity .15s ease, transform .15s ease;
-  background: none;               /* 透過でフラット */
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  background: none;
   color: #fff;
 }
 .btn:hover,
 .btn:focus {
-  opacity: .8;
+  opacity: 0.8;
   transform: translateY(-1px);
 }
 
-/* 詳細ボタン ── テキストリンク化 & 常に左寄せ */
+/* メインボタンの例 (お好みで色調整) */
+.btn-primary {
+  background: #007bff;
+  color: #fff;
+}
+.btn-primary:hover {
+  background: #0056b3;
+}
+
+/* 詳細ボタンはリンク風 */
 .detail-btn {
   padding: 0;
   margin: 0;
   font-size: 1rem;
   font-weight: 500;
-  align-self: flex-start;          /* 左端固定 */
 }
 .detail-btn:hover,
-.detail-btn:focus { text-decoration: underline; }
+.detail-btn:focus { 
+  text-decoration: underline; 
+}
 
 /* ---------- Top-Right Overlay ----------------------------------------- */
 #globalOverlay {
   position: fixed;
   top: 10px;
-  right: 16px;
+  right: 200px;
   display: flex;
-  flex-direction: row;             /* 横並び */
+  flex-direction: row;
   gap: 12px;
   z-index: 9999999;
-  pointer-events: none;            /* パネル自体は無効 */
+  pointer-events: none;
 }
 .popup-btn {
-  pointer-events: auto;            /* ボタンは有効 */
-  padding: .3em .4em;              /* タップ余白 */
-  font-size: 1.3rem;               /* 絵文字サイズ */
+  pointer-events: auto;
+  padding: 0.3em 0.4em;
+  font-size: 1.3rem;
   line-height: 1;
 }
 
-/* ---------- Hero Section ---------------------------------------------- */
-/* 1) セクションを「縦積み」にし、ポスターを最初に全面表示 */
-.hero-section {
-  flex-direction: column;          /* ポスター→情報の順に縦並び */
-  align-items: stretch;            /* ポスターを横いっぱいに */
-  margin-bottom: 40px;
+/* ---------- Work Card ------------------------------------------------- */
+.work-card {
+  background: #000;
+  color: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* サムネイル画像・動画 */
+.thumbnail-wrapper {
   position: relative;
-}
-
-/* 2) ポスターラッパーを幅 100 % に */
-.hero-poster-wrapper { width: 100%; }
-
-/* 3) ポスターを画面いっぱいに拡大 */
-.hero-poster {
   width: 100%;
-  height: 60vh;                    /* 画面高の 60 %（好みで調整） */
-  max-height: 720px;               /* 超ワイド画面での上限 */
-  object-fit: cover;               /* はみ出し部分をトリミング */
-  border-radius: 0;                /* 角丸不要なら 0 に */
+  max-width: 900px;
+  margin: 0 auto;
+  padding-top: 56.25%; /* 16:9 */
+  overflow: hidden;
+  background: #111;
+}
+.static-image, 
+.hover-video {
+  position: absolute;
+  inset: 0; /* top:0; right:0; bottom:0; left:0; */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hover-video.hidden {
+  display: none;
 }
 
+/* ---------- Hero Info ------------------------------------------------- */
 .hero-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  text-align: left;                /* モバイルでも左寄せ */
+  background: #000;
+  margin-top: 12px;
 }
 .work-title {
   font-size: 1.8rem;
-  margin: 0;
+  margin: 0 0 8px;
 }
 
 /* ---------- Episode Section ------------------------------------------- */
+.episode-section {
+  background: #000;
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 0 12px;
+}
 .episode-section h2 {
   font-size: 1.3rem;
   margin: 0 0 1rem;
@@ -121,158 +148,34 @@
   padding: 12px;
   margin-bottom: 12px;
 }
-.episode-thumb-wrapper { flex: 0 0 auto; }
+.episode-thumb-wrapper { 
+  flex: 0 0 auto; 
+}
 .episode-video {
   width: 100%;
-  max-width: 640px;    /* サムネと同じ幅 */
-  aspect-ratio: 16/9;  /* 高さ自動計算で比率保持 */
+  max-width: 640px;
+  aspect-ratio: 16/9; 
   object-fit: cover;
   border-radius: 6px;
 }
-.episode-info { flex: 1; }
+.episode-info { 
+  flex: 1; 
+}
 .episode-info h3 {
   margin: 0 0 6px;
   font-size: 1rem;
 }
 
-/* ---------- Responsive ------------------------------------------------- */
+/* ---------- Responsive (Optional) -------------------------------------- */
 @media (max-width: 768px) {
-  .hero-section {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  .hero-poster { width: 90%; max-width: 340px; }
-
   .episode-card {
     flex-direction: column;
     align-items: center;
   }
-  .episode-video { max-width: 340px; }
-  .episode-info { text-align: center; }
-}
-
-@media (min-width: 1024px) {
-  .episode-video { max-width: 400px; }
-}
-
-/* ---------- Mobile “Phone Frame” -------------------------------------- */
-.phone-frame {
-  width: 390px;
-  height: 844px;
-  margin: 0 auto;
-  border-radius: 30px;
-  background: #000;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, .5);
-}
-.phone-notch {
-  position: absolute;
-  top: 0; left: 50%;
-  width: 160px; height: 30px;
-  background: #000;
-  border-radius: 0 0 14px 14px;
-  transform: translateX(-50%);
-}
-.phone-screen {
-  position: absolute;
-  inset: 40px 0 0 0;               /* shorthand for top/right/bottom/left */
-  overflow-y: auto;
-  padding: 12px;
-  background: #111;
-  color: #fff;
-}
-
-/* ---------- Mobile-specific Cards ------------------------------------- */
-.mobile-hero { text-align: center; margin-bottom: 20px; }
-.mobile-hero-poster {
-  width: 100%;
-  border-radius: 12px;
-  object-fit: cover;
-}
-.mobile-hero-info { margin-top: 8px; color: #ccc; }
-.mobile-work-title { margin: 0; font-size: 1.3rem; }
-
-.mobile-episode-section h3 {
-  margin: 0 0 10px;
-  font-size: 1.1rem;
-}
-.mobile-episode-card {
-  display: flex;
-  gap: 10px;
-  background: #222;
-  border-radius: 6px;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-.mobile-episode-thumb {
-  width: 100px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 4px;
-}
-.mobile-episode-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  color: #ccc;
-}
-.mobile-episode-info h4 {
-  margin: 0 0 6px;
-  font-size: 1rem;
-  color: #fff;
-}
-.mobile-ep-desc { font-size: .9rem; color: #ddd; }
-
-/* ======================================================================
-   🔧 強制リセット：青い背景を完全に無効化する
-   ====================================================================== */
-   .popup-btn,
-   .detail-btn,
-   #toggleDetailBtn,
-   #toggleDeviceBtn,
-   #popupEditBtn {
-     background: transparent !important;
-     background-color: transparent !important;
-     border: none !important;
-     box-shadow: none !important;      /* 万一シャドウ指定があっても消す */
-   }
-   
-   .thumbnail-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 900px;     /* 必要に応じて最大幅を決める (例:640px) */
-    margin: 0 auto;       /* 中央寄せ */
-    padding-top: 56.25%;  /* 16:9 = 9/16 = 0.5625 → 56.25% */
-    overflow: hidden;
-    background: #111;
+  .episode-video { 
+    max-width: 340px; 
   }
-  
-  .static-image, .hover-video {
-    position: absolute;
-    inset: 0; /* top:0; right:0; bottom:0; left:0; */
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .episode-info { 
+    text-align: center; 
   }
-  .hidden {
-    display: none;
-  }
-  .work-card {
-    background: #000;  /* または #111 など */
-    color: #fff;
-    padding: 16px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-  .hero-info {
-    background: #000;  /* 必要であれば */
-  }
-  .episode-section {
-    background: #000;
-    max-width: 900px;  /* 例: サムネと同じ幅に合わせる */
-    margin: 24px auto; /* 上下マージン24px, 中央寄せ */
-    padding: 0 12px;   /* 端の余白を少し */
-  }
+}
