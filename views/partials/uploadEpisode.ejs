@@ -1,18 +1,20 @@
 <!-- uploadEpisode.ejs -->
-<!-- ページ見出し: 大きくエピソード追加を明示 -->
+
 <div class="page-header">
-  <h1 class="main-title">エピソード追加ページ</h1>
-  <p class="sub-info">
-    ここでは作品にエピソードを追加できます。<br>
-    <strong>あらすじ以外はすべて必須</strong> なのでご注意ください。
-  </p>
+  <h1 class="main-title">エピソードを追加</h1>
 </div>
+
+<!-- ★ 追加成功のメッセージ表示 -->
+<% if (created) { %>
+  <div class="alert alert-success">
+    新しいエピソードを追加しました。さらに追加する場合は下記フォームで続けて登録してください。
+  </div>
+<% } %>
 
 <div class="page-container"><!-- 2カラムレイアウト -->
 
   <!-- === 左カラム：フォーム === -->
   <div class="episode-form">
-    <!-- セクション見出しを入れてもOK -->
     <h2>新しいエピソードを追加する</h2>
     <p class="section-desc">
       動画ファイル、エピソードタイトル、時間、価格などを入力してください。<br>
@@ -25,50 +27,57 @@
           method="POST" 
           enctype="multipart/form-data">
 
-      <!-- 1) 動画ファイル (必須化) -->
+      <!-- 1) 動画ファイル -->
       <div id="mainDrop" class="drop-full">
         <div class="drop-message">
           <div class="drop-icon">⬆</div>
           <p>ここに動画ファイルをドラッグ＆ドロップ<br>またはクリックしてファイルを選択</p>
         </div>
-        <!-- ★ 'required' を付与 -->
         <input type="file" id="contentFile" name="contentFile" hidden accept="video/*" required>
       </div>
 
-      <!-- 2) 詳細入力 (最初は非表示、動画を選んだら表示) -->
+      <!-- 2) 詳細入力 -->
       <div id="details" class="details hidden">
         <div class="ep-form">
 
-          <!-- (必須) エピソードタイトル -->
+          <!-- エピソードタイトル(必須) -->
           <div class="form-group">
             <label for="title">エピソードタイトル <span style="color: red;">*</span></label>
             <input type="text" id="title" name="title" required>
           </div>
 
-          <!-- (任意) あらすじ -->
+          <!-- あらすじ(任意) -->
           <div class="form-group">
             <label for="description">あらすじ(任意)</label>
             <textarea id="description" name="description" rows="3"></textarea>
           </div>
 
-          <!-- (必須) 動画時間 -->
-          <div class="form-group" style="display: none;"><!-- 非表示 -->
+          <!-- 動画時間(分) -->
+          <!-- 必須だけど表示を隠している例(ご要望に合わせて処理) -->
+          <div class="form-group" style="display: none;">
             <label for="duration">動画時間（分）</label>
             <input type="number" id="duration" name="duration" min="0" placeholder="例: 24" required>
           </div>
 
-          <!-- (必須) 価格 -->
+          <!-- 価格(必須) -->
           <div class="form-group">
             <label for="price">価格（円） <span style="color:red;">*</span></label>
             <input type="number" id="price" name="price" min="0" placeholder="0 で無料" required>
           </div>
-          
+
+          <!-- (オプション) 手動でエピソード番号を指定したい時 -->
+          <!-- 空の場合は自動で「最後の +1」になります -->
+          <div class="form-group">
+            <label for="episodeNumber">エピソード番号(任意)</label>
+            <input type="number" id="episodeNumber" name="episodeNumber" placeholder="未入力なら自動で最後尾">
+          </div>
 
         </div><!-- /.ep-form -->
       </div><!-- /#details -->
 
       <!-- 3) 送信ボタン -->
       <button type="submit" class="btn-primary">エピソードを保存</button>
+
     </form>
   </div><!-- /.episode-form -->
 
@@ -78,7 +87,7 @@
     <div class="preview-phone-frame">
       <div class="preview-phone-screen">
         
-        <!-- ▼ 作品のサムネイル (前画面で決定した画像) 16:9推奨 -->
+        <!-- ▼ 作品のサムネイル -->
         <div class="preview-thumbnail-wrapper">
           <% if (work.thumbnailUrl) { %>
             <img 
@@ -97,7 +106,6 @@
           <button type="button" id="toggleExtra" class="extra-toggle-btn">詳細</button>
         </div>
 
-        <!-- 公開年 + レーティング + キャスト / スタジオ -->
         <dl id="previewExtra" class="preview-extra hidden">
           <dd class="year-label">
             <%= work.releaseDate && work.releaseDate.trim() !== '' 
@@ -133,6 +141,22 @@
   </aside><!-- /preview-pane -->
 
 </div><!-- /.page-container -->
+
+
+<!-- ★ 追加済みのエピソード一覧を表示したい場合 -->
+<% if (episodes && episodes.length) { %>
+  <hr>
+  <h2>登録済みエピソード一覧</h2>
+  <ul>
+    <% episodes.forEach(ep => { %>
+      <li>
+        <strong>Ep <%= ep.episodeNumber %></strong> :
+        <%= ep.title %> /
+        <%= ep.price %>円
+      </li>
+    <% }) %>
+  </ul>
+<% } %>
 
 <!-- 既存のJSはそのまま -->
 <script src="/js/uploadEpisode.js"></script>

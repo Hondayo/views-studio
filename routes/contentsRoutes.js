@@ -90,28 +90,49 @@ router.post('/works',
 
 /** 作品編集フォーム */
 router.get('/works/:id/edit', asyncHandler(async (req, res) => {
-  const work     = await Work.findById(req.params.id);
-  const episodes = await Episode.find({ workId: work._id }).sort({ episodeNumber: 1 });
+  const work = await Work.findById(req.params.id);
+  if (!work) return res.status(404).send('作品が見つかりません');
 
+  // workEdit.ejs を表示
   res.render('partials/workEdit', {
-    layout: 'layout', title: '作品を編集', pageStyle: 'workDetail', pageScript: 'workDetail',
-    bodyClass: 'dark edit-mode', work, episodes
+    layout: 'layout',  // レイアウトを使う場合
+    title : '作品を編集',
+    work
   });
 }));
 
 /** 作品更新 */
-router.put('/works/:id', upload.single('thumbnail'), asyncHandler(async (req, res) => {
-  const { title, description, category, tags } = req.body;
-  const update = { title, description, category, tags: parseTags(tags) };
+router.put('/works/:id', 
+  upload.fields([
+    { name: 'thumbnail', maxCount: 1 },
+    { name: 'thumbnailVideo', maxCount: 1 }
+  ]),
+  asyncHandler(async (req, res) => {
+    // bodyから title / releaseDate / rating / cast / studio / tags などを取得
+    const { title, releaseDate, rating, cast, studio, tags } = req.body;
 
-  if (req.file) {
-    const { secure_url } = await uploadToCloudinary(req.file, 'thumbnails');
-    update.thumbnailUrl = secure_url;
-  }
+    const update = { title, releaseDate, rating, cast, studio, tags: parseTags(tags) };
 
-  await Work.findByIdAndUpdate(req.params.id, update);
-  res.redirect('/contents');
-}));
+    // 新しいサムネイル画像アップロード
+    if (req.files?.thumbnail?.[0]) {
+      const thumbRes = await uploadToCloudinary(req.files.thumbnail[0], 'thumbnails');
+      update.thumbnailUrl = thumbRes.secure_url;
+    }
+
+    // 新しいサムネイル動画アップロード
+    if (req.files?.thumbnailVideo?.[0]) {
+      const vidRes = await uploadToCloudinary(req.files.thumbnailVideo[0], 'thumbnails');
+      update.thumbnailVideoUrl = vidRes.secure_url;
+    }
+
+    // DBを更新
+    await Work.findByIdAndUpdate(req.params.id, update);
+
+    // 完了後、作品詳細ページへリダイレクト
+    res.redirect(`/works/${req.params.id}`);
+  })
+);
+
 
 /** 作品ページ */
 router.get('/works/:id', asyncHandler(async (req, res) => {
@@ -163,41 +184,71 @@ router.delete('/works/:id', asyncHandler(async (req, res) => {
 }));
 
 /* ========== Episode routes ========== */
-
 /** アップロードフォーム */
 router.get('/works/:id/episodes/video', asyncHandler(async (req, res) => {
   const work = await Work.findById(req.params.id);
   if (!work) return res.status(404).send('作品が見つかりません');
 
+  // 追加済みエピソードを取得して、テンプレートに表示してもOK
+  const episodes = await Episode.find({ workId: work._id }).sort({ episodeNumber: 1 });
+
+  // ?created=1 が付いていればフラグを立てる
+  const { created } = req.query;
+
   res.render('partials/uploadEpisode', {
-    layout: 'layout', title: 'エピソードアップロード', pageStyle: 'episodeUpload', bodyClass: 'dark', work
+    layout: 'layout',
+    title: 'エピソードアップロード',
+    pageStyle: 'episodeUpload',
+    bodyClass: 'dark',
+    work,
+    episodes,
+    created,
   });
 }));
 
+
 /** エピソード作成 */
-router.post('/works/:id/episodes', upload.single('contentFile'), asyncHandler(async (req, res) => {
-  const { title, episodeNumber, description, duration } = req.body;
-  const price  = parseInt(req.body.price, 10) || 0;
-  const isPaid = price > 0;
+router.post('/works/:id/episodes',
+  upload.single('contentFile'),
+  asyncHandler(async (req, res) => {
+    const { title, episodeNumber, description, duration } = req.body;
+    const price  = parseInt(req.body.price, 10) || 0;
+    const isPaid = price > 0;
 
-  // episodeNumber が空なら "最後の +1"
-  const givenNum = parseInt(episodeNumber, 10);
-  const epNum = Number.isNaN(givenNum)
-    ? (await Episode.findOne({ workId: req.params.id }).sort({ episodeNumber: -1 }).lean())?.episodeNumber + 1 || 1
-    : givenNum;
+    // episodeNumber が空なら「最後の +1」とする
+    const workId = req.params.id;
+    let epNum = parseInt(episodeNumber, 10);
+    if (Number.isNaN(epNum)) {
+      const lastEp = await Episode.findOne({ workId }).sort({ episodeNumber: -1 }).lean();
+      epNum = lastEp?.episodeNumber ? lastEp.episodeNumber + 1 : 1;
+    }
 
-  if (!req.file) return res.status(400).send('ファイルが選択されていません');
+    // ファイル必須
+    if (!req.file) {
+      return res.status(400).send('動画ファイルが選択されていません');
+    }
 
-  const { secure_url, resource_type } = await uploadToCloudinary(req.file, 'episodes');
+    // Cloudinaryアップロード
+    const { secure_url, resource_type } = await uploadToCloudinary(req.file, 'episodes');
 
-  await new Episode({
-    workId: req.params.id, title, episodeNumber: epNum, description,
-    contentType: resource_type, cloudinaryUrl: secure_url,
-    price, isPaid, duration: parseInt(duration, 10) || 0
-  }).save();
+    // DB 保存
+    await new Episode({
+      workId,
+      title,
+      episodeNumber: epNum,
+      description,
+      contentType: resource_type, // 'video' or 'image'
+      cloudinaryUrl: secure_url,
+      price,
+      isPaid,
+      duration: parseInt(duration, 10) || 0,
+    }).save();
 
-  res.redirect(`/works/${req.params.id}`);
-}));
+    // 追加後は同じ画面へ戻り、?created=1 で「追加成功」メッセージ表示
+    res.redirect(`/works/${workId}/episodes/video?created=1`);
+  })
+);
+
 
 
 /* ========== Dashboard & Home ========== */
@@ -228,5 +279,22 @@ router.get('/admin', async (_req, res) => {
     episodesByWork
   });
 });
+
+// 作品検索API
+router.get('/api/works', async (req, res) => {
+  const q = req.query.q || '';
+  const works = await Work.find({
+    isDraft: false,
+    title: { $regex: new RegExp(q, 'i') }
+  });
+  res.json(works);
+});
+
+// 指定作品のエピソード一覧
+router.get('/api/works/:id/episodes', async (req, res) => {
+  const episodes = await Episode.find({ workId: req.params.id });
+  res.json(episodes);
+});
+
 
 module.exports = router; 

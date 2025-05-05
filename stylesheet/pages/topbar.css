@@ -31,3 +31,24 @@
   /* トップバーの下にコンテンツを押し下げる */
   .page-layout { margin-top: 56px; }
   
+  /* 既存の .topbar, .brand-name などはそのまま */
+
+  .new-work-btn {
+    margin-left: auto;            /* 右端に押し出す */
+    background: var(--accent, #ffffff);
+    color: #040404;
+    padding: 8px 18px;            /* 少し大きめに */
+    font-size: 16px;              /* ← 文字サイズUP */
+    font-weight: 700;             /* ← 太字 */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;        /* 下線なし */
+    transition: background .2s;
+  }
+  
+  .new-work-btn:hover,
+  .new-work-btn:focus {
+    background: var(--accent-dark, #a8a8a8);
+  }
+  

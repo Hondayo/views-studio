@@ -8,6 +8,7 @@ const methodOverride  = require('method-override');
 const Work    = require('./models/Work');
 const Episode = require('./models/Episode');
 const contentsRoutes = require('./routes/contentsRoutes');
+const shortsRoutes = require('./routes/shortsRoutes');
 
 const app = express();
 
@@ -33,6 +34,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 /* ---------- ルート ---------- */
 app.use('/', contentsRoutes);
+app.use('/shorts', shortsRoutes);
 
 /* ホームだけ直書き */
 app.get('/', async (req, res) => {

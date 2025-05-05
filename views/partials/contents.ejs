@@ -1,26 +1,27 @@
-<!-- =============================================
-  contents.ejs  (カード一覧 + 3‑dot menu popup)
-  ============================================= -->
-  <link rel="stylesheet" href="/stylesheet/pages/contents.css">
-  <script src="/js/contents.js" defer></script>
-  
-  <h1 class="page-title">あなたのコンテンツ</h1>
-  
-  <div class="works-grid">
-    <% works.forEach(work => { %>
-      <div class="work-card" data-work-id="<%= work._id %>">
-        <a href="/works/<%= work._id %>" class="card-link">
-          <img src="<%= work.thumbnailUrl || '/default-thumb.jpg' %>" alt="thumbnail">
-          <h3 class="title"><%= work.title %></h3>
-        </a>
-  
-        <!-- 3‑dot button -->
-        <button class="menu-btn" aria-label="メニュー">⋮</button>
-  
-        <!-- popup menu -->
-        <div class="card-menu">
-          <button type="button" class="menu-delete">削除する</button>
-        </div>
+<link rel="stylesheet" href="/stylesheet/pages/contents.css">
+<script src="/js/contents.js" defer></script>
+
+<h1 class="page-title">あなたのコンテンツ</h1>
+
+<div class="works-grid">
+  <% works.forEach(work => { %>
+    <div class="work-card" data-work-id="<%= work._id %>">
+      <a href="/works/<%= work._id %>" class="card-link">
+        <img 
+          src="<%= work.thumbnailUrl || '/default-thumb.jpg' %>" 
+          alt="thumbnail" 
+          class="work-thumbnail"
+        >
+        <h3 class="title"><%= work.title %></h3>
+      </a>
+
+      <!-- 3‑dot button -->
+      <button class="menu-btn" aria-label="メニュー">⋮</button>
+
+      <!-- popup menu -->
+      <div class="card-menu">
+        <button type="button" class="menu-delete">削除する</button>
       </div>
-    <% }) %>
-  </div>
+    </div>
+  <% }) %>
+</div>

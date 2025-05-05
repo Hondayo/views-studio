@@ -179,3 +179,7 @@
     text-align: center; 
   }
 }
+
+#popupEditBtn {
+  color: #000000; /* 好きな色に変える */
+}

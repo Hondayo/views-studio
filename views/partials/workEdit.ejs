@@ -1,0 +1,241 @@
+<!-- views/partials/workEdit.ejs -->
+
+<!-- ページ見出しエリア -->
+<header class="page-header">
+    <h1 class="main-title">作品を編集する</h1>
+    <p class="sub-info">
+      既に公開している作品情報を修正できます。<br>
+      必要事項を修正したら、右側のプレビューで最終確認をしましょう！
+    </p>
+  </header>
+  
+  <!-- 2カラムのメインコンテンツ -->
+  <div class="page-container">
+    <!-- ===== 左：編集フォーム ===== -->
+    <section class="form-section">
+      <h2 class="section-title">作品情報の修正</h2>
+      <p class="section-desc">
+        タイトルや公開年、レーティング、サムネイルを変更したい場合はこちらから。
+      </p>
+  
+      <form
+        id="editWorkForm"
+        class="wizard-container work-form"
+        action="/works/<%= work._id %>?_method=PUT"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <!-- サムネイル画像 -->
+        <div class="form-group thumb-group">
+          <label class="label-title" for="thumbnail">
+            サムネイル画像 <span class="required">*</span>
+          </label>
+  
+          <!-- 非表示のファイル選択 -->
+          <input
+            type="file"
+            id="thumbnail"
+            name="thumbnail"
+            accept="image/*"
+            style="display: none;"
+          >
+  
+          <!-- カスタムボタン & 選択中ファイル表示 -->
+          <button
+            type="button"
+            id="thumbnailSelectBtn"
+            class="btn-select-file"
+          >ファイル選択</button>
+  
+          <span id="thumbnailFileName" class="file-name-label">
+            <%= work.thumbnailUrl ? "現在設定: " + work.thumbnailUrl.split('/').slice(-1)[0] : "未設定" %>
+          </span>
+  
+          <small class="help-text">
+            新しい画像をアップロードすると差し替えられます。（JPEG/PNG 等）
+          </small>
+        </div>
+  
+        <!-- サムネイル動画 -->
+        <div class="form-group thumb-group">
+          <label class="label-title" for="thumbnailVideo">
+            サムネイル動画（任意）
+          </label>
+  
+          <input
+            type="file"
+            id="thumbnailVideo"
+            name="thumbnailVideo"
+            accept="video/*"
+            style="display: none;"
+          >
+          <button
+            type="button"
+            id="thumbnailVideoSelectBtn"
+            class="btn-select-file"
+          >ファイル選択</button>
+  
+          <span id="thumbnailVideoFileName" class="file-name-label">
+            <%= work.thumbnailVideoUrl ? "現在設定: " + work.thumbnailVideoUrl.split('/').slice(-1)[0] : "未設定" %>
+          </span>
+  
+          <small class="help-text">
+            ホバープレビュー用の動画を差し替えたい場合はこちら。
+          </small>
+        </div>
+  
+        <!-- タイトル -->
+        <div class="form-group">
+          <label for="title" class="label-title">
+            タイトル <span class="required">*</span>
+          </label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            required
+            value="<%= work.title %>"
+          >
+        </div>
+  
+        <!-- 詳細情報 (レーティング/公開年/キャスト/制作会社) -->
+        <div class="form-group detail-group">
+          <details open>
+            <summary>詳細情報</summary>
+            <div class="detail-fields">
+              <!-- レーティング -->
+              <div class="form-subgroup">
+                <label for="rating">レーティング</label>
+                <select id="rating" name="rating">
+                  <option value="">-- 選択 --</option>
+                  <option value="G"     <%= work.rating==="G"     ? "selected" : "" %>     >G</option>
+                  <option value="PG-12" <%= work.rating==="PG-12" ? "selected" : "" %>    >PG-12</option>
+                  <option value="R15+"  <%= work.rating==="R15+"  ? "selected" : "" %>   >R15+</option>
+                  <option value="R18+"  <%= work.rating==="R18+"  ? "selected" : "" %>   >R18+</option>
+                </select>
+              </div>
+  
+              <!-- 公開年 -->
+              <div class="form-subgroup">
+                <label for="releaseDate">公開年</label>
+                <input
+                  type="text"
+                  id="releaseDate"
+                  name="releaseDate"
+                  placeholder="公開年 (数字のみ)"
+                  value="<%= work.releaseDate %>"
+                >
+              </div>
+  
+              <!-- キャスト -->
+              <div class="form-subgroup">
+                <label for="cast">キャスト (カンマ区切り)</label>
+                <input
+                  type="text"
+                  id="cast"
+                  name="cast"
+                  value="<%= work.cast %>"
+                >
+              </div>
+  
+              <!-- 制作会社 -->
+              <div class="form-subgroup">
+                <label for="studio">制作会社</label>
+                <input
+                  type="text"
+                  id="studio"
+                  name="studio"
+                  value="<%= work.studio %>"
+                >
+              </div>
+            </div>
+          </details>
+        </div>
+  
+        <!-- タグ -->
+        <div class="form-group">
+          <label for="tags" class="label-title">タグ (カンマ区切り)</label>
+          <input
+            type="text"
+            id="tags"
+            name="tags"
+            value="<%= (work.tags || []).join(',') %>"
+          >
+        </div>
+  
+        <!-- 保存ボタン -->
+        <button
+          type="submit"
+          class="btn-primary w-full"
+          id="saveButton"
+        >変更を保存</button>
+      </form>
+    </section>
+  
+    <!-- ===== 右：プレビュー ===== -->
+    <aside class="preview-pane">
+      <h2 class="section-title">プレビュー</h2>
+      <p class="section-desc">
+        修正内容がどのように表示されるかリアルタイムで確認できます。
+      </p>
+      <div class="preview-phone-frame">
+        <div class="preview-phone-screen">
+          
+          <!-- プレビュー：サムネイル画像 / 動画 -->
+          <div class="preview-thumbnail-wrapper" id="previewWrapper">
+            <img
+              id="previewImage"
+              class="preview-thumbnail"
+              src="<%= work.thumbnailUrl || '' %>"
+              alt=""
+            >
+            <!-- もし未設定ならオーバーレイ表示 -->
+            <% if (!work.thumbnailUrl) { %>
+              <div id="placeholderOverlay" class="placeholder-overlay">
+                サムネイルを追加する
+              </div>
+            <% } else { %>
+              <div id="placeholderOverlay" class="placeholder-overlay hidden">
+                サムネイルを追加する
+              </div>
+            <% } %>
+  
+            <video
+              id="previewVideo"
+              class="preview-thumbnail hidden"
+              muted
+              preload="metadata"
+              playsinline
+            ></video>
+          </div>
+  
+          <!-- タイトル・詳細 -->
+          <div class="title-row">
+            <div class="preview-title" id="previewTitle"><%= work.title %></div>
+            <button type="button" id="toggleExtra" class="extra-toggle-btn">詳細</button>
+          </div>
+  
+          <dl id="previewExtra" class="preview-extra hidden">
+            <span id="previewYear" class="year-label <%= work.releaseDate ? '' : 'hidden' %>">
+              <%= work.releaseDate %>
+            </span>
+            <span id="previewRating" class="rating-badge <%= work.rating ? '' : 'hidden' %>">
+              <%= work.rating %>
+            </span>
+            <dt>キャスト</dt><dd id="previewCast"><%= work.cast || '-' %></dd>
+            <dt>制作</dt><dd id="previewStudio"><%= work.studio || '-' %></dd>
+          </dl>
+        </div>
+      </div>
+    </aside>
+  </div>
+  
+  <!-- 多重クリック防止のローディングオーバーレイ -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="spinner"></div>
+    <p>更新中...</p>
+  </div>
+  
+  <!-- 編集用JS -->
+  <script src="/js/workEdit.js"></script>
+  

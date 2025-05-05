@@ -1,12 +1,6 @@
-<!-- newWork.ejs -->
-
 <!-- ▼ ページ全体の見出しエリア ▼ -->
 <header class="page-header">
-  <h1 class="main-title">新規作品を公開しよう</h1>
-  <p class="sub-info">
-    ここでは、あなたの作品を投稿し、多くのユーザーに見てもらうことができます。<br>
-    必要事項を入力したら、右側のプレビューで最終チェックをしましょう！
-  </p>
+  <h1 class="main-title">新規作品を公開</h1>
 </header>
 
 <!-- ▼ メインコンテンツ ▼ -->
@@ -41,6 +35,13 @@
         <small class="help-text">
           作品を代表する画像をアップロードしてください。（JPEG, PNGなど）
         </small>
+      </div>
+      <!-- 進捗表示用のブロック -->
+      <div id="uploadProgress" class="upload-progress hidden">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+        <div class="progress-text" id="progressText">0%</div>
       </div>
 
       <!-- サムネイル動画 -->
@@ -124,14 +125,14 @@
         </small>
       </div>
 
-      <!-- 作品を公開ボタン -->
+      <!-- 作品を下書き or 公開ボタン -->
       <button type="submit" class="btn-primary w-full" id="publishButton">作品を公開</button>
     </form>
   </section>
 
   <!-- ===== 右：プレビュー ===== -->
   <aside class="preview-pane">
-    <h2 class="section-title">プレビュー（最終確認）</h2>
+    <h2 class="section-title">プレビュー</h2>
     <p class="section-desc">
       入力内容がどのように表示されるか、実際のサムネイル・タイトルなどを確認してください。
     </p>
@@ -139,8 +140,8 @@
       <div class="preview-phone-screen">
 
         <!-- サムネイル画像＆動画のプレビュー -->
-        <div class="preview-thumbnail-wrapper" id="previewWrapper">
-          <img id="previewImage" class="preview-thumbnail" src="" alt="">
+        <div class="preview-thumbnail-wrapper empty-thumb" id="previewWrapper">
+          <img id="previewImage" class="preview-thumbnail hidden" src="" alt="">
           <div id="placeholderOverlay" class="placeholder-overlay">
             サムネイルを追加する
           </div>

@@ -36,6 +36,7 @@ const workSchema = new mongoose.Schema({
   studio: {
     type: String
   },
+  isDraft: { type: Boolean, default: false },
 
   // ▼ 新しく追加したいフィールド
   //    (旧スキーマには無かったが、新たに使いたい項目)

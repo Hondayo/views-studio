@@ -1,36 +1,104 @@
-/*<!-- ================================================================
-   contents.css  (必要最小限のみ記述・他のスタイルは流用)
-   ================================================================= -->*/
+/* ========= 作品一覧のグリッドレイアウト ========== */
 .works-grid {
+  /* カードをゆったり配置できるように設定 */
   display: grid;
-  gap: 24px;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 32px; /* カード同士の余白を広めに */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   padding: 24px 0;
 }
 
-.work-card { position: relative; cursor: pointer; }
-.work-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; }
-.work-card .title { margin: 8px 0 0; font-size: 1rem; color: #fff; }
+/* ========= 各カードの見た目 ========== */
+.work-card {
+  position: relative;
+  cursor: pointer;
+  background-color: #2b2b2b;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+}
 
-/* 3‑dot button */
+.work-card:hover {
+  transform: translateY(-2px);
+}
+
+/* カード内リンクの装飾をリセット */
+.card-link {
+  display: block;
+  text-decoration: none;
+}
+
+/* ========= サムネイル ========== */
+.work-thumbnail {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+
+/* ========= タイトル ========== */
+.work-card .title {
+  margin: 16px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.4;
+}
+
+/* ========= 3‑dot ボタン ========== */
 .menu-btn {
-  position: absolute; top: 8px; right: 8px;
-  background: rgba(0,0,0,.6); color:#fff; border:none; border-radius:50%;
-  width:32px;height:32px; font-size:1.1rem; line-height:1; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.menu-btn:hover { background: rgba(0,0,0,.85); }
 
-/* popup menu */
-.card-menu {
-  position: absolute; top: 44px; right: 8px;
-  background:#222; border-radius:6px; display:none; flex-direction:column;
-  min-width: 100px; z-index:10; box-shadow:0 2px 6px rgba(0,0,0,.4);
+.menu-btn:hover {
+  background: rgba(0, 0, 0, 0.85);
 }
-.card-menu.open { display:flex; }
+
+/* ========= ポップアップメニュー ========== */
+.card-menu {
+  position: absolute;
+  top: 48px;
+  right: 12px;
+  background: #222;
+  border-radius: 6px;
+  display: none;
+  flex-direction: column;
+  min-width: 120px;
+  z-index: 10;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.card-menu.open {
+  display: flex;
+}
 
 .menu-delete {
-  background:none; border:none; color:#fff; font-size:.9rem; padding:8px 12px;
-  text-align:left; cursor:pointer; display:flex; align-items:center; gap:6px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 0.9rem;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
-.menu-delete:hover { background:#444; }
+
+.menu-delete:hover {
+  background: #444;
+}
