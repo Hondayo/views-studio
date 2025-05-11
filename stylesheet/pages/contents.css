@@ -7,7 +7,193 @@
   padding: 24px 0;
 }
 
+/* ========= メニューバー風タブ ========== */
+.menu-bar {
+  display: flex;
+  border-bottom: 2px solid #ececec;
+  margin-bottom: 24px;
+  background: #fff;
+}
+.menu-bar-btn {
+  flex: 1 1 0;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #222;
+  font-size: 1.05em;
+  font-weight: 600;
+  padding: 14px 0 10px 0;
+  cursor: pointer;
+  transition: border-color 0.18s, color 0.18s;
+}
+.menu-bar-btn.active {
+  border-bottom: 3px solid #111;
+  color: #111;
+  background: #fafafa;
+}
+
 /* ========= 各カードの見た目 ========== */
+.contents-epcard-main {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 20px;
+  width: 100%;
+  padding: 18px 0;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.contents-epcard-thumb {
+  flex: 0 0 140px;
+  max-width: 140px;
+  min-width: 140px; /* サムネイル画像と同じ幅に統一 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0;
+  overflow: hidden; /* 角丸を親要素にも適用したい場合 */
+  border-radius: 22px; /* サムネイルと同じ角丸 */
+}
+
+.contents-epcard-descblock {
+  flex: 2 1 0;
+  min-width: 160px;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: flex-start;
+  margin: 0 8px;
+}
+.contents-epcard-meta {
+  flex: 1.5 1 0; /* 横幅を広げる */
+  min-width: 200px;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 4px;
+  /* background: #f9f9f9; 削除で白背景に */
+  border-radius: 4px;
+  padding: 12px 12px;
+  font-size: 0.95em;
+  color: #222;
+  text-align: left;
+  margin-left: -36px;
+}
+
+.contents-epcard-title {
+  font-weight: bold;
+  margin-bottom: 2px;
+  font-size: 1.06em;
+  color: #222;
+  white-space: normal;
+}
+.contents-epcard-lead-work, .contents-epcard-lead-episode {
+  display: block;
+  margin-top: 1px;
+  color: #111;
+  text-align: left;
+  width: 100%;
+}
+.contents-epcard-actions {
+  flex: 0 0 25%;
+  min-width: 180px;
+  max-width: 320px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;      /* 上下中央揃え */
+  justify-content: center;  /* 横中央揃え */
+  gap: 32px;                /* ボタン間の余白を調整 */
+  margin-left: 0;
+  padding-right: 0;
+}
+
+/* アクションボタンの高さ・幅・中央揃え */
+.contents-epcard-actions > a,
+.contents-epcard-actions > form > button {
+  height: 48px;
+  width: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border-radius: 8px;
+  padding: 0;
+  box-sizing: border-box;
+  transition: background 0.18s;
+}
+
+.contents-epcard-actions img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+
+
+
+.contents-epcard-video {
+  width: 100%;
+  aspect-ratio: 16 / 9; /* 16:9の比率で統一（必要に応じて） */
+  height: auto;         /* 高さは比率で自動計算 */
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+
+
+
+
+.contents-epcard-desc {
+  margin-top: 20px;
+  font-size: 1em;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.epcard-tags {
+  margin-top: 2px;
+}
+.epcard-tag {
+  margin-right: 6px;
+  color: #1976d2;
+  font-weight: bold;
+  font-size: 0.95em;
+}
+
+
+.contents-epcard-leadblock {
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin: 0 8px;
+  gap: 6px;
+  color: #333;
+}
+
+.contents-epcard-lead {
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #000000;
+  font-size: 1.06em;
+}
+
+
+.contents-epcard-lead-meta {
+  font-size: 0.97em;
+  color: #666;
+  margin-top: 2px;
+}
+
+
+
+
 .work-card {
   position: relative;
   cursor: pointer;
@@ -48,8 +234,8 @@
 /* ========= 3‑dot ボタン ========== */
 .menu-btn {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 8px;   /* サムネイル内での余白を調整 */
+  right: 8px;
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
   border: none;
@@ -62,8 +248,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2; /* サムネイル画像の上に出す */
 }
-
 .menu-btn:hover {
   background: rgba(0, 0, 0, 0.85);
 }
@@ -86,19 +272,40 @@
   display: flex;
 }
 
-.menu-delete {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 0.9rem;
-  padding: 10px 12px;
-  text-align: left;
+.delete-btn {
+  background: rgb(15, 11, 11); 
+  color: #f44336;
   cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
   display: flex;
   align-items: center;
-  gap: 6px;
+  margin-top: 0;
+  font-weight: bold;
+  transition: background 0.18s, color 0.18s;
 }
 
-.menu-delete:hover {
-  background: #444;
+.delete-btn:hover,
+.delete-btn:active,
+.delete-btn:focus {
+  background: #f44336;
+  color: #fff;
+}
+
+.delete-clip-btn {
+  background: #ffffff;
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none; /* ← これを追加 */
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  transition: background 0.18s, color 0.18s;
+}
+.delete-clip-btn:hover,
+.delete-clip-btn:active,
+.delete-clip-btn:focus {
+  color: #fff;
 }

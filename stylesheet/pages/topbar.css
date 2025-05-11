@@ -30,25 +30,106 @@
   
   /* トップバーの下にコンテンツを押し下げる */
   .page-layout { margin-top: 56px; }
-  
-  /* 既存の .topbar, .brand-name などはそのまま */
 
-  .new-work-btn {
-    margin-left: auto;            /* 右端に押し出す */
-    background: var(--accent, #ffffff);
-    color: #040404;
-    padding: 8px 18px;            /* 少し大きめに */
-    font-size: 16px;              /* ← 文字サイズUP */
-    font-weight: 700;             /* ← 太字 */
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;        /* 下線なし */
-    transition: background .2s;
-  }
-  
-  .new-work-btn:hover,
-  .new-work-btn:focus {
-    background: var(--accent-dark, #a8a8a8);
-  }
-  
+/* ▼ 作成ボタンとメニューの追加スタイル ▼ */
+.topbar-create-container {
+  position: relative;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.topbar-create-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent, #fff);
+  color: #040404;
+  padding: 8px 18px;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.topbar-create-btn:hover,
+.topbar-create-btn:focus {
+  background: var(--accent-dark, #e0e0e0);
+}
+
+.topbar-create-icon {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+}
+
+.topbar-create-menu {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+  min-width: 180px;
+  z-index: 1100;
+  display: none;
+  flex-direction: column;
+  padding: 8px 0;
+  animation: fadeInMenu 0.18s;
+}
+.topbar-create-menu.open {
+  display: flex;
+}
+@keyframes fadeInMenu {
+  0% { opacity: 0; transform: translateY(-12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.topbar-create-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  color: #222;
+  font-size: 1rem;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.topbar-create-menu-item:hover,
+.topbar-create-menu-item:focus {
+  background: #f3f4f6;
+}
+.topbar-create-menu-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+/* ▲ 作成ボタンとメニューの追加スタイル ▲ */
+
+/* 既存の .topbar, .brand-name などはそのまま */
+
+/* --- 旧 .new-work-btn は未使用のため残すが非推奨 --- */
+.new-work-btn {
+  margin-left: auto;
+  background: var(--accent, #ffffff);
+  color: #040404;
+  padding: 8px 18px;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .2s;
+}
+.new-work-btn:hover,
+.new-work-btn:focus {
+  background: var(--accent-dark, #a8a8a8);
+}

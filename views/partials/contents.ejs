@@ -1,27 +1,104 @@
 <link rel="stylesheet" href="/stylesheet/pages/contents.css">
 <script src="/js/contents.js" defer></script>
 
-<h1 class="page-title">あなたのコンテンツ</h1>
+<h1 class="page-title">コンテンツ</h1>
 
-<div class="works-grid">
-  <% works.forEach(work => { %>
-    <div class="work-card" data-work-id="<%= work._id %>">
-      <a href="/works/<%= work._id %>" class="card-link">
-        <img 
-          src="<%= work.thumbnailUrl || '/default-thumb.jpg' %>" 
-          alt="thumbnail" 
-          class="work-thumbnail"
-        >
-        <h3 class="title"><%= work.title %></h3>
-      </a>
-
-      <!-- 3‑dot button -->
-      <button class="menu-btn" aria-label="メニュー">⋮</button>
-
-      <!-- popup menu -->
-      <div class="card-menu">
-        <button type="button" class="menu-delete">削除する</button>
-      </div>
-    </div>
-  <% }) %>
+<div class="menu-bar">
+  <button class="menu-bar-btn active" id="tab-works">有料コンテンツ</button>
+  <button class="menu-bar-btn" id="tab-shorts">切り抜き</button>
 </div>
+
+<div id="works-section" class="tab-section">
+  <div class="works-grid">
+    <% works.forEach(work => { %>
+      <div class="work-card" data-work-id="<%= work._id %>">
+        <a href="/works/<%= work._id %>" class="card-link">
+          <img 
+            src="<%= work.thumbnailUrl || '/default-thumb.jpg' %>" 
+            alt="thumbnail" 
+            class="work-thumbnail"
+          >
+          <h3 class="title"><%= work.title %></h3>
+        </a>
+        <button class="menu-btn" aria-label="メニュー">⋮</button>
+        <div class="card-menu">
+          <button type="button" class="delete-btn epcard-action-with-tooltip">削除する</button>
+        </div>
+      </div>
+    <% }) %>
+    <% if (!works || works.length === 0) { %>
+      <p>有料コンテンツがありません。</p>
+    <% } %>
+  </div>
+</div>
+
+<div id="shorts-section" class="tab-section" style="display:none;">
+  <div class="contents-epcard-list">
+    <% shorts.forEach(short => { %>
+      <div class="contents-epcard-card" data-short-id="<%= short._id %>">
+
+        <div class="contents-epcard-main">
+          <div class="contents-epcard-thumb">
+            <video src="<%= short.cloudinaryUrl %>" class="contents-epcard-video" preload="metadata" muted playsinline tabindex="-1"></video>
+          </div>
+          <div class="contents-epcard-descblock">
+            <% if (short.description) { %>
+              <div class="contents-epcard-desc"><%= short.description %></div>
+            <% } %>
+            <% if (short.tags && short.tags.length) { %>
+              <div class="contents-epcard-tags">
+                <% short.tags.forEach(tag => { %>
+                  <span class="contents-epcard-tag">#<%= tag %></span>
+                <% }) %>
+              </div>
+            <% } %>
+          </div>
+          <div class="contents-epcard-meta">
+            <div class="contents-epcard-lead">リード先</div>
+            <div class="contents-epcard-lead-work">作品: <%= short.title || '-' %></div>
+            <div class="contents-epcard-lead-episode">エピソード: <%= short.episodeTitle || '-' %></div>
+          </div>
+          <div class="contents-epcard-actions">
+            <a href="/shorts/<%= short._id %>/edit" class="edit-btn epcard-action-with-tooltip" title="編集">
+              <img src="https://img.icons8.com/?size=100&id=15049&format=png&color=000000" alt="編集" width="24" height="24" />
+              <span class="epcard-tooltip">編集</span>
+            </a>
+            <a href="/shorts/<%= short._id %>/analytics" class="analytics-btn epcard-action-with-tooltip" title="分析">
+              <img src="https://img.icons8.com/?size=100&id=98067&format=png&color=000000" alt="分析" width="24" height="24" />
+              <span class="epcard-tooltip">分析</span>
+            </a>    
+            <form action="/shorts/<%= short._id %>?_method=DELETE" method="POST" style="display:inline;">
+              <button type="submit" class="delete-clip-btn epcard-action-with-tooltip" title="削除" onclick="return confirm('本当に削除しますか？');">
+                <img src="https://img.icons8.com/?size=100&id=84119&format=png&color=000000" alt="削除" width="24" height="24" />
+                <span class="epcard-tooltip">削除</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+    <% if (!shorts || shorts.length === 0) { %>
+      <p>切り抜きがありません。</p>
+    <% } %>
+  </div>
+</div>
+
+<script>
+  const tabWorks = document.getElementById('tab-works');
+  const tabShorts = document.getElementById('tab-shorts');
+  const worksSection = document.getElementById('works-section');
+  const shortsSection = document.getElementById('shorts-section');
+
+  tabWorks.addEventListener('click', () => {
+    tabWorks.classList.add('active');
+    tabShorts.classList.remove('active');
+    worksSection.style.display = '';
+    shortsSection.style.display = 'none';
+  });
+  tabShorts.addEventListener('click', () => {
+    tabShorts.classList.add('active');
+    tabWorks.classList.remove('active');
+    worksSection.style.display = 'none';
+    shortsSection.style.display = '';
+  });
+</script>

@@ -16,8 +16,23 @@
   <header class="topbar">
     <button id="topbar-toggle" class="topbar-toggle">≡</button>
     <span class="brand-name">Views&nbsp;Studio</span>
-    <a href="/shorts/new" class="new-work-btn">切り抜き投稿</a>
-    <a href="/works/new" class="new-work-btn">作品を公開</a>
+    <div class="topbar-create-container">
+      <button id="topbar-create-btn" class="topbar-create-btn">
+        <img src="https://img.icons8.com/?size=100&id=6697&format=png&color=000000" alt="作成アイコン" class="topbar-create-icon">
+        <span>作成</span>
+      </button>
+      <div id="topbar-create-menu" class="topbar-create-menu">
+        <a href="/works/new" class="topbar-create-menu-item">
+          <img src="https://img.icons8.com/?size=100&id=6697&format=png&color=000000" alt="作品を公開アイコン" class="topbar-create-menu-icon">
+          <span>作品を公開</span>
+        </a>
+        <a href="/shorts/new" class="topbar-create-menu-item topbar-create-menu-item-inline">
+          <img src="https://img.icons8.com/?size=100&id=2DpTOiab1whG&format=png&color=000000" alt="切り抜きを投稿アイコン" class="topbar-create-menu-icon">
+          <span style="margin-left: 6px;">切り抜きを投稿</span>
+        </a>
+      </div>
+    </div>
+
   </header>
 
   <div class="page-layout">
@@ -28,8 +43,8 @@
     </main>
   </div>
 
-  <script src="/js/sidebar.js"></script>
-  <script src="/js/topbar.js"></script> 
+  <script src="/js/topbar.js"></script>
+  <script src="/js/topbar-create.js"></script>
   <% if (typeof pageScript !== 'undefined') { %>
     <script src="/js/<%= pageScript %>.js"></script>
   <% } %>
