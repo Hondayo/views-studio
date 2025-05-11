@@ -1,4 +1,14 @@
 /* uplodeEpisode.js */
+// 秒数をhh:mm:ss形式に変換
+function formatDuration(totalSeconds) {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return [hours, minutes, seconds]
+    .map(v => String(v).padStart(2, '0'))
+    .join(':');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     /* --------------------------------------------------
      * A) 動画ファイル → サムネイル画像
@@ -60,44 +70,17 @@ document.addEventListener('DOMContentLoaded', () => {
         video.addEventListener('loadedmetadata', () => {
           video.currentTime = 0; // 先頭フレーム
         });
-        video.addEventListener('seeked', () => {
-          try {
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const dataURL = canvas.toDataURL('image/jpeg', 0.7);
-            resolve(dataURL);
-          } catch (e) {
-            reject(e);
-          }
-        });
-        video.onerror = err => reject(err);
-      });
-    }
-
-    function generateThumbnail(file) {
-      return new Promise((resolve, reject) => {
-        const video = document.createElement('video');
-        video.preload = 'metadata';
-        video.muted = true;
-        video.playsInline = true;
-        video.src = URL.createObjectURL(file);
     
         video.addEventListener('loadedmetadata', () => {
-          // 1) 合計秒数を取得
-          const totalSeconds = Math.floor(video.duration);
-          // 2) 分に変換
-          const minutes = Math.floor(totalSeconds / 60);
-    
-          // 3) フォームの input#duration にセット
-          const durIn = document.getElementById('duration');
-          durIn.value = minutes;
-    
-          // 4) プレビューを更新するため、既存の input イベントを発火させる
-          durIn.dispatchEvent(new Event('input'));
-    
+      // 1) 合計秒数を取得
+      const totalSeconds = Math.floor(video.duration);
+      // 2) 分単位に変換してセット（バックエンド保存仕様に合わせる）
+      const minutes = Math.round(totalSeconds / 60);
+      const durIn = document.getElementById('duration');
+      durIn.value = minutes;
+    });
+          // 5) 既存の input イベントを発火させる（他ロジック用）
+          if (durIn) durIn.dispatchEvent(new Event('input'));
           // 先頭フレームに移動 (サムネイル生成用)
           video.currentTime = 0;
         });
@@ -118,8 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         video.onerror = err => reject(err);
       });
     }
-    
-  
+
     /* --------------------------------------------------
      * B) タイトル + あらすじ → 2行まで表示 & 続きを見るトグル
      * -------------------------------------------------- */
@@ -176,8 +158,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewPrice    = document.getElementById('previewPrice');
   
     durIn.addEventListener('input', () => {
-      const val = durIn.valueAsNumber;
-      previewDuration.textContent = (val && val > 0) ? `${val}分` : '0分';
+      const val = durIn.value;
+      previewDuration.textContent = val || '00:00:00';
     });
     priceIn.addEventListener('input', () => {
       const val = priceIn.value.trim();
@@ -218,9 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
       updateCombinedText();
       durIn.dispatchEvent(new Event('input'));
       priceIn.dispatchEvent(new Event('input'));
-      // 「作品詳細」をリアルタイムで扱うならここで一度反映させる
-      // ratingSelect.dispatchEvent(new Event('change'));
     }
     init();
-  });
-  
+});
