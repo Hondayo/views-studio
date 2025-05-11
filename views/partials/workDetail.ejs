@@ -1,4 +1,5 @@
 <!-- 編集ボタンのオーバーレイ -->
+<!-- episodeCard.css is now merged into card.css and loaded via styles.css -->
 <div id="globalOverlay">
   <a id="popupEditBtn" href="/works/<%= work._id %>/edit" class="btn popup-btn">
     編集する
@@ -11,91 +12,80 @@
     <!-- デスクトップ表示領域 -->
     <div id="desktopView" class="desktop-view">
       
-      <div class="work-card">
-        <div class="thumbnail-wrapper">
-          <img 
-            src="<%= work.thumbnailUrl %>" 
-            alt="<%= work.title %>" 
-            class="static-image" 
-          />
-          <% if (work.thumbnailVideoUrl) { %>
-            <video 
-              src="<%= work.thumbnailVideoUrl %>"
-              muted
-              playsinline
-              preload="metadata"
-              class="hover-video hidden"
-            ></video>
-          <% } %>
-        </div>
-        
-        <div class="hero-info">
-          <h1 class="work-title"><%= work.title %></h1>
-          <button id="toggleDetailBtn" class="btn detail-btn">詳細を見る</button>
+      <div class="workdetail-header">
+  <img src="<%= work.thumbnailUrl %>" alt="<%= work.title %>" class="workdetail-thumb" />
+  <div class="workdetail-meta">
+    <div class="workdetail-title">
+      <%= work.title %>
+    </div>
+    <button id="toggleDetailBtn" class="btn detail-btn">作品の詳細</button>
+  </div>
+</div><!-- /.workdetail-header -->
 
-          <div id="detailArea" class="hidden">
-            <% if (work.releaseDate) { %>
-              <p>公開年: <%= work.releaseDate %></p>
-            <% } %>
-            <% if (work.rating) { %>
-              <p>レーティング: <%= work.rating %></p>
-            <% } %>
-            <% if (work.cast) { %>
-              <p>キャスト: <%= work.cast %></p>
-            <% } %>
-            <% if (work.studio) { %>
-              <p>制作会社: <%= work.studio %></p>
-            <% } %>
+      <section class="epcard-section">
+  <div class="epcard-section-header">
+    <h2>エピソード一覧</h2>
+    <a href="/works/<%= work._id %>/episodes/video" class="btn add-episode-btn">＋エピソード追加</a>
+  </div>
+  <% if (episodes && episodes.length > 0) { %>
+    <div class="epcard-list">
+      <% episodes.forEach((ep, i) => { %>
+        <div class="epcard-card">
+          <div class="epcard-thumb-wrapper">
+            <video src="<%= ep.cloudinaryUrl %>" class="epcard-video" preload="metadata" muted playsinline tabindex="-1"></video>
+          </div>
+          <div class="epcard-info">
+  <div class="epcard-title"><%= ep.title || '無題' %></div>
+  <% if (ep.description) { %>
+    <div class="epcard-desc"><%= ep.description %></div>
+  <% } %>
+  <div class="epcard-meta">
+    <span class="epcard-duration">
+      <%= ep.duration || '00:00:00' %>
+    </span>
+    <span class="epcard-price">
+      <%= ep.price != null ? ep.price + '円' : '価格未設定' %>
+    </span>
+  </div>
+</div>
+          <div class="epcard-actions">
+            <a href="/works/<%= work._id %>/episodes/<%= ep._id %>/edit" class="edit-btn epcard-action-with-tooltip" title="編集">
+              <img src="https://img.icons8.com/?size=100&id=15049&format=png&color=000000" alt="編集" width="24" height="24" />
+              <span class="epcard-tooltip">編集</span>
+            </a>
+            <a href="/works/<%= work._id %>/episodes/<%= ep._id %>/analyze" class="analyze-btn epcard-action-with-tooltip" title="分析">
+              <img src="https://img.icons8.com/?size=100&id=98067&format=png&color=000000" alt="分析" width="24" height="24" />
+              <span class="epcard-tooltip">分析</span>
+            </a>
+            <form action="/works/<%= work._id %>/episodes/<%= ep._id %>?_method=DELETE" method="POST" style="display:inline;">
+              <button type="submit" class="delete-btn epcard-action-with-tooltip" title="削除" onclick="return confirm('本当に削除しますか？');" style="background:none; border:none; padding:0;">
+                <img src="https://img.icons8.com/?size=100&id=84119&format=png&color=000000" alt="削除" width="24" height="24" />
+                <span class="epcard-tooltip">削除</span>
+              </button>
+            </form>
           </div>
         </div>
-      </div><!-- /.work-card -->
-
-      <section class="episode-section">
-        <h2>エピソード</h2>
-        <a 
-          href="/works/<%= work._id %>/episodes/video"
-          class="btn btn-primary"
-          style="margin-left: 16px;"
-        >
-          エピソードを追加
-        </a>
-
-        <% if (episodes && episodes.length > 0) { %>
-          <% episodes.forEach((ep, i) => { %>
-            <div class="episode-card">
-              <div class="episode-thumb-wrapper">
-                <video 
-                  controls 
-                  src="<%= ep.cloudinaryUrl %>" 
-                  class="episode-video"
-                ></video>
-              </div>
-              <div class="episode-info">
-                <h3><%= ep.title || '無題' %></h3>
-                
-                <% if (ep.description) { %>
-                  <p><%= ep.description %></p>
-                <% } %>
-                
-                <% if (ep.duration) { %>
-                  <p><%= ep.duration %> 分</p>
-                <% } %>
-                
-                <% if (ep.price) { %>
-                  <p><%= ep.price %> 円</p>
-                <% } else { %>
-                  <p>無料</p>
-                <% } %>
-              </div>
-            </div>
-          <% }) %>
-        <% } else { %>
-          <p>エピソードがまだありません。</p>
-        <% } %>
-      </section>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="epcard-empty">
+      <a href="/works/<%= work._id %>/episodes/video" class="btn add-episode-btn big">エピソードを追加しよう</a>
+    </div>
+  <% } %>
+</section>
     </div><!-- /#desktopView -->
 
   </div><!-- /.viewer-container -->
 </div><!-- /.viewer-page -->
 
 <script src="/js/workDetail.js"></script>
+<script>
+// 分析パネルのトグル
+const analysisBtn = document.getElementById('toggleAnalysisBtn');
+const analysisPanel = document.getElementById('analysisPanel');
+if (analysisBtn && analysisPanel) {
+  analysisBtn.addEventListener('click', () => {
+    analysisPanel.classList.toggle('hidden');
+  });
+}
+</script>

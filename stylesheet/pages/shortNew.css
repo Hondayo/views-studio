@@ -1,4 +1,4 @@
-/* 全体 */
+/*全体 */
 body {
   margin: 0;
   padding: 0;
@@ -21,7 +21,7 @@ body {
   font-size: 1.6rem;
 }
 
-/* アップロードBOX */
+/*アップロードBOX */
 .upload-box {
   background: #fff;
   border: 1px solid #ddd;
@@ -61,25 +61,25 @@ body {
   font-size: 0.9rem;
 }
 
-/* 進捗表示エリア */
+/*進捗表示エリア */
 .progress-area {
   margin-top: 20px;
 }
 
-/* テキスト + 差し替えボタンを同じ行に配置するラッパ */
+/*テキスト + 差し替えボタンを同じ行に配置するラッパ */
 .progress-details {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px; /* 進捗バーとの隙間 */
+  margin-bottom: 10px; /*進捗バーとの隙間 */
 }
 
 .uploaded-info {
   font-size: 0.95rem;
-  margin: 0; /* 余白はお好みで調整 */
+  margin: 0; /*余白はお好みで調整 */
 }
 
-/* 差し替えるボタン */
+/*差し替えるボタン */
 .replace-btn {
   background: #666;
   color: #fff;
@@ -87,10 +87,10 @@ body {
   border-radius: 4px;
   padding: 8px 14px;
   cursor: pointer;
-  margin-left: 10px; /* ボタンとテキストの間の隙間 */
+  margin-left: 10px; /*ボタンとテキストの間の隙間 */
 }
 
-/* 進捗バー */
+/*進捗バー */
 .progress-bar-wrapper {
   height: 10px;
   background: #eee;
@@ -104,7 +104,7 @@ body {
   transition: width 0.2s;
 }
 
-/* 投稿フォーム + iPhoneプレビュー */
+/*投稿フォーム + iPhoneプレビュー */
 .post-container {
   display: flex;
   gap: 30px;
@@ -139,17 +139,20 @@ body {
   color: #fff;
   border: none;
   border-radius: 4px;
-  padding: 8px 14px;
+  padding: 12px 20px;
+  font-size: 1.2rem;
   cursor: pointer;
+  width: 100%;
+  max-width: 300px;
 }
 .submit-btn:hover {
   background: #0056b3;
 }
 
-/* iPhone風フレームの大きさを少し小さく */
+/*iPhone風フレームの大きさを少し小さく */
 .iphone15-frame {
-  width: 260px;  /* 元: 390px → 260px に縮小 */
-  height: 562px; /* 元: 844px → 562px に縮小 (縦横比およそ維持) */
+  width: 260px;  /*元: 390px → 260px に縮小 */
+  height: 562px; /*元: 844px → 562px に縮小 (縦横比およそ維持) */
   background: #000;
   border-radius: 40px;
   border: 1px solid #ccc;
@@ -164,7 +167,7 @@ body {
   position: relative;
 }
 
-/* 親コンテナ: 縦横比を合わせて小さくしたサイズ */
+/*親コンテナ: 縦横比を合わせて小さくしたサイズ */
 .sn-preview-wrapper {
   position: relative;
   width: 100%;
@@ -173,21 +176,22 @@ body {
   background: #000;
 }
 
-/* 動画: 全面埋め (object-fitなどで対応) */
+/*動画: 全面埋め (object-fitなどで対応) */
 .sn-preview-video {
   position: absolute;
-  top: 0; 
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
+  top: 50%; /*縦方向の中央揃え */
+  left: 50%; /*横方向の中央揃え */
+  transform: translate(-50%, -50%); /*中央に配置 */
+  width: auto; /*横向きの場合は幅を自動調整 */
+  height: 100%; /*高さを100%に設定 */
+  object-fit: contain; /*アスペクト比を維持して表示 */
+  object-position: center; /*中央に配置 */
 }
 
-/* リアルタイムで反映されるテキスト */
+/*リアルタイムで反映されるテキスト */
 .preview-text {
   position: absolute;
-  /* 前より少し上の位置に */
+  /*前より少し上の位置に */
   bottom: 60px;
   left: 14px;
   color: #fff;
@@ -197,7 +201,7 @@ body {
   white-space: pre-wrap;
 }
 
-/* メニュー全体 */
+/*メニュー全体 */
 .preview-menu {
   position: absolute;
   bottom: 10px;
@@ -206,7 +210,7 @@ body {
   text-align: center;
 }
 
-/* ul を横に並べる */
+/*ul を横に並べる */
 .preview-menu ul {
   list-style: none;
   margin: 0;
@@ -219,10 +223,10 @@ body {
   flex: 1;
 }
 
-/* a 要素でアイコン+文字を上下に配置 */
+/*a 要素でアイコン+文字を上下に配置 */
 .preview-menu a {
   display: flex;
-  flex-direction: column;  /* 上下に並べる */
+  flex-direction: column;  /*上下に並べる */
   align-items: center;
   text-decoration: none;
   color: #fff;
@@ -232,32 +236,31 @@ body {
   padding: 5px;
 }
 
-/* アイコン部分をやや大きく表示 */
+/*アイコン部分をやや大きく表示 */
 .menu-icon {
   font-size: 1.2rem;
-  margin-bottom: 2px; /* アイコンと文字の隙間 */
+  margin-bottom: 2px; /*アイコンと文字の隙間 */
 }
 
-/* 文字部分は小さく */
+/*文字部分は小さく */
 .menu-label {
-  font-size: 0.75rem; /* お好みでさらに小さく */
+  font-size: 0.75rem; /*お好みでさらに小さく */
 }
 
-/* ホバー時の例 */
+/*ホバー時の例 */
 .preview-menu a:hover {
   background: rgba(255,255,255,0.2);
 }
 
-
-
-
-/* ========== 作品一覧セクション ========== */
+/*========== 作品一覧セクション ========== */
 .work-section {
+  max-width: 1150px; /*アップロード表示ブロックと同じ幅に設定 */
+  margin: 0 auto; /*中央揃え */
   background: #fff;
   padding: 20px;
   margin-top: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 .work-section h2 {
   margin-top: 0;
@@ -274,6 +277,7 @@ body {
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  font-size: 1rem; /*他のフォームと統一 */
 }
 .work-search-bar button {
   background: #28a745;
@@ -288,14 +292,14 @@ body {
   background: #218838;
 }
 
-/* カード一覧 */
+/*カード一覧 */
 .work-list-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
 }
 
-/* 作品カード */
+/*作品カード */
 .work-card {
   background: #fff;
   border: 2px solid #ddd;
@@ -317,12 +321,13 @@ body {
 }
 .work-card-info {
   padding: 10px;
+  color: #000; /*文字色を黒に変更 */
 }
 .work-card.selected {
-  border-color: #007bff; /* 選択時の枠色 */
+  border-color: #007bff; /*選択時の枠色 */
 }
 
-/* 「選択する」ボタン */
+/*「選択する」ボタン */
 .select-work-button-area {
   margin-top: 16px;
   text-align: right;
@@ -354,7 +359,7 @@ body {
   background: #5a6268;
 }
 
-/* ========== モーダル (ポップアップ) ========== */
+/*========== モーダル (ポップアップ) ========== */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -386,9 +391,9 @@ body {
   gap: 10px;
 }
 
-/* ========== エピソード選択モーダル ========== */
+/*========== エピソード選択モーダル ========== */
 .modal-episode-content {
-  width: 600px; /* 作品より大きめの幅 */
+  width: 600px; /*作品より大きめの幅 */
   max-width: 90%;
   text-align: left;
 }
@@ -428,7 +433,7 @@ body {
   text-align: right;
 }
 
-/* ========== 選択ステータス ========== */
+/*========== 選択ステータス ========== */
 .selected-status {
   margin-top: 20px;
   background: #fff;
@@ -442,15 +447,39 @@ body {
   color: #333;
 }
 
-
-/* 選択完了表示 */
+/*選択完了表示 */
 .selected-container {
   margin-top: 30px;
   background: #fff;
   padding: 20px;
+  border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: relative;
+  max-width: 1150px;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+.selected-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.selected-title-row h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+.selected-title-row .btn-secondary {
+  min-width: 80px;
+  padding: 6px 12px;
+  margin-left: 12px;
+  height: 2.2em;
+  display: flex;
+  align-items: center;
+}
+
 .selected-container h2 {
   margin-top: 0;
   font-size: 1.2rem;
@@ -461,4 +490,25 @@ body {
   font-size: 1rem;
   color: #333;
   margin-bottom: 12px;
+}
+
+.hash-btn {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-right: 8px; /*投稿ボタンとの間隔 */
+}
+
+.hash-btn:hover {
+  background: #218838;
+}
+
+/*投稿するボタンをページの一番下に配置 */
+.submit-button-container {
+  text-align: center;
+  margin-top: 20px;
 }

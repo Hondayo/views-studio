@@ -1,6 +1,7 @@
 /* =========================================================================
    workDetail.css (Cleaned Up)
    ========================================================================= */
+/* NOTE: エピソードカードのスタイルは stylesheet/pages/card.css で管理しています */
 
 /* ---------- Utilities -------------------------------------------------- */
 .hidden { 
@@ -26,7 +27,9 @@
   display: block; 
 }
 
-/* ---------- Buttons ---------------------------------------------------- */
+/* カード系・ボタン系・モーダル系のスタイルはそれぞれcard.css, button.css, modal.cssに分離済み */
+
+/* ---------- workDetailページ固有の調整のみここに記載 ------------------- */
 .btn {
   appearance: none;
   display: inline-flex;
@@ -90,11 +93,13 @@
 
 /* ---------- Work Card ------------------------------------------------- */
 .work-card {
-  background: #000;
+  background: #111;
   color: #fff;
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 20px;
+  border: none;
+  box-shadow: none;
 }
 
 /* サムネイル画像・動画 */
@@ -106,6 +111,8 @@
   padding-top: 56.25%; /* 16:9 */
   overflow: hidden;
   background: #111;
+  border: none;
+  box-shadow: none;
 }
 .static-image, 
 .hover-video {
@@ -119,67 +126,436 @@
   display: none;
 }
 
+
+
 /* ---------- Hero Info ------------------------------------------------- */
 .hero-info {
-  background: #000;
+  background: #fff;
   margin-top: 12px;
+  border: 1.5px solid #e0e7ef;
+  box-shadow: 0 2px 12px rgba(20,184,166,0.06);
+  padding: 24px 24px 18px 24px;
+  border-radius: 14px;
+  position: relative;
 }
 .work-title {
-  font-size: 1.8rem;
+  font-size: 2.1rem;
   margin: 0 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.your-work-badge {
+  display: inline-block;
+  background: #14b8a6;
+  color: #fff;
+  font-size: 1rem;
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-left: 8px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.work-stats {
+  margin-bottom: 8px;
+  color: #c2f5e9;
+  font-size: 1.1rem;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+.analysis-btn {
+  background: #1e293b;
+  color: #fff;
+  border: 1px solid #14b8a6;
+  padding: 6px 18px;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.analysis-btn:hover {
+  background: #14b8a6;
+  color: #fff;
+}
+.analysis-panel {
+  background: #0f172a;
+  color: #fff;
+  padding: 18px 20px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  margin-top: 8px;
+  box-shadow: 0 2px 8px rgba(20,184,166,0.10);
+  font-size: 1.08rem;
+  display: block;
+}
+.analysis-panel.hidden {
+  display: none;
+}
+.detail-btn {
+  margin-bottom: 6px;
 }
 
+
 /* ---------- Episode Section ------------------------------------------- */
+.viewer-page {
+  background: #fff !important;
+  min-height: 100vh;
+}
+.viewer-container {
+  background: #fff !important;
+}
 .episode-section {
-  background: #000;
-  max-width: 900px;
-  margin: 24px auto;
-  padding: 0 12px;
+  background: transparent;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 32px 0;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
+}
+.episode-section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.add-episode-btn {
+  background: #14b8a6;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 7px 22px;
+  border-radius: 7px;
+  margin-left: auto;
+  box-shadow: 0 2px 8px rgba(20,184,166,0.10);
+  transition: background 0.18s;
+}
+.add-episode-btn:hover {
+  background: #0d9488;
+}
+
+@media (max-width: 600px) {
+  .episode-section {
+    margin: 16px auto;
+    max-width: 100%;
+    width: 100%;
+    padding: 0 4px;
+  }
 }
 .episode-section h2 {
   font-size: 1.3rem;
   margin: 0 0 1rem;
 }
-.episode-card {
-  display: flex;
-  gap: 16px;
-  background: #111;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 12px;
-}
-.episode-thumb-wrapper { 
-  flex: 0 0 auto; 
-}
-.episode-video {
-  width: 100%;
-  max-width: 640px;
-  aspect-ratio: 16/9; 
-  object-fit: cover;
-  border-radius: 6px;
-}
-.episode-info { 
-  flex: 1; 
-}
-.episode-info h3 {
-  margin: 0 0 6px;
-  font-size: 1rem;
-}
 
 /* ---------- Responsive (Optional) -------------------------------------- */
-@media (max-width: 768px) {
-  .episode-card {
-    flex-direction: column;
-    align-items: center;
-  }
-  .episode-video { 
-    max-width: 340px; 
-  }
-  .episode-info { 
-    text-align: center; 
-  }
-}
+
 
 #popupEditBtn {
   color: #000000; /* 好きな色に変える */
+}
+
+/* 動画サムネイルコンテナと再生ボタン */
+.video-thumb-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #111;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.video-play-btn {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.video-play-btn svg {
+  display: block;
+}
+
+
+/* ===== 他CSSの上書き対策 ===== */
+
+body, .viewer-page, .viewer-container, .workdetail-header, .workdetail-meta, .workdetail-title, .workdetail-stats, .your-work-badge,
+.epcard-section-header, .add-episode-btn, .epcard-card, .epcard-thumb-wrapper, .epcard-info, .epcard-title, .epcard-desc, .epcard-actions, .epcard-empty, .epcard-list, .workcard-title, .workcard-desctats, .btn, .analysis-panel, .detail-btn {
+  color: #111 !important;
+}
+
+
+/* 作品概要ヘッダー */
+.workdetail-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 0 12px 0;
+  border-bottom: 1.5px solid #eee;
+  margin-bottom: 20px;
+}
+.workdetail-thumb {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #f5f5f5;
+}
+.workdetail-meta {
+  flex: 1;
+  min-width: 0;
+}
+.workdetail-title {
+  font-size: 1.4em;
+  font-weight: bold;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.workdetail-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  gap: 0;
+}
+
+.workdetail-header .detail-btn {
+  margin-top: 4px;
+  width: fit-content;
+  align-self: flex-start;
+}
+.your-work-badge {
+  background: #14b8a6;
+  color: #fff;
+  font-size: 0.9em;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.workdetail-stats {
+  color: #666;
+  font-size: 1em;
+}
+
+/* エピソード一覧ヘッダー */
+.epcard-section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.epcard-section-header h2 {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 0;
+}
+.add-episode-btn {
+  margin-left: auto;
+  background: #14b8a6;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 7px 16px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.add-episode-btn:hover { background: #0d9488; }
+.add-episode-btn.big {
+  display: block;
+  margin: 40px auto;
+  font-size: 1.2em;
+  padding: 18px 36px;
+}
+
+/* エピソードカード一覧 */
+.epcard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.epcard-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0 16px;
+  min-height: 62px;
+  transition: background 0.2s;
+}
+.epcard-card:hover {
+  background: #f7f7f7;
+}
+
+.epcard-thumb-wrapper {
+  flex-shrink: 0;
+  width: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+}
+.epcard-video {
+  width: 56px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.epcard-info {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.epcard-title {
+  font-weight: bold;
+  font-size: 1em;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.epcard-desc {
+  font-size: 0.95em;
+  color: #444;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.epcard-meta {
+  margin-top: 2px;
+  font-size: 0.92em;
+  color: #666;
+  display: flex;
+  gap: 14px;
+}
+.epcard-duration, .epcard-price {
+  white-space: nowrap;
+}
+
+.epcard-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+  min-width: 90px;
+  justify-content: flex-end;
+}
+
+
+/* エピソードカード */
+.epcard-card {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  margin-bottom: 0;
+  padding: 14px 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  gap: 18px;
+}
+.epcard-thumb-wrapper {
+  flex-shrink: 0;
+  width: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.epcard-video {
+  width: 80px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.epcard-info {
+  flex: 1 1 0;
+  min-width: 0;
+  margin-left: 18px;
+  color: #222;
+  overflow: hidden;
+}
+.epcard-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.epcard-desc {
+  color: #666;
+  font-size: 0.97em;
+  white-space: pre-line;
+}
+.epcard-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.epcard-empty {
+  text-align: center;
+  margin: 60px 0;
+}
+
+
+/* ===== エピソードカード横並びレイアウト強制 ===== */
+.epcard-card {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  gap: 18px;
+}
+.epcard-thumb-wrapper {
+  flex-shrink: 0;
+  width: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.epcard-video {
+  width: 80px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.epcard-info {
+  flex: 1 1 0;
+  min-width: 0;
+  margin-left: 18px;
+  color: #222;
+  overflow: hidden;
+}
+.epcard-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.viewer-page .work-card,
+.viewer-page .thumbnail-wrapper,
+.viewer-page .hero-info {
+  background: #111 !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.viewer-page .work-card {
+  border-radius: 8px !important;
 }

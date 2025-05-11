@@ -53,8 +53,13 @@ const getStats = async () => {
 /** 作品一覧 */
 router.get('/contents', asyncHandler(async (_req, res) => {
   const works = await Work.find().sort({ createdAt: -1 });
+  const shorts = await ShortClip.find().sort({ createdAt: -1 });
   res.render('partials/contents', {
-    layout: 'layout', title: 'あなたの作品', pageStyle: 'contents', works
+    layout: 'layout',
+    title: 'あなたのコンテンツ',
+    pageStyle: 'contents',
+    works,
+    shorts
   });
 }));
 
@@ -135,13 +140,40 @@ router.put('/works/:id',
 
 
 /** 作品ページ */
+const ShortClip = require('../models/ShortClip');
+
+// 分をhh:mm:ss形式に変換する関数
+function formatMinutesToHMS(min) {
+  const m = Number(min) || 0;
+  const h = Math.floor(m / 60);
+  const mm = m % 60;
+  return [h, mm, 0].map(v => String(v).padStart(2, '0')).join(':');
+}
+
 router.get('/works/:id', asyncHandler(async (req, res) => {
   const work     = await Work.findById(req.params.id);
-  const episodes = await Episode.find({ workId: work._id }).sort({ episodeNumber: 1 });
+  let episodes = await Episode.find({ workId: work._id }).sort({ episodeNumber: 1 });
+  const shortClips = await ShortClip.find({ workId: work._id }).sort({ createdAt: -1 });
+
+  // durationをhh:mm:ss形式に変換
+  episodes = episodes.map(ep => {
+  let dur = ep.duration;
+  if (typeof dur === 'number' && dur > 0) {
+    dur = formatMinutesToHMS(dur);
+  } else if (typeof dur === 'string' && dur.match(/^\d+$/) && Number(dur) > 0) {
+    dur = formatMinutesToHMS(Number(dur));
+  } else if (typeof dur === 'string' && dur.length > 0 && dur.includes(':')) {
+    // 既にhh:mm:ss形式
+    // そのまま
+  } else {
+    dur = '00:00:00';
+  }
+  return { ...ep.toObject(), duration: dur };
+});
 
   res.render('partials/workDetail', {
     layout: 'layout', title: work.title, bodyClass: 'dark',
-    work, episodes, created: req.query.created === '1'
+    work, episodes, shortClips, created: req.query.created === '1'
   });
 }));
 

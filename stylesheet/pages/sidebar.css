@@ -11,14 +11,11 @@
   transition: width 0.25s ease;
 }
 
-/* ロゴ */
-.brand {
-  display: block;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--text-main);
-  text-decoration: none;
-  padding: 1.2rem 1rem 1rem;
+.icon-img {
+  width: 24px; /* 必要に応じてサイズを調整 */
+  height: 24px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 /* ───────── ナビ ───────── */
