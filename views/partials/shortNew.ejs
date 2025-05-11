@@ -1,7 +1,7 @@
 <div class="container">
-  <!-- ▼ アップロードBOX (ドラッグ&ドロップ or 選択) ▼ -->
+  <!--▼ アップロードBOX (ドラッグ&ドロップ or 選択) ▼ -->
   <div class="upload-box">
-    <!-- 1) ドラッグ＆ドロップ領域 (初期表示) -->
+    <!--1) ドラッグ＆ドロップ領域 (初期表示) -->
     <div class="upload-section" id="uploadSection">
       <div class="upload-icon">🎬</div>
       <p>アップロードする動画を選択<br>またはドラッグ＆ドロップ</p>
@@ -9,23 +9,23 @@
       <input type="file" id="fileInput" accept="video/*" hidden />
     </div>
 
-    <!-- ▼ 進捗表示エリア ▼ -->
+    <!--▼ 進捗表示エリア ▼ -->
     <div class="progress-area" id="progressArea" style="display: none;">
-      <!-- まとめるラッパ: .progress-details -->
+      <!--まとめるラッパ: .progress-details -->
       <div class="progress-details">
         <p class="uploaded-info" id="uploadedInfo"></p>
         <button class="replace-btn" id="replaceBtnInProgress">差し替える</button>
       </div>
-      <!-- 進捗バー -->
+      <!--進捗バー -->
       <div class="progress-bar-wrapper">
         <div class="progress-bar" id="progressBar"></div>
       </div>
     </div>
   </div>
 
-  <!-- ▼ アップロード完了後のフォーム & iPhoneプレビュー ▼ -->
+  <!--▼ アップロード完了後のフォーム & iPhoneプレビュー ▼ -->
   <div class="post-container" id="postContainer" style="display: none;">
-    <!-- 左: 入力フォーム -->
+    <!--左: 入力フォーム -->
     <div class="description-form">
       <label for="descriptionInput" class="description-label">説明 / #ハッシュタグ</label>
       <textarea 
@@ -33,13 +33,15 @@
         placeholder="#ハッシュタグを入力"
       ></textarea>
 
-      <button id="submitBtn" class="submit-btn">投稿する</button>
+      <!--#ボタンを追加 -->
+      <button id="addHashTagBtn" class="hash-btn">#</button>
+
     </div>
 
-    <!-- 右: iPhone風プレビュー -->
+    <!--右: iPhone風プレビュー -->
     <div class="iphone15-frame">
       <div class="screen" id="screenArea">
-        <!-- 親コンテナ: sn-preview-wrapper -->
+        <!--親コンテナ: sn-preview-wrapper -->
         <div class="sn-preview-wrapper">
           <video
             id="previewVideo"
@@ -50,16 +52,16 @@
           ></video>
         </div>
 
-        <!-- テキストプレビュー -->
+        <!--テキストプレビュー -->
         <div class="preview-text" id="previewText"></div>
 
-        <!-- メニュー (テキスト下) -->
-        <!-- テキストプレビュー下にあるメニュー部分 -->
+        <!--メニュー (テキスト下) -->
+        <!--テキストプレビュー下にあるメニュー部分 -->
 <div class="preview-menu" id="previewMenu">
   <ul>
     <li>
       <a href="#">
-        <!-- ロゴ(アイコン)と文字 -->
+        <!--ロゴ(アイコン)と文字 -->
         <span class="menu-icon">🏠</span>
         <span class="menu-label">ホーム</span>
       </a>
@@ -86,24 +88,26 @@
 
 
 
-<!-- ▼ 作品選択フォーム ＋ エピソード選択UI 全体ラッパ -->
-<div class="work-section" id="workSelectionBlock">
+<!--▼ 作品選択フォーム ＋ エピソード選択UI 全体ラッパ -->
+<div class="work-section" id="workSelectionBlock" style="display: none;">
   <h2>リードするコンテンツを選択</h2>
 
-  <!-- 検索バー -->
+  <!--検索バー -->
   <div class="work-search-bar">
     <input type="text" id="workSearchInput" placeholder="作品タイトルを検索..." />
     <button id="workSearchBtn">検索</button>
   </div>
 
-  <!-- 作品一覧 (カード表示) -->
+  <!--作品一覧 (カード表示) -->
   <div id="workList" class="work-list-cards"></div>
-  <div class="select-work-button-area">
-    <button id="confirmWorkBtn" class="btn-primary" disabled>選択する</button>
-  </div>
-</div>
 
-<!-- ▼ 作品確定モーダル: 「エピソードを追加しますか？」 -->
+  <!--選択するボタン -->
+  <div class="select-work-button-area" id="selectWorkButtonArea" style="display: none;">
+    <button id="confirmWorkBtn" class="btn-primary">選択する</button>
+  </div>
+
+
+<!--▼ 作品確定モーダル: 「エピソードを追加しますか？」 -->
 <div id="episodeConfirmModal" class="modal-overlay" style="display:none;">
   <div class="modal-content">
     <h4 id="selectedWorkTitle"></h4>
@@ -115,7 +119,7 @@
   </div>
 </div>
 
-<!-- ▼ エピソード選択モーダル: エピソード一覧をカード表示 -->
+<!--▼ エピソード選択モーダル: エピソード一覧をカード表示 -->
 <div id="episodeSelectModal" class="modal-overlay" style="display:none;">
   <div class="modal-content modal-episode-content">
     <h4>エピソードを選択</h4>
@@ -126,236 +130,34 @@
   </div>
 </div>
 
-<!-- ▼ 選択完了表示ブロック: 最初は非表示 -->
-<div id="selectedContainer" class="selected-container" style="display:none;">
-  <h2>リードするコンテンツ</h2>
+</div>
+
+<form id="uploadForm" method="post" enctype="multipart/form-data">
+  <!-- ...既存のフォーム要素... -->
+
+  <!-- 選択された作品名・エピソード名を送信するhidden input（ここに1セットだけ配置） -->
+  <input type="hidden" name="title" id="hiddenWorkTitle" value="">
+  <input type="hidden" name="episodeTitle" id="hiddenEpisodeTitle" value="">
+
+  <!-- ここに投稿ボタンや他のフォーム要素が続く -->
+  <!-- 投稿ボタンをform内に移動 -->
+  <div class="submit-button-container" id="submitButtonContainer" style="display: none;">
+    <button id="submitBtn" class="submit-btn" type="submit">投稿する</button>
+  </div>
+</form>
+
+<div id="selectedContainer" class="selected-container" style="display: none;">
+  <div class="selected-title-row">
+    <h2>リードするコンテンツ</h2>
+    <button id="rechooseBtn" class="btn-secondary">変更する</button>
+  </div>
   <p id="selectedStatusText"></p>
-  <button id="rechooseBtn" class="btn-secondary">変更する</button>
 </div>
 
 
 
 
+
+
+
 <script src="/js/shortNew.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // ▼ 要素取得
-    const workSelectionBlock  = document.getElementById('workSelectionBlock');
-    const workSearchBtn       = document.getElementById('workSearchBtn');
-    const workSearchInput     = document.getElementById('workSearchInput');
-    const workList            = document.getElementById('workList');
-    const confirmWorkBtn      = document.getElementById('confirmWorkBtn');
-  
-    const episodeConfirmModal = document.getElementById('episodeConfirmModal');
-    const selectedWorkTitle   = document.getElementById('selectedWorkTitle');
-    const goAddEpisodeBtn     = document.getElementById('goAddEpisodeBtn');
-    const skipEpisodeBtn      = document.getElementById('skipEpisodeBtn');
-  
-    const episodeSelectModal  = document.getElementById('episodeSelectModal');
-    const episodeList         = document.getElementById('episodeList');
-    const decideEpisodeBtn    = document.getElementById('decideEpisodeBtn');
-  
-    const selectedContainer   = document.getElementById('selectedContainer');
-    const selectedStatusText  = document.getElementById('selectedStatusText');
-    const rechooseBtn         = document.getElementById('rechooseBtn');
-  
-    // 選択中の作品・エピソード
-    let selectedWorkId    = null;
-    let selectedWorkTitleText = '';
-    let selectedEpisodeId = null;
-    let selectedEpisodeTitle = '';
-  
-    // =============================
-    // (1) 作品検索ボタン
-    // =============================
-    workSearchBtn.addEventListener('click', async () => {
-      const keyword = workSearchInput.value.trim();
-      if (!keyword) {
-        alert('検索ワードを入力してください');
-        return;
-      }
-      try {
-        // fetch(`/api/works?q=${keyword}`)
-        // 簡易的にデモ
-        const res = await fetch(`/api/works?q=${encodeURIComponent(keyword)}`);
-        if (!res.ok) throw new Error('サーバーエラー');
-        const works = await res.json();  
-        renderWorkCards(works);
-      } catch(err) {
-        alert('作品検索に失敗しました');
-        console.error(err);
-      }
-    });
-  
-    // =============================
-    // (2) 作品カード生成
-    // =============================
-    function renderWorkCards(worksData) {
-      workList.innerHTML = '';
-      confirmWorkBtn.disabled = true;
-      if (!worksData || worksData.length === 0) {
-        workList.innerHTML = '<p>該当作品がありません</p>';
-        return;
-      }
-      worksData.forEach(w => {
-        const card = document.createElement('div');
-        card.classList.add('work-card');
-        const thumb = w.thumbnailUrl || '/img/no_thumbnail.png';
-        card.innerHTML = `
-          <img src="${thumb}" class="work-card-thumb" alt="${w.title}">
-          <div class="work-card-info">
-            <h4>${w.title}</h4>
-          </div>
-        `;
-        card.addEventListener('click', () => {
-          // 選択トグル
-          document.querySelectorAll('.work-card.selected')
-                  .forEach(el => el.classList.remove('selected'));
-          card.classList.add('selected');
-          selectedWorkId        = w._id;
-          selectedWorkTitleText = w.title;
-          confirmWorkBtn.disabled = false;
-        });
-        workList.appendChild(card);
-      });
-    }
-  
-    // =============================
-    // (3) 「選択する」=> 作品確定モーダル
-    // =============================
-    confirmWorkBtn.addEventListener('click', () => {
-      if (!selectedWorkId) return;
-      selectedWorkTitle.textContent = `『${selectedWorkTitleText}』が選択されました`;
-      episodeConfirmModal.style.display = 'flex';
-    });
-  
-    goAddEpisodeBtn.addEventListener('click', () => {
-      episodeConfirmModal.style.display = 'none';
-      openEpisodeSelect();
-    });
-    skipEpisodeBtn.addEventListener('click', () => {
-      episodeConfirmModal.style.display = 'none';
-      // 作品のみ選択完了
-      finalizeSelection();
-    });
-  
-    // =============================
-    // (4) エピソード一覧のモーダルを開く
-    // =============================
-    async function openEpisodeSelect() {
-      try {
-        // fetch(`/api/works/${selectedWorkId}/episodes`)
-        const res = await fetch(`/api/works/${selectedWorkId}/episodes`);
-        if (!res.ok) throw new Error('エピソード取得に失敗');
-        const eps = await res.json();
-        renderEpisodeCards(eps);
-        episodeSelectModal.style.display = 'flex';
-      } catch(err) {
-        alert('エピソードを取得できませんでした');
-        console.error(err);
-      }
-    }
-    function renderEpisodeCards(eps) {
-      episodeList.innerHTML = '';
-      decideEpisodeBtn.disabled = true;
-      if (!eps || eps.length===0) {
-        episodeList.innerHTML = '<p>エピソードがありません</p>';
-        return;
-      }
-      eps.forEach(ep => {
-        const card = document.createElement('div');
-        card.classList.add('episode-card');
-        const epThumb = ep.thumbnailUrl || '/img/no_thumbnail.png';
-        card.innerHTML = `
-          <img src="${epThumb}" class="episode-thumb" alt="${ep.title}">
-          <div class="episode-card-info"><h4>${ep.title}</h4></div>
-        `;
-        card.addEventListener('click', () => {
-          document.querySelectorAll('.episode-card.selected')
-                  .forEach(el => el.classList.remove('selected'));
-          card.classList.add('selected');
-          selectedEpisodeId    = ep._id;
-          selectedEpisodeTitle = ep.title;
-          decideEpisodeBtn.disabled = false;
-        });
-        episodeList.appendChild(card);
-      });
-    }
-  
-    // (4)-B エピソード最終決定
-    decideEpisodeBtn.addEventListener('click', () => {
-      episodeSelectModal.style.display = 'none';
-      finalizeSelection();
-    });
-  
-    // =============================
-    // (5) 選択完了 => UI切り替え
-    // =============================
-    function finalizeSelection() {
-      // (A) 検索UIを隠す
-      workSelectionBlock.style.display = 'none';
-      // (B) 「作品○○、エピソード○○が選択中」表示
-      let msg = `作品「${selectedWorkTitleText}」`;
-      if (selectedEpisodeTitle) {
-        msg += `のエピソード「${selectedEpisodeTitle}」`;
-      } else {
-        msg += `（エピソード未選択）`;
-      }
-      msg += 'が選択されています。';
-  
-      selectedStatusText.textContent = msg;
-      selectedContainer.style.display = 'block';
-    }
-  
-    // (5)-B 「選択し直す」 => UIをリセット
-    rechooseBtn.addEventListener('click', () => {
-      // (a) 選択状態をリセット
-      selectedWorkId = null;
-      selectedWorkTitleText = '';
-      selectedEpisodeId = null;
-      selectedEpisodeTitle = '';
-  
-      // (b) 「選択されたコンテンツ」表示を非表示に
-      selectedContainer.style.display = 'none';
-  
-      // (c) 検索ブロックを再表示
-      workSelectionBlock.style.display = 'block';
-  
-      // もし作品一覧をクリアしたければ:
-      workList.innerHTML = '';
-      confirmWorkBtn.disabled = true;
-    });
-  
-    // =============================
-    // ▼ デモ用: 検索結果/エピソード
-    // =============================
-    async function fakeSearchWorks(keyword) {
-      // 例: matches if the title includes 'keyword'
-      const allWorks = [
-        { _id: 'w001', title: '鬼滅の刃', thumbnailUrl: '/img/sampleA.jpg' },
-        { _id: 'w002', title: '進撃の巨人', thumbnailUrl: '/img/sampleB.jpg' },
-        { _id: 'w003', title: '呪術廻戦', thumbnailUrl: '' },
-        { _id: 'w004', title: 'ワンピース', thumbnailUrl: '/img/sampleC.jpg' },
-      ];
-      return allWorks.filter(w => w.title.includes(keyword));
-    }
-    async function fakeFetchEpisodes(workId) {
-      // 例: IDに応じたエピソードを返す
-      if (workId === 'w001') {
-        return [
-          { _id: 'ep001', title: '竈門炭治郎 立志編', thumbnailUrl: '/img/ep1.jpg' },
-          { _id: 'ep002', title: '那田蜘蛛山編', thumbnailUrl: '' },
-        ];
-      } else if (workId === 'w002') {
-        return [
-          { _id: 'ep010', title: '巨人襲来', thumbnailUrl: '/img/ep2.jpg' },
-          { _id: 'ep011', title: '壁外調査', thumbnailUrl: '/img/ep3.jpg' },
-        ];
-      } else {
-        return [];
-      }
-    }
-  });
-  </script>
-  
-   
