@@ -8,6 +8,9 @@ const shortClipSchema = new Schema({
     type: String,
     required: true
   },
+  episodeTitle: {
+    type: String // エピソード名（任意）
+  },
   description: String,
   tags: [String],
   visibility: {
@@ -18,6 +21,10 @@ const shortClipSchema = new Schema({
   cloudinaryUrl: {
     type: String, // Cloudinary 上のURL
     required: true
+  },
+  cloudinaryPublicId: {
+    type: String // Cloudinaryのpublic_id
+    // 必須にはしない（既存データ対応）
   },
   contentType: {
     type: String, // 'video' など
