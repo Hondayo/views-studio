@@ -143,11 +143,25 @@ router.put('/works/:id',
 const ShortClip = require('../models/ShortClip');
 
 // 分をhh:mm:ss形式に変換する関数
-function formatMinutesToHMS(min) {
-  const m = Number(min) || 0;
-  const h = Math.floor(m / 60);
-  const mm = m % 60;
+function formatMinutesToHMS(minutes) {
+  if (typeof minutes !== 'number' || isNaN(minutes)) return '00:00:00';
+  const h = Math.floor(minutes / 60);
+  const mm = minutes % 60;
   return [h, mm, 0].map(v => String(v).padStart(2, '0')).join(':');
+}
+
+// 最小限形式でdurationを返す
+function formatDurationMinimized(duration) {
+  if (!duration) return '0:00';
+  let h = 0, m = 0, s = 0;
+  if (typeof duration === 'number') duration = String(duration);
+  const parts = duration.split(':').map(Number);
+  if (parts.length === 3) [h, m, s] = parts;
+  else if (parts.length === 2) [m, s] = parts;
+  else if (parts.length === 1) s = parts[0];
+
+  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  else return `${m}:${String(s).padStart(2, '0')}`;
 }
 
 router.get('/works/:id', asyncHandler(async (req, res) => {
@@ -155,21 +169,21 @@ router.get('/works/:id', asyncHandler(async (req, res) => {
   let episodes = await Episode.find({ workId: work._id }).sort({ episodeNumber: 1 });
   const shortClips = await ShortClip.find({ workId: work._id }).sort({ createdAt: -1 });
 
-  // durationをhh:mm:ss形式に変換
+  // durationを最小限形式に変換
   episodes = episodes.map(ep => {
-  let dur = ep.duration;
-  if (typeof dur === 'number' && dur > 0) {
-    dur = formatMinutesToHMS(dur);
-  } else if (typeof dur === 'string' && dur.match(/^\d+$/) && Number(dur) > 0) {
-    dur = formatMinutesToHMS(Number(dur));
-  } else if (typeof dur === 'string' && dur.length > 0 && dur.includes(':')) {
-    // 既にhh:mm:ss形式
-    // そのまま
-  } else {
-    dur = '00:00:00';
-  }
-  return { ...ep.toObject(), duration: dur };
-});
+    let dur = ep.duration;
+    if (typeof dur === 'number' && dur > 0) {
+      dur = formatMinutesToHMS(dur);
+    } else if (typeof dur === 'string' && dur.match(/^[0-9]+$/) && Number(dur) > 0) {
+      dur = formatMinutesToHMS(Number(dur));
+    } else if (typeof dur === 'string' && dur.length > 0 && dur.includes(':')) {
+      // 既にhh:mm:ss形式
+    } else {
+      dur = '00:00:00';
+    }
+    dur = formatDurationMinimized(dur);
+    return { ...ep.toObject(), duration: dur };
+  });
 
   res.render('partials/workDetail', {
     layout: 'layout', title: work.title, bodyClass: 'dark',
@@ -273,7 +287,7 @@ router.post('/works/:id/episodes',
       cloudinaryUrl: secure_url,
       price,
       isPaid,
-      duration: parseInt(duration, 10) || 0,
+      duration: duration || '00:00:00',
     }).save();
 
     // 追加後は同じ画面へ戻り、?created=1 で「追加成功」メッセージ表示
@@ -328,5 +342,28 @@ router.get('/api/works/:id/episodes', async (req, res) => {
   res.json(episodes);
 });
 
+
+// エピソード単体削除ルート
+router.delete('/works/:workId/episodes/:epId', asyncHandler(async (req, res) => {
+  const { workId, epId } = req.params;
+  const episode = await Episode.findById(epId);
+  if (!episode) return res.status(404).send('エピソードが見つかりません');
+
+  // Cloudinary動画も削除
+  if (episode.cloudinaryUrl) {
+    const publicId = extractPublicId(episode.cloudinaryUrl);
+    if (publicId) {
+      try {
+        await cloudinary.uploader.destroy(publicId, { resource_type: episode.contentType && episode.contentType.startsWith('video') ? 'video' : 'image' });
+      } catch (err) {
+        console.error('Cloudinary削除エラー:', err);
+      }
+    }
+  }
+  // DBから削除
+  await Episode.deleteOne({ _id: epId });
+  // エピソード一覧ページへリダイレクト
+  res.redirect(`/works/${workId}`);
+}));
 
 module.exports = router; 

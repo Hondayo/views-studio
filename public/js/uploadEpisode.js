@@ -66,25 +66,25 @@ document.addEventListener('DOMContentLoaded', () => {
         video.muted = true;
         video.playsInline = true;
         video.src = URL.createObjectURL(file);
-  
+
         video.addEventListener('loadedmetadata', () => {
-          video.currentTime = 0; // 先頭フレーム
-        });
-    
-        video.addEventListener('loadedmetadata', () => {
-      // 1) 合計秒数を取得
-      const totalSeconds = Math.floor(video.duration);
-      // 2) 分単位に変換してセット（バックエンド保存仕様に合わせる）
-      const minutes = Math.round(totalSeconds / 60);
-      const durIn = document.getElementById('duration');
-      durIn.value = minutes;
-    });
-          // 5) 既存の input イベントを発火させる（他ロジック用）
-          if (durIn) durIn.dispatchEvent(new Event('input'));
-          // 先頭フレームに移動 (サムネイル生成用)
+          // duration取得とinputセット
+          const totalSeconds = Math.floor(video.duration);
+          // hh:mm:ss形式でセット
+          const durIn = document.getElementById('duration');
+          if (durIn) {
+            durIn.value = formatDuration(totalSeconds);
+            durIn.dispatchEvent(new Event('input'));
+          }
+          // 秒数もhidden inputにセット
+          const durationSecondsInput = document.getElementById('durationSeconds');
+          if (durationSecondsInput) {
+            durationSecondsInput.value = totalSeconds;
+          }
+          // サムネイル生成のため先頭フレームへ
           video.currentTime = 0;
         });
-    
+
         video.addEventListener('seeked', () => {
           try {
             const canvas = document.createElement('canvas');
@@ -193,6 +193,22 @@ document.addEventListener('DOMContentLoaded', () => {
     //   }
     // });
   
+    /* --------------------------------------------------
+     * E) フォーム送信時に送信ボタンを一度だけ押せるようにし、ローディングスピナーとテキストを表示する処理を追加
+     * -------------------------------------------------- */
+    const episodeForm = document.getElementById('episodeForm');
+    const submitBtn = document.getElementById('submitEpisodeBtn');
+    const submitBtnText = document.getElementById('submitEpisodeBtnText');
+    const submitBtnSpinner = document.getElementById('submitEpisodeBtnSpinner');
+    if (episodeForm && submitBtn && submitBtnText && submitBtnSpinner) {
+      episodeForm.addEventListener('submit', function(e) {
+        // 二重送信防止
+        submitBtn.disabled = true;
+        submitBtnText.style.display = 'none';
+        submitBtnSpinner.style.display = '';
+      });
+    }
+
     /* --------------------------------------------------
      * ページロード時に初期化
      * -------------------------------------------------- */

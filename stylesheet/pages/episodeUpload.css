@@ -200,6 +200,21 @@
 /* ============================= */
 /* フォームUI                    */
 /* ============================= */
+
+.submit-button-container {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 48px; /* 下部にゆとり */
+  margin-top: 32px;    /* 上にも余白 */
+}
+
+@media (max-width: 600px) {
+  .submit-button-container {
+    padding-bottom: 24px;
+    margin-top: 20px;
+  }
+}
+
 .form-group {
   margin-bottom: 1rem;
 }
