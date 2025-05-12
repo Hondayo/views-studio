@@ -209,6 +209,16 @@ select {
   margin: 0;
   text-align: left;
 }
+
+.preview-description {
+  font-size: 1rem;
+  color: #ccc;
+  margin-bottom: 12px;
+  white-space: pre-line;
+}
+.preview-description.hidden {
+  display: none;
+}
 .extra-toggle-btn {
   background: #444;
   color: #fff;

@@ -390,7 +390,6 @@ body, .viewer-page, .viewer-container, .workdetail-header, .workdetail-meta, .wo
 .workdetail-header .detail-btn {
   margin-top: 4px;
   width: fit-content;
-  align-self: flex-start;
 }
 
 .workdetail-stats {

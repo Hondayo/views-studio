@@ -12,7 +12,8 @@
   <img src="<%= work.thumbnailUrl %>" alt="<%= work.title %>" class="workdetail-thumb" />
   <div class="workdetail-meta" style="flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center;">
     <div class="workdetail-title"><%= work.title %></div>
-    <button id="toggleDetailBtn" class="btn detail-btn">詳細を見る</button>
+<%= work.description %>
+    <button id="toggleDetailBtn" class="btn detail-btn"><span class="toggle-icon" id="toggleDetailIcon" style="display:inline-block; vertical-align:middle; margin-right:4px; transition:transform 0.2s;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M5 8L10 13L15 8" stroke="#666" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>詳細を見る</button>
     <!-- ここに作品情報DLなど -->
   </div>
   <div class="workdetail-actions">
@@ -109,13 +110,4 @@
 </div><!-- /.viewer-page -->
 
 <script src="/js/workDetail.js"></script>
-<script>
-// 分析パネルのトグル
-const analysisBtn = document.getElementById('toggleAnalysisBtn');
-const analysisPanel = document.getElementById('analysisPanel');
-if (analysisBtn && analysisPanel) {
-  analysisBtn.addEventListener('click', () => {
-    analysisPanel.classList.toggle('hidden');
-  });
-}
-</script>
+
