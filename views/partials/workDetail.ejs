@@ -1,10 +1,6 @@
 <!-- 編集ボタンのオーバーレイ -->
 <!-- episodeCard.css is now merged into card.css and loaded via styles.css -->
-<div id="globalOverlay">
-  <a id="popupEditBtn" href="/works/<%= work._id %>/edit" class="btn popup-btn">
-    編集する
-  </a>
-</div>
+
 
 <div class="viewer-page">
   <div class="viewer-container">
@@ -12,13 +8,44 @@
     <!-- デスクトップ表示領域 -->
     <div id="desktopView" class="desktop-view">
       
-      <div class="workdetail-header">
+      <div class="workdetail-header" style="display:flex; align-items:center; gap:24px;">
   <img src="<%= work.thumbnailUrl %>" alt="<%= work.title %>" class="workdetail-thumb" />
-  <div class="workdetail-meta">
-    <div class="workdetail-title">
-      <%= work.title %>
-    </div>
-    <button id="toggleDetailBtn" class="btn detail-btn">作品の詳細</button>
+  <div class="workdetail-meta" style="flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center;">
+    <div class="workdetail-title"><%= work.title %></div>
+    <button id="toggleDetailBtn" class="btn detail-btn">詳細を見る</button>
+    <!-- ここに作品情報DLなど -->
+  </div>
+  <div class="workdetail-actions">
+    <a href="/works/<%= work._id %>/edit" class="work-edit-btn work-action-with-tooltip" title="作品の編集">
+      <img src="https://img.icons8.com/?size=100&id=15049&format=png&color=000000" alt="編集" width="24" height="24" />
+      <span class="work-tooltip">作品の編集</span>
+    </a>
+    <a href="/works/<%= work._id %>/analyze" class="work-analyze-btn work-action-with-tooltip" title="全体の分析">
+      <img src="https://img.icons8.com/?size=100&id=98067&format=png&color=000000" alt="分析" width="24" height="24" />
+      <span class="work-tooltip">全体の分析</span>
+    </a>
+    <form action="/works/<%= work._id %>?_method=DELETE" method="POST" style="display:inline;">
+      <button type="submit" class="work-delete-btn work-action-with-tooltip" title="すべて削除" onclick="return confirm('本当に削除しますか？');" style="background:none; border:none; padding:0;">
+        <img src="https://img.icons8.com/?size=100&id=84119&format=png&color=000000" alt="削除" width="24" height="24" />
+        <span class="work-tooltip">すべて削除</span>
+      </button>
+    </form>
+  </div>
+</div>
+<div id="workDetailPanel" class="work-detail-panel compact hidden">
+  <div class="work-detail-grid">
+    <div class="work-detail-label">レーティング</div>
+    <div class="work-detail-value"><%= work.rating %></div>
+    <div class="work-detail-label">公開年</div>
+    <div class="work-detail-value"><%= work.releaseDate %></div>
+    <div class="work-detail-label">キャスト</div>
+    <div class="work-detail-value"><%= work.cast %></div>
+    <div class="work-detail-label">制作会社</div>
+    <div class="work-detail-value"><%= work.studio %></div>
+    <div class="work-detail-label">タグ</div>
+    <div class="work-detail-value"><%= work.tags %></div>
+  </div>
+</div>
   </div>
 </div><!-- /.workdetail-header -->
 
@@ -37,14 +64,17 @@
           <div class="epcard-info">
   <div class="epcard-title"><%= ep.title || '無題' %></div>
   <% if (ep.description) { %>
-    <div class="epcard-desc"><%= ep.description %></div>
-  <% } %>
+  <div class="epcard-desc-wrapper">
+    <div class="epcard-desc-text"><%= ep.description %></div>
+    <button class="epcard-toggle-desc" style="display:none;">続きを見る</button>
+  </div>
+<% } %>
   <div class="epcard-meta">
     <span class="epcard-duration">
       <%= ep.duration || '00:00:00' %>
     </span>
     <span class="epcard-price">
-      <%= ep.price != null ? ep.price + '円' : '価格未設定' %>
+      <%= ep.price === 0 ? '無料' : (ep.price != null ? '¥ ' + ep.price : '価格未設定') %>
     </span>
   </div>
 </div>

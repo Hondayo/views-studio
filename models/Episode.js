@@ -13,7 +13,7 @@ const episodeSchema = new mongoose.Schema({
   price:  { type: Number, default: 0 },
   duration: { 
   type: String, 
-  default: 0  // 単位は「分」で保持
+  default: '00:00:00'  // hh:mm:ss形式で保持
   },
   createdAt: { type: Date, default: Date.now }
 });

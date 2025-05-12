@@ -56,6 +56,7 @@
           <div class="form-group">
             <label for="duration">動画時間（hh:mm:ss）</label>
             <input type="text" id="duration" name="duration" placeholder="例: 01:23:45" readonly required>
+          <input type="hidden" id="durationSeconds" name="durationSeconds">
           </div>
 
           <!-- 価格(必須) -->
@@ -75,7 +76,19 @@
       </div><!-- /#details -->
 
       <!-- 3) 送信ボタン -->
-      <button type="submit" class="btn-primary">エピソードを保存</button>
+      <div class="submit-button-container">
+        <button type="submit" class="btn-primary" id="submitEpisodeBtn">
+          <span id="submitEpisodeBtnText">エピソードを保存</span>
+          <span id="submitEpisodeBtnSpinner" style="display:none; margin-left:8px;">
+            <svg width="18" height="18" viewBox="0 0 50 50">
+              <circle cx="25" cy="25" r="20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="31.415, 31.415" transform="rotate(0 25 25)">
+                <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+            アップロード中…
+          </span>
+        </button>
+      </div>
 
     </form>
   </div><!-- /.episode-form -->
