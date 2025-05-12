@@ -1,50 +1,34 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // 1) 「詳細を見る」ボタン// 分析パネルのトグル
-  const analysisBtn = document.getElementById('toggleAnalysisBtn');
-  const analysisPanel = document.getElementById('analysisPanel');
-  if (analysisBtn && analysisPanel) {
-    analysisBtn.addEventListener('click', () => {
-      analysisPanel.classList.toggle('hidden');
-    });
-  }
-
-  // 作品の詳細パネルのトグル
-  const detailBtn = document.getElementById('toggleDetailBtn');
-  const detailPanel = document.getElementById('workDetailPanel');
-  if (detailBtn && detailPanel) {
-    detailBtn.addEventListener('click', () => {
-      detailPanel.classList.toggle('hidden');
-      // ボタンの表示切り替え例
-      if (detailPanel.classList.contains('hidden')) {
-        detailBtn.textContent = '詳細を見る';
+// 共通のトグル処理関数
+function setupToggleButton(btnId, panelId, iconId) {
+  const btn = document.getElementById(btnId);
+  const panel = document.getElementById(panelId);
+  const icon = iconId ? document.getElementById(iconId) : null;
+  if (btn && panel) {
+    btn.addEventListener('click', () => {
+      panel.classList.toggle('hidden');
+      if (icon) {
+        icon.style.transform = panel.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+      }
+      if (panel.classList.contains('hidden')) {
+        btn.textContent = '詳細を見る';
       } else {
-        detailBtn.textContent = '詳細を閉じる';
+        btn.textContent = '詳細を閉じる';
       }
     });
   }
+}
 
-  // 2) 「詳細を見る」ボタンのトグル
-  const detailAreaBtn  = document.getElementById('toggleDetailAreaBtn');
-  const detailArea = document.getElementById('detailArea');
-  
-  if (detailAreaBtn && detailArea) {
-    detailAreaBtn.addEventListener('click', () => {
-      detailArea.classList.toggle('hidden');
-      // ボタンの表示切り替え例
-      if (detailArea.classList.contains('hidden')) {
-        detailAreaBtn.textContent = '詳細を見る';
-      } else {
-        detailAreaBtn.textContent = '詳細を閉じる';
-      }
-    });
-  }
+document.addEventListener('DOMContentLoaded', function () {
+  setupToggleButton('toggleDetailBtn', 'workDetailPanel', 'toggleDetailIcon');
+  setupToggleButton('toggleAnalysisBtn', 'analysisPanel');
+  setupToggleButton('toggleDetailAreaBtn', 'detailArea');
 
-  // 2) サムネイル画像 → 動画切り替え (ホバー再生)
+  // サムネイル画像 → 動画切り替え (ホバー再生)
   const cards = document.querySelectorAll('.work-card');
   cards.forEach(card => {
     const img = card.querySelector('.static-image');
     const vid = card.querySelector('.hover-video');
-    if (!vid) return; // 動画が無い作品はスキップ
+    if (!vid) return;
 
     card.addEventListener('mouseenter', () => {
       img.classList.add('hidden');
@@ -89,6 +73,5 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!expanded) updateEpisodeToggleButtons();
     });
   });
+  window.addEventListener('resize', updateEpisodeToggleButtons);
 });
-
-window.addEventListener('resize', updateEpisodeToggleButtons);

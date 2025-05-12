@@ -75,6 +75,14 @@
         <small class="help-text">作品の正式なタイトルを入力してください。</small>
       </div>
 
+      <!-- あらすじ -->
+      <div class="form-group">
+        <label for="description" class="label-title">
+          あらすじ（任意）
+        </label>
+        <textarea id="description" name="description" rows="3" placeholder="作品のあらすじや概要を入力してください"></textarea>
+      </div>
+
       <!-- 詳細情報 (レーティング・公開年・キャスト・制作会社) -->
       <div class="form-group detail-group">
         <details open>
@@ -159,6 +167,7 @@
           <div class="preview-title" id="previewTitle">作品タイトル</div>
           <button type="button" id="toggleExtra" class="extra-toggle-btn">詳細</button>
         </div>
+        <div class="preview-description" id="previewDescription"></div>
 
         <!-- 公開年 + レーティング + キャスト / スタジオ -->
         <dl id="previewExtra" class="preview-extra hidden">

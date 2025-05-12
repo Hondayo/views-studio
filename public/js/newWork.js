@@ -23,6 +23,7 @@
   const placeholderOverlay = document.getElementById('placeholderOverlay');
 
   const previewTitle    = document.getElementById('previewTitle');
+  const previewDescription = document.getElementById('previewDescription');
   const toggleExtraBtn  = document.getElementById('toggleExtra');
   const previewExtra    = document.getElementById('previewExtra');
   const previewRating   = document.getElementById('previewRating');
@@ -32,6 +33,7 @@
 
   // 入力フォーム
   const titleInput       = document.getElementById('title');
+  const descriptionInput = document.getElementById('description');
   const ratingSelect     = document.getElementById('rating');
   const releaseDateInput = document.getElementById('releaseDate');
   const castInput        = document.getElementById('cast');
@@ -170,6 +172,21 @@
       // 任意の処理
     });
   }
+
+  // ---------------------------------------------
+  // description → プレビュー反映
+  // ---------------------------------------------
+  descriptionInput.addEventListener('input', () => {
+    previewDescription.textContent = descriptionInput.value.trim();
+    if (descriptionInput.value.trim()) {
+      previewDescription.classList.remove('hidden');
+    } else {
+      previewDescription.classList.add('hidden');
+    }
+  });
+  window.addEventListener('DOMContentLoaded', () => {
+    descriptionInput.dispatchEvent(new Event('input'));
+  });
 
   // ---------------------------------------------
   // 8. 「詳細」ボタンでプレビューの詳細をトグル
