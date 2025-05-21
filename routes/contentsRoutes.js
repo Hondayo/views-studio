@@ -255,7 +255,10 @@ router.get('/works/:id/episodes/video', asyncHandler(async (req, res) => {
 
 /** エピソード作成 */
 router.post('/works/:id/episodes',
-  upload.single('contentFile'),
+  upload.fields([
+    { name: 'contentFile', maxCount: 1 },
+    { name: 'thumbnailImage', maxCount: 1 }
+  ]),
   asyncHandler(async (req, res) => {
     const { title, episodeNumber, description, duration } = req.body;
     const price  = parseInt(req.body.price, 10) || 0;
@@ -269,13 +272,17 @@ router.post('/works/:id/episodes',
       epNum = lastEp?.episodeNumber ? lastEp.episodeNumber + 1 : 1;
     }
 
-    // ファイル必須
-    if (!req.file) {
+    // 動画ファイル必須
+    const videoFile = req.files?.contentFile?.[0];
+    if (!videoFile) {
       return res.status(400).send('動画ファイルが選択されていません');
     }
-
-    // Cloudinaryアップロード
-    const { secure_url, resource_type } = await uploadToCloudinary(req.file, 'episodes');
+    // サムネイル画像（任意）
+    const thumbnailFile = req.files?.thumbnailImage?.[0];
+    // Cloudinaryアップロード（動画）
+    const { secure_url, resource_type } = await uploadToCloudinary(videoFile, 'episodes');
+    // サムネイル画像もCloudinaryのepisodesthumbnailフォルダにアップロード
+    const thumbRes = thumbnailFile ? await uploadToCloudinary(thumbnailFile, 'episodesthumbnail') : null;
 
     // DB 保存
     await new Episode({
@@ -288,6 +295,7 @@ router.post('/works/:id/episodes',
       price,
       isPaid,
       duration: duration || '00:00:00',
+      thumbnailUrl: thumbRes?.secure_url ?? ''
     }).save();
 
     // 追加後は同じ画面へ戻り、?created=1 で「追加成功」メッセージ表示

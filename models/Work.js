@@ -20,6 +20,10 @@ const workSchema = new mongoose.Schema({
   tags: [{
     type: String
   }],
+  durationSeconds: {
+    type: Number,
+    default: 0
+  },
   rating: {
     type: String
   },

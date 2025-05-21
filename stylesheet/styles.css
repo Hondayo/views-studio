@@ -39,36 +39,13 @@ body {                      /* layout.ejs で使う本体 */
   overflow: hidden;
 }
 
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-.sidebar-menu-top {
-  margin-top: 24px;
-}
-
-
-.sidebar-btn {
-  display: block;
-  background: #4f8cff;
-  color: #fff;
-  text-align: center;
-  padding: 10px 0;
-  border-radius: 6px;
-  font-weight: bold;
-  text-decoration: none;
-  transition: background 0.2s;
-}
-.sidebar-btn:hover {
-  background: #3266cc;
-}
 
 .main-content {             /* 残り領域をすべて使用 */
   flex: 1;
   overflow-y: auto;
   background: var(--bg-main);
   min-width: 0;
+  padding-top: 56px; /* トップバーの高さ分 */
 }
 
 
