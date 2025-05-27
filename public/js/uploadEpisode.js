@@ -479,8 +479,24 @@ document.addEventListener('DOMContentLoaded', () => {
       // XMLHttpRequestを使用してアップロード進行状況を取得
       const xhr = new XMLHttpRequest();
       
+      // エラー処理をまとめた関数
+      function handleUploadError(message = 'エピソードのアップロードに失敗しました。もう一度お試しください。') {
+        console.error('アップロードエラー:', message);
+        alert(message);
+        uploadOverlay.classList.remove('active');
+        submitBtn.disabled = false;
+        submitBtnText.style.display = '';
+        submitBtnSpinner.style.display = 'none';
+        toggleProgressElements(false);
+      }
+      
       // リクエストの設定
       xhr.open('POST', episodeForm.action, true);
+      
+      // エラー発生時のイベントリスナー
+      xhr.addEventListener('error', function() {
+        handleUploadError('ネットワークエラーが発生しました。インターネット接続を確認して再度お試しください。');
+      });
       
       // アップロード進行状況のイベントリスナー
       xhr.upload.addEventListener('progress', function(event) {
@@ -563,31 +579,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       
-      // エラー発生時のイベントリスナー
-      xhr.addEventListener('error', function() {
-        handleUploadError('ネットワークエラーが発生しました。インターネット接続を確認して再度お試しください。');
-      });
-      
-      // リクエスト送信
-      xhr.send(formData);
-      
-      // エラー処理をまとめた関数
-      function handleUploadError(message = 'エピソードのアップロードに失敗しました。もう一度お試しください。') {
-        console.error('アップロードエラー:', message);
-        alert(message);
-        uploadOverlay.classList.remove('active');
-        submitBtn.disabled = false;
-        submitBtnText.style.display = '';
-        submitBtnSpinner.style.display = 'none';
-        toggleProgressElements(false);
-      }
-      
-      // エラー発生時のイベントリスナー
-      xhr.addEventListener('error', function() {
-        handleUploadError();
-      });
-      
-      // リクエストの送信
+      // リクエスト送信は1回だけ行う
       xhr.send(formData);
     });
   }

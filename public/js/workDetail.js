@@ -23,9 +23,9 @@ document.addEventListener('DOMContentLoaded', function () {
   setupToggleButton('toggleAnalysisBtn', 'analysisPanel');
   setupToggleButton('toggleDetailAreaBtn', 'detailArea');
 
-  // サムネイル画像 → 動画切り替え (ホバー再生)
-  const cards = document.querySelectorAll('.work-card');
-  cards.forEach(card => {
+  // 作品カードのサムネイル画像 → 動画切り替え (ホバー再生)
+  const workCards = document.querySelectorAll('.work-card');
+  workCards.forEach(card => {
     const img = card.querySelector('.static-image');
     const vid = card.querySelector('.hover-video');
     if (!vid) return;
@@ -41,6 +41,35 @@ document.addEventListener('DOMContentLoaded', function () {
       vid.currentTime = 0;
       vid.classList.add('hidden');
       img.classList.remove('hidden');
+    });
+  });
+  
+  // エピソードカードの動画再生を適切に制御
+  const epCards = document.querySelectorAll('.epcard-card');
+  epCards.forEach(card => {
+    const video = card.querySelector('.epcard-video');
+    if (!video) return;
+    
+    // ホバー時に動画再生
+    card.addEventListener('mouseenter', () => {
+      // ポーズ中の他の動画があれば停止する
+      document.querySelectorAll('.epcard-video').forEach(v => {
+        if (v !== video && !v.paused) {
+          v.pause();
+        }
+      });
+      
+      // 現在の動画を再生
+      if (video.paused) {
+        video.play().catch(e => console.log('自動再生に失敗しました:', e));
+      }
+    });
+    
+    // ホバーが外れたら動画を一時停止
+    card.addEventListener('mouseleave', () => {
+      if (!video.paused) {
+        video.pause();
+      }
     });
   });
 

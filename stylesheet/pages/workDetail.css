@@ -525,14 +525,35 @@ body, .viewer-page, .viewer-container, .workdetail-header, .workdetail-meta, .wo
   border-radius: 10px;
   overflow: hidden;
   margin-right: 24px;
+  position: relative; /* 位置決めを追加 */
 }
-.epcard-thumbnail, .epcard-thumb-wrapper img, .epcard-thumb-wrapper video {
+
+/* サムネイル画像用のスタイル */
+.epcard-thumbnail, .epcard-thumb-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 10px;
   background: #222;
   display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1; /* 動画より上に表示 */
+}
+
+/* 動画用のスタイル */
+.epcard-thumb-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #222;
+  display: block;
+  position: absolute; /* 動画を絶対位置に */
+  top: 0;
+  left: 0;
+  z-index: 0; /* サムネイルの下に表示 */
 }
 
 .epcard-duration {
