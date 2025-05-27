@@ -60,7 +60,12 @@
       <% episodes.forEach((ep, i) => { %>
         <div class="epcard-card">
           <div class="epcard-thumb-wrapper">
-            <video src="<%= ep.cloudinaryUrl %>" class="epcard-video" preload="metadata" muted playsinline tabindex="-1"></video>
+            <% if (ep.thumbnailUrl) { %>
+              <!-- サムネイルがあれば画像を表示 -->
+              <img src="<%= ep.thumbnailUrl %>" class="epcard-thumbnail" alt="<%= ep.title || '無題' %>" />
+            <% } %>
+            <!-- 動画表示、サムネイルはvideoのposter属性としてもセット -->
+            <video src="<%= ep.cloudinaryUrl %>" class="epcard-video" preload="metadata" muted playsinline tabindex="-1" poster="<%= ep.thumbnailUrl || '' %>"></video>
           </div>
           <div class="epcard-info">
   <div class="epcard-title"><%= ep.title || '無題' %></div>
