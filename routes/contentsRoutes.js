@@ -97,12 +97,17 @@ router.post('/works',
 router.get('/works/:id/edit', asyncHandler(async (req, res) => {
   const work = await Work.findById(req.params.id);
   if (!work) return res.status(404).send('作品が見つかりません');
+  
+  // 関連するエピソードも取得
+  const episodes = await Episode.find({ workId: work._id }).sort({ episodeNumber: 1 });
 
   // workEdit.ejs を表示
   res.render('partials/workEdit', {
     layout: 'layout',  // レイアウトを使う場合
     title : '作品を編集',
-    work
+    pageStyle: 'workEdit', // workEdit.cssを適用
+    work,
+    episodes
   });
 }));
 
@@ -346,10 +351,144 @@ router.get('/api/works', async (req, res) => {
 
 // 指定作品のエピソード一覧
 router.get('/api/works/:id/episodes', async (req, res) => {
-  const episodes = await Episode.find({ workId: req.params.id });
-  res.json(episodes);
+  try {
+    const episodes = await Episode.find({ workId: req.params.id });
+    res.json(episodes);
+  } catch (error) {
+    console.error('Error fetching episodes:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
+// 指定作品の特定エピソードを取得するAPI
+router.get('/api/works/:workId/episodes/:episodeId', asyncHandler(async (req, res) => {
+  const { workId, episodeId } = req.params;
+  
+  try {
+    // 作品とエピソードを同時に取得
+    const episode = await Episode.findById(episodeId);
+    
+    if (!episode) {
+      return res.status(404).json({ error: 'エピソードが見つかりません' });
+    }
+    
+    // エピソードデータを返還
+    res.json({ episode });
+  } catch (error) {
+    console.error('Error fetching episode:', error);
+    res.status(500).json({ error: error.message });
+  }
+}));
+
+
+/** エピソード編集画面表示 */
+router.get('/works/:workId/episodes/:epId/edit', asyncHandler(async (req, res) => {
+  const { workId, epId } = req.params;
+  const work = await Work.findById(workId);
+  const episode = await Episode.findById(epId);
+  
+  if (!work || !episode) return res.status(404).send('作品またはエピソードが見つかりません');
+  
+  // 他のエピソードも取得して表示用に
+  const episodes = await Episode.find({ workId }).sort({ episodeNumber: 1 });
+  
+  res.render('partials/episodeedit', {
+    layout: 'layout',
+    title: 'エピソード編集',
+    pageStyle: 'episodeUpload', // 既存のCSSを使用
+    bodyClass: 'dark',
+    work,
+    episode,
+    episodes
+  });
+}));
+
+/** エピソード更新処理 */
+router.put('/works/:workId/episodes/:epId/edit', 
+  upload.fields([
+    { name: 'contentFile', maxCount: 1 },
+    { name: 'thumbnailImage', maxCount: 1 }
+  ]),
+  asyncHandler(async (req, res) => {
+    const { workId, epId } = req.params;
+    const { title, episodeNumber, description, duration, durationSeconds } = req.body;
+    const price = parseInt(req.body.price, 10) || 0;
+    const isPaid = price > 0;
+    
+    const episode = await Episode.findById(epId);
+    if (!episode) return res.status(404).send('エピソードが見つかりません');
+    
+    // エピソード番号の処理
+    let epNum = parseInt(episodeNumber, 10);
+    if (Number.isNaN(epNum)) {
+      epNum = episode.episodeNumber; // 未入力ならそのままの番号を維持
+    }
+    
+    // 更新オブジェクト作成
+    const updateData = {
+      title,
+      episodeNumber: epNum,
+      description,
+      price,
+      isPaid,
+      duration: duration || episode.duration
+    };
+    
+    // 秒数が更新されていれば設定
+    if (durationSeconds) {
+      updateData.durationSeconds = parseInt(durationSeconds, 10);
+    }
+    
+    // 新しい動画ファイルがあれば更新
+    const videoFile = req.files?.contentFile?.[0];
+    if (videoFile) {
+      // 古いCloudinary動画を削除
+      if (episode.cloudinaryUrl) {
+        const publicId = extractPublicId(episode.cloudinaryUrl);
+        if (publicId) {
+          try {
+            await cloudinary.uploader.destroy(publicId, { 
+              resource_type: episode.contentType && episode.contentType.startsWith('video') ? 'video' : 'image' 
+            });
+          } catch (err) {
+            console.error('Cloudinary削除エラー:', err);
+          }
+        }
+      }
+      
+      // 新しい動画をアップロード
+      const { secure_url, resource_type } = await uploadToCloudinary(videoFile, 'episodes');
+      updateData.cloudinaryUrl = secure_url;
+      updateData.contentType = resource_type;
+    }
+    
+    // 新しいサムネイル画像があれば更新
+    const thumbnailFile = req.files?.thumbnailImage?.[0];
+    if (thumbnailFile) {
+      // 古いサムネイルがあれば削除
+      if (episode.thumbnailUrl) {
+        const publicId = extractPublicId(episode.thumbnailUrl);
+        if (publicId) {
+          try {
+            await cloudinary.uploader.destroy(publicId, { resource_type: 'image' });
+          } catch (err) {
+            console.error('Cloudinary削除エラー:', err);
+          }
+        }
+      }
+      
+      // 新しいサムネイルをアップロード
+      const thumbRes = await uploadToCloudinary(thumbnailFile, 'episodesthumbnail');
+      updateData.thumbnailUrl = thumbRes.secure_url;
+    }
+    
+    // DBを更新
+    await Episode.findByIdAndUpdate(epId, updateData);
+    
+    // 編集完了後、作品詳細ページへリダイレクト
+    res.redirect(`/works/${workId}`);
+  })
+);
 
 // エピソード単体削除ルート
 router.delete('/works/:workId/episodes/:epId', asyncHandler(async (req, res) => {

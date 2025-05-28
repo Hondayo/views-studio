@@ -93,6 +93,17 @@
             value="<%= work.title %>"
           >
         </div>
+
+        <!-- あらすじ -->
+        <div class="form-group">
+          <label for="description" class="label-title">あらすじ</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="4"
+            placeholder="作品のあらすじを入力してください"
+          ><%= work.description || '' %></textarea>
+        </div>
   
         <!-- 詳細情報 (レーティング/公開年/キャスト/制作会社) -->
         <div class="form-group detail-group">
@@ -170,57 +181,111 @@
   
     <!-- ===== 右：プレビュー ===== -->
     <aside class="preview-pane">
-      <h2 class="section-title">プレビュー</h2>
-      <p class="section-desc">
-        修正内容がどのように表示されるかリアルタイムで確認できます。
-      </p>
       <div class="preview-phone-frame">
         <div class="preview-phone-screen">
           
-          <!-- プレビュー：サムネイル画像 / 動画 -->
-          <div class="preview-thumbnail-wrapper" id="previewWrapper">
-            <img
-              id="previewImage"
-              class="preview-thumbnail"
-              src="<%= work.thumbnailUrl || '' %>"
-              alt=""
-            >
-            <!-- もし未設定ならオーバーレイ表示 -->
-            <% if (!work.thumbnailUrl) { %>
-              <div id="placeholderOverlay" class="placeholder-overlay">
-                サムネイルを追加する
+          <div class="episode-list-scroll">
+            <!-- 作品サムネイル・タイトル・詳細情報（セクション） -->
+            <div class="new-episode-preview">
+              <!-- サムネイルエリア、クリックで編集可能 -->
+              <div class="preview-thumbnail-wrapper section-selectable" id="previewThumbnailWrapper" data-section="thumbnail">
+                <% if (work.thumbnailUrl) { %>
+                  <img 
+                    src="<%= work.thumbnailUrl %>" 
+                    alt="<%= work.title %>" 
+                    class="preview-thumbnail"
+                    id="previewThumbnailImg">
+                  <% if (work.thumbnailVideoUrl) { %>
+                    <video 
+                      src="<%= work.thumbnailVideoUrl %>" 
+                      class="preview-thumbnail-video"
+                      id="previewThumbnailVideo"
+                      muted
+                      preload="none"
+                      playsinline
+                      style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:12px;"
+                    ></video>
+                  <% } %>
+                <% } else { %>
+                  <div class="placeholder-overlay">
+                    作品サムネイルが未設定です
+                  </div>
+                <% } %>
+                <div class="section-indicator">クリックで編集</div>
               </div>
+              
+              <!-- タイトル・詳細ボタン、クリックで編集可能 -->
+              <div class="title-row section-selectable" data-section="title">
+                <div class="preview-title" id="previewTitle"><%= work.title %></div>
+                <button type="button" id="toggleExtra" class="extra-toggle-btn">詳細</button>
+                <div class="section-indicator">クリックで編集</div>
+              </div>
+              
+              <!-- あらすじ、クリックで編集可能 -->
+              <div class="preview-description section-selectable" id="workDescription" data-section="description"><%= work.description || 'あらすじが未設定です' %>
+                <div class="section-indicator">クリックで編集</div>
+              </div>
+              <div class="toggle-link hidden" id="toggleDescription">---続きを見る---</div>
+              
+              <!-- 詳細情報、クリックで編集可能 -->
+              <dl id="previewExtra" class="preview-extra hidden section-selectable" data-section="details">
+                <dd class="year-label">
+                  <%= work.releaseDate && work.releaseDate.trim() !== '' 
+                       ? work.releaseDate 
+                       : '未設定' %>
+                </dd>
+                <dd class="rating-badge">
+                  <%= work.rating && work.rating.trim() !== ''
+                       ? work.rating
+                       : '未設定' %>
+                </dd>
+                <dt>キャスト</dt>
+                <dd id="previewCast"><%= work.cast && work.cast.trim() !== '' ? work.cast : '未設定' %></dd>
+                <dt>制作</dt>
+                <dd id="previewStudio"><%= work.studio && work.studio.trim() !== '' ? work.studio : '未設定' %></dd>
+                <div class="section-indicator">クリックで編集</div>
+              </dl>
+            </div>
+            
+            <!-- エピソードリスト -->
+            <% if (typeof episodes !== 'undefined' && episodes && episodes.length > 0) { %>
+              <h3 class="episode-list-title">エピソード一覧</h3>
+              <% episodes.forEach(ep => { %>
+                <div class="episode-card section-selectable" data-section="episode" data-episode-id="<%= ep._id %>">
+                  <div class="ep-thumb-16x9">
+                    <% if (ep.thumbnailUrl) { %>
+                      <img src="<%= ep.thumbnailUrl %>" class="ep-thumb" alt="<%= ep.title %>">
+                    <% } else if (ep.cloudinaryUrl) { %>
+                      <video src="<%= ep.cloudinaryUrl %>"
+                        class="ep-thumb ep-thumb-video"
+                        muted
+                        playsinline
+                        preload="auto"
+                        tabindex="-1"
+                        style="background:#222;"
+                        onloadeddata="this.currentTime=0;this.pause();"
+                      ></video>
+                    <% } else { %>
+                      <div style="width:100%;height:100%;background:#333;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:0.9em;">No Image</div>
+                    <% } %>
+                  </div>
+                  <div class="ep-title"><%= ep.title %></div>
+                  <div class="ep-meta">
+                    <span class="ep-duration" data-seconds="<%= ep.durationSeconds %>">
+                      <% if ((!ep.durationSeconds || ep.durationSeconds === 0) && ep.duration) { %>
+                        <%= ep.duration %>
+                      <% } %>
+                    </span>
+                    <span class="ep-price"><%= (!ep.price || ep.price === 0) ? '無料' : ep.price + '円' %></span>
+                  </div>
+                  <div class="ep-desc"><%= ep.description || '' %></div>
+                  <div class="toggle-link hidden">---続きを見る---</div>
+                  <div class="section-indicator">クリックで編集</div>
+                </div>
+              <% }) %>
             <% } else { %>
-              <div id="placeholderOverlay" class="placeholder-overlay hidden">
-                サムネイルを追加する
-              </div>
+              <div class="no-episodes-message">エピソードがありません</div>
             <% } %>
-  
-            <video
-              id="previewVideo"
-              class="preview-thumbnail hidden"
-              muted
-              preload="metadata"
-              playsinline
-            ></video>
-          </div>
-  
-          <!-- タイトル・詳細 -->
-          <div class="title-row">
-            <div class="preview-title" id="previewTitle"><%= work.title %></div>
-            <button type="button" id="toggleExtra" class="extra-toggle-btn">詳細</button>
-          </div>
-  
-          <dl id="previewExtra" class="preview-extra hidden">
-            <span id="previewYear" class="year-label <%= work.releaseDate ? '' : 'hidden' %>">
-              <%= work.releaseDate %>
-            </span>
-            <span id="previewRating" class="rating-badge <%= work.rating ? '' : 'hidden' %>">
-              <%= work.rating %>
-            </span>
-            <dt>キャスト</dt><dd id="previewCast"><%= work.cast || '-' %></dd>
-            <dt>制作</dt><dd id="previewStudio"><%= work.studio || '-' %></dd>
-          </dl>
         </div>
       </div>
     </aside>

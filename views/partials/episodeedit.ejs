@@ -1,0 +1,312 @@
+<!-- episodeedit.ejs -->
+
+<div class="page-header">
+  <h1 class="main-title">エピソードを編集する</h1>
+</div>
+
+<div class="page-container"><!-- 2カラムレイアウト -->
+
+  <!-- === 左カラム：フォーム === -->
+  <div class="episode-form">
+    <h2>エピソード動画を変更する</h2>
+
+    <form id="episodeForm"
+          class="upload-form"
+          action="/works/<%= work._id %>/episodes/<%= episode._id %>/edit" 
+          method="POST" 
+          enctype="multipart/form-data"
+          data-episode-id="<%= episode._id %>"
+          data-work-id="<%= work._id %>">
+      <input type="hidden" name="_method" value="PUT">
+
+      <!-- 1) 動画ファイル（既存のビデオがある場合は表示） -->
+      <div id="mainDrop" class="drop-full">
+        <div class="drop-message">
+          <div class="drop-icon">⬆</div>
+          <p>新しい動画ファイルをドラッグ＆ドロップ<br>またはクリックしてファイルを選択<br><small>（未選択の場合は既存の動画が維持されます）</small></p>
+        </div>
+        <input type="file" id="contentFile" name="contentFile" hidden accept="video/*">
+      </div>
+
+      <!-- 2) 詳細入力 -->
+      <div id="details" class="details">
+        <div class="ep-form">
+
+          <!-- サムネイル画像アップロードフォーム -->
+          <div class="form-group" id="thumbnailImageFormGroup">
+            <label for="thumbnailImageInput">サムネイル画像（推奨16:9）</label>
+            <input type="file" accept="image/*" id="thumbnailImageInput" name="thumbnailImage">
+            <div id="thumbnailAndVideoWrapper" style="display: flex; gap: 16px; align-items: flex-start; margin-top: 8px; margin-bottom: 8px;">
+              <div>
+                <div class="thumb-video-box" style="margin-bottom: 0;">
+                  <img id="thumbnailImagePreview" src="<%= episode.thumbnailUrl || '' %>" alt="サムネイルプレビュー" class="<%= episode.thumbnailUrl ? '' : 'hidden' %>" style="max-width: 180px; width: 100%;">
+                </div>
+                <div class="current-thumb-label" style="margin: 8px 0 20px 0; font-size:0.95em; color:#666; text-align:center;">現在のサムネイル</div>
+              </div>
+              <div>
+                <div class="thumb-video-box" style="margin-bottom: 0;">
+                  <div id="videoPreviewWrapper">
+                    <% if (episode.cloudinaryUrl) { %>
+                      <video src="<%= episode.cloudinaryUrl %>" controls style="width: 100%; height: 100%; object-fit: cover;"></video>
+                    <% } %>
+                  </div>
+                </div>
+                <div class="current-video-label" style="margin: 8px 0 20px 0; font-size:0.95em; color:#666; text-align:center;">動画</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- エピソードタイトル(必須) -->
+          <div class="form-group">
+            <label for="title">エピソードタイトル <span style="color: red;">*</span></label>
+            <input type="text" id="title" name="title" class="form-control" maxlength="80" required placeholder="タイトルを入力" autocomplete="off" value="<%= episode.title %>">
+          </div>
+
+          <!-- あらすじ(任意) -->
+          <div class="form-group">
+            <label for="description">あらすじ(任意)</label>
+            <textarea id="description" name="description" rows="3"><%= episode.description || '' %></textarea>
+          </div>
+
+          <!-- 動画時間(hh:mm:ss) -->
+          <div class="form-group">
+            <label for="duration">動画時間（hh:mm:ss）</label>
+            <input type="text" id="duration" name="duration" placeholder="例: 01:23:45" value="<%= episode.duration || '' %>" readonly required>
+            <input type="hidden" id="durationSeconds" name="durationSeconds" value="<%= episode.durationSeconds || '' %>">
+          </div>
+
+          <!-- 価格(必須) -->
+          <div class="form-group">
+            <label for="price">価格（円） <span style="color:red;">*</span></label>
+            <input type="number" id="price" name="price" min="0" placeholder="0 で無料" required value="<%= episode.price || 0 %>">
+          </div>
+
+          <!-- エピソード番号 -->
+          <div class="form-group">
+            <label for="episodeNumber">エピソード番号</label>
+            <input type="number" id="episodeNumber" name="episodeNumber" value="<%= episode.episodeNumber || '' %>" placeholder="未入力なら自動で最後尾">
+          </div>
+
+        </div><!-- /.ep-form -->
+      </div><!-- /#details -->
+
+      <!-- 3) 送信ボタン -->
+      <div class="submit-button-container">
+        <button type="submit" class="btn-primary" id="submitEpisodeBtn">
+          <span id="submitEpisodeBtnText">変更を保存</span>
+          <span id="submitEpisodeBtnSpinner" style="display:none; margin-left:8px;">
+            <svg width="18" height="18" viewBox="0 0 50 50">
+              <circle cx="25" cy="25" r="20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="31.415, 31.415" transform="rotate(0 25 25)">
+                <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+            保存中…
+          </span>
+        </button>
+      </div>
+
+    </form>
+  </div><!-- /.episode-form -->
+
+
+  <!-- === 右カラム：プレビュー === -->
+  <aside class="preview-pane">
+    <div class="preview-phone-frame">
+      <div class="preview-phone-screen">
+
+        <% if (episodes && episodes.length) { %>
+          <div class="episode-list-scroll">
+            <div class="new-episode-preview">
+              <div class="preview-thumbnail-wrapper" id="previewThumbnailWrapper">
+                <% if (work.thumbnailUrl) { %>
+                  <img 
+                    src="<%= work.thumbnailUrl %>" 
+                    alt="<%= work.title %>" 
+                    class="preview-thumbnail"
+                    id="previewThumbnailImg">
+                  <% if (work.thumbnailVideoUrl) { %>
+                    <video 
+                      src="<%= work.thumbnailVideoUrl %>" 
+                      class="preview-thumbnail-video"
+                      id="previewThumbnailVideo"
+                      muted
+                      preload="none"
+                      playsinline
+                      style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:12px;"
+                    ></video>
+                  <% } %>
+                <% } else { %>
+                  <div class="placeholder-overlay">
+                    作品サムネイルが未設定です
+                  </div>
+                <% } %>
+              </div>
+              <div class="title-row">
+                <div class="preview-title" id="previewTitle"><%= work.title %></div>
+                <button type="button" id="toggleExtra" class="extra-toggle-btn">詳細</button>
+              </div>
+              <div class="preview-description" id="workDescription"><%= work.description %></div>
+              <div class="toggle-link hidden" id="toggleDescription">---続きを見る---</div>
+              <dl id="previewExtra" class="preview-extra hidden">
+                <dd class="year-label">
+                  <%= work.releaseDate && work.releaseDate.trim() !== '' 
+                       ? work.releaseDate 
+                       : '未設定' %>
+                </dd>
+                <dd class="rating-badge">
+                  <%= work.rating && work.rating.trim() !== ''
+                       ? work.rating
+                       : '未設定' %>
+                </dd>
+                <dt>キャスト</dt>
+                <dd><%= work.cast && work.cast.trim() !== '' ? work.cast : '未設定' %></dd>
+                <dt>制作</dt>
+                <dd><%= work.studio && work.studio.trim() !== '' ? work.studio : '未設定' %></dd>
+              </dl>
+
+            <% episodes.forEach(ep => { %>
+              <div class="episode-card <%= ep._id.toString() === episode._id.toString() ? 'current-editing' : '' %>" 
+                   data-episode-id="<%= ep._id %>" 
+                   id="episode-card-<%= ep._id %>"
+                   onclick="window.location.href='/works/<%= work._id %>/episodes/<%= ep._id %>/edit'">
+                <div class="ep-thumb-16x9">
+                  <% if (ep.thumbnailUrl) { %>
+                    <img src="<%= ep.thumbnailUrl %>" class="ep-thumb" alt="<%= ep.title %>">
+                  <% } else if (ep.cloudinaryUrl) { %>
+                    <video src="<%= ep.cloudinaryUrl %>"
+                      class="ep-thumb ep-thumb-video"
+                      muted
+                      playsinline
+                      preload="auto"
+                      tabindex="-1"
+                      style="background:#222;"
+                      onloadeddata="this.currentTime=0;this.pause();"
+                    ></video>
+                  <% } else { %>
+                    <div style="width:100%;height:100%;background:#333;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:0.9em;">No Image</div>
+                  <% } %>
+                </div>
+                <div class="ep-title"><%= ep.title %></div>
+                <div class="ep-meta">
+                  <span class="ep-duration" data-seconds="<%= ep.durationSeconds %>">
+                    <% if ((!ep.durationSeconds || ep.durationSeconds === 0) && ep.duration) { %>
+                      <%= ep.duration %>
+                    <% } %>
+                  </span>
+                  <span class="ep-price"><%= (!ep.price || ep.price === 0) ? '無料' : ep.price + '円' %></span>
+                </div>
+                <div class="ep-desc"><%= ep.description %></div>
+                <div class="toggle-link hidden">---続きを見る---</div>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+
+        
+        <!-- 下部のプレビューカードを削除し、リスト内の編集中エピソードがリアルタイムで更新されるようにしました -->
+
+
+      </div><!-- /.preview-phone-screen -->
+    </div><!-- /.preview-phone-frame -->
+  </aside><!-- /preview-pane -->
+
+</div><!-- /.page-container -->
+
+<!-- 外部JavaScriptファイルの読み込み -->
+<script src="/js/episodeEdit.js"></script>
+
+<!-- スタイルの追加 -->
+<style>
+/* 編集中エピソードの強調表示 */
+.current-editing {
+  border: 2px solid #0088ff !important;
+  position: relative;
+  box-shadow: 0 0 10px rgba(0, 136, 255, 0.5);
+  transition: all 0.3s ease;
+}
+.current-editing::before {
+  content: "編集中";
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #0088ff;
+  color: white;
+  font-size: 0.7em;
+  padding: 2px 5px;
+  border-radius: 0 0 0 4px;
+  z-index: 1;
+}
+
+/* ローディングインジケータ */
+body.loading {
+  cursor: wait;
+  position: relative;
+}
+
+body.loading::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+/* 選択可能なセクション */
+.section-selectable {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  border-radius: 8px;
+}
+
+.section-selectable:hover {
+  border-color: #0088ff;
+}
+
+.section-selectable:hover .section-indicator {
+  opacity: 1;
+}
+
+.section-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 136, 255, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+body.loading::before {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  margin-top: -25px;
+  margin-left: -25px;
+  border-radius: 50%;
+  border: 4px solid rgba(0, 136, 255, 0.2);
+  border-top-color: #0088ff;
+  z-index: 10000;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
