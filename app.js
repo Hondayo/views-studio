@@ -34,6 +34,12 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err  => console.error('MongoDB 接続失敗:', err));
 
 /* ---------- ルート ---------- */
+app.get("/login", (req, res) => {
+  res.render('partials/login', {
+    title: 'ログイン',
+  });
+});
+
 app.use('/', contentsRoutes);
 app.use('/shorts', shortsRoutes);
 app.use('/', analyticsRoutes);
