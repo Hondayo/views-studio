@@ -1,14 +1,4 @@
 // public/js/contents.js
-// 3‑dot card menu: toggle + delete action
-//   - カード右上の ⋮ ボタンでメニューを開閉
-//   - 「削除」を押すと confirm 後 POST(DELETE) してリロード
-//   - 他のカードメニューは同時に開かないよう排他制御
-
-// public/js/contents.js
-// コンテンツページのUI制御・イベントまとめ
-// - 3ドットメニューの開閉・削除
-// - タブ切替UI
-// public/js/contents.js
 // コンテンツページ UI制御まとめ
 // - 3ドットメニュー（開閉・削除）
 // - タブ切替（有料コンテンツ／切り抜き）
