@@ -1,18 +1,20 @@
-<!-- ▼ ページ全体の見出しエリア ▼ -->
+<!-- ページ上部のメイン見出しエリア -->
 <header class="page-header">
   <h1 class="main-title">新規作品を公開</h1>
 </header>
 
-<!-- ▼ メインコンテンツ ▼ -->
+<!-- メインコンテンツ全体 -->
 <div class="page-container"> 
-  <!-- ===== 左：入力フォーム ===== -->
-  <section class="form-section">
+
+  <!-- 入力フォームエリア（左カラム） -->
+<section class="form-section">
     <h2 class="section-title">作品情報入力フォーム</h2>
     <p class="section-desc">
       公開したい作品のタイトル、サムネイル、カテゴリーなどを入力してください。
     </p>
 
-    <form id="workForm" class="wizard-container work-form" action="/works" method="POST" enctype="multipart/form-data">
+    <!-- 作品登録用の入力フォーム -->
+<form id="workForm" class="wizard-container work-form" action="/works" method="POST" enctype="multipart/form-data">
       
       <!-- サムネイル画像 -->
       <div class="form-group thumb-group">
@@ -37,7 +39,8 @@
         </small>
       </div>
       <!-- 進捗表示用のブロック -->
-      <div id="uploadProgress" class="upload-progress hidden">
+      <!-- サムネイル画像アップロード時の進捗表示 -->
+<div id="uploadProgress" class="upload-progress hidden">
         <div class="progress-bar-bg">
           <div class="progress-bar-fill" id="progressBar"></div>
         </div>
@@ -75,16 +78,17 @@
         <small class="help-text">作品の正式なタイトルを入力してください。</small>
       </div>
 
-      <!-- あらすじ -->
-      <div class="form-group">
+      <!-- 作品あらすじ入力欄（任意） -->
+<div class="form-group">
         <label for="description" class="label-title">
           あらすじ（任意）
         </label>
         <textarea id="description" name="description" rows="3" placeholder="作品のあらすじや概要を入力してください"></textarea>
       </div>
 
-      <!-- 詳細情報 (レーティング・公開年・キャスト・制作会社) -->
-      <div class="form-group detail-group">
+
+      <!-- 作品の詳細情報入力（レーティング・公開年・キャスト・制作会社） -->
+<div class="form-group detail-group">
         <details open>
           <summary>詳細情報</summary>
           <div class="detail-fields">
@@ -103,21 +107,23 @@
               </small>
             </div>
             
-            <!-- 公開年 -->
-            <div class="form-subgroup">
+            <!-- 公開年入力欄 -->
+<div class="form-subgroup">
               <label for="releaseDate">公開年</label>
               <input type="text" id="releaseDate"  name="releaseDate" placeholder="公開年 (数字のみ)">
               <small class="help-text">例：2024</small>
             </div>
 
-            <!-- キャスト -->
-            <div class="form-subgroup">
+
+            <!-- キャスト入力欄（カンマ区切り） -->
+<div class="form-subgroup">
               <label for="cast">キャスト (カンマ区切り)</label>
               <input type="text" id="cast" name="cast">
             </div>
 
-            <!-- 制作会社 -->
-            <div class="form-subgroup">
+
+            <!-- 制作会社入力欄 -->
+<div class="form-subgroup">
               <label for="studio">制作会社</label>
               <input type="text" id="studio" name="studio">
             </div>
@@ -125,7 +131,8 @@
         </details>
       </div>
 
-      <div class="form-group">
+      <!-- タグ入力欄（カンマ区切り、検索用） -->
+<div class="form-group">
         <label for="tags" class="label-title">タグ (カンマ区切り)</label>
         <input type="text" id="tags" name="tags">
         <small class="help-text">
@@ -133,18 +140,23 @@
         </small>
       </div>
 
-      <!-- 作品を下書き or 公開ボタン -->
-      <button type="submit" class="btn-primary w-full" id="publishButton">作品を公開</button>
+
+      <!-- 作品を公開する送信ボタン -->
+<button type="submit" class="btn-primary w-full" id="publishButton">作品を公開</button>
     </form>
   </section>
 
-  <!-- ===== 右：プレビュー ===== -->
-  <aside class="preview-pane">
-    <div class="preview-phone-frame">
-      <div class="preview-phone-screen">
 
-        <!-- サムネイル画像＆動画のプレビュー -->
-        <div class="preview-thumbnail-wrapper empty-thumb" id="previewWrapper">
+  <!-- プレビューエリア（右カラム） -->
+<aside class="preview-pane">
+    <!-- スマホ風のプレビューフレーム -->
+<div class="preview-phone-frame">
+      <!-- プレビュー画面本体（黒背景・角丸） -->
+<div class="preview-phone-screen">
+
+
+        <!-- サムネイル画像・動画のプレビュー表示 -->
+<div class="preview-thumbnail-wrapper empty-thumb" id="previewWrapper">
           <img id="previewImage" class="preview-thumbnail hidden" src="" alt="">
           <div id="placeholderOverlay" class="placeholder-overlay">
             サムネイルを追加する
