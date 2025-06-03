@@ -1,0 +1,557 @@
+<!-- views/analytics/episodeAnalytics.ejs -->
+<div class="analytics-page">
+  <div class="analytics-container">
+    <!-- ヘッダー部分 -->
+    <div class="analytics-header">
+      <div class="analytics-title">
+        <h1><%= episode.title %> の分析</h1>
+        <div class="analytics-breadcrumb">
+          <a href="/works/<%= work._id %>/analyze">作品全体</a> &gt; <%= episode.title %>
+        </div>
+        <div class="analytics-period-selector">
+          <button class="period-btn active" data-period="7days">7日間</button>
+          <button class="period-btn" data-period="30days">30日間</button>
+          <button class="period-btn" data-period="90days">90日間</button>
+        </div>
+      </div>
+      <div class="analytics-selector">
+        <div class="selector-label">エピソードを選択：</div>
+        <select id="episodeSelector" class="analytics-select">
+          <% episodes.forEach(ep => { %>
+            <option value="<%= ep._id %>" <%= (ep._id.toString() === episode._id.toString()) ? 'selected' : '' %>>
+              <%= ep.title || 'エピソード ' + ep.episodeNumber %>
+            </option>
+          <% }); %>
+        </select>
+      </div>
+    </div>
+
+    <!-- メインコンテンツエリア -->
+    <div class="analytics-content">
+      <!-- タブメニュー -->
+      <div class="analytics-tabs">
+        <button class="tab-btn active" data-tab="viewsTab">視聴者</button>
+        <button class="tab-btn" data-tab="leadsTab">リード獲得</button>
+        <button class="tab-btn" data-tab="monetizationTab">マネタイズ</button>
+      </div>
+
+      <!-- タブコンテンツ -->
+      <div class="tab-content">
+        <!-- 視聴者タブ -->
+        <div id="viewsTab" class="tab-pane active">
+          <div class="analytics-cards">
+            <div class="analytics-card">
+              <h3>総視聴回数</h3>
+              <div class="card-value" id="totalViews">-</div>
+              <div class="card-trend" id="viewsTrend">-</div>
+            </div>
+            <div class="analytics-card">
+              <h3>コメント数</h3>
+              <div class="card-value" id="totalComments">-</div>
+              <div class="card-trend" id="commentsTrend">-</div>
+            </div>
+            <div class="analytics-card">
+              <h3>いいね数</h3>
+              <div class="card-value" id="totalLikes">-</div>
+              <div class="card-trend" id="likesTrend">-</div>
+            </div>
+          </div>
+          
+          <div class="analytics-graphs">
+            <div class="graph-container">
+              <h3>視聴者層：年齢</h3>
+              <canvas id="ageChart"></canvas>
+            </div>
+            <div class="graph-container">
+              <h3>視聴者層：性別</h3>
+              <canvas id="genderChart"></canvas>
+            </div>
+          </div>
+          
+          <div class="analytics-details">
+            <h3>視聴数の推移</h3>
+            <canvas id="viewsTrendChart"></canvas>
+          </div>
+        </div>
+        
+        <!-- リード獲得分析タブ -->
+        <div id="leadsTab" class="tab-pane">
+          <div class="analytics-cards">
+            <div class="analytics-card">
+              <h3>総リード視聴回数</h3>
+              <div class="card-value" id="totalLeadViews">-</div>
+              <div class="card-trend" id="leadViewsTrend">-</div>
+            </div>
+            <div class="analytics-card">
+              <h3>リード視聴完了率</h3>
+              <div class="card-value" id="leadCompletionRate">-</div>
+              <div class="card-trend" id="leadCompletionTrend">-</div>
+            </div>
+            <div class="analytics-card">
+              <h3>リードコンバージョン率</h3>
+              <div class="card-value" id="leadConversionRate">-</div>
+              <div class="card-trend" id="leadConversionTrend">-</div>
+            </div>
+          </div>
+          
+          <!-- 流入元分析セクション -->
+          <div class="analytics-details">
+            <h3>視聴流入経路分析</h3>
+            <p class="section-description">どのソースからユーザーがエピソードに到達したかを分析します</p>
+            
+            <div class="reach-source-container" id="reachSourceChart">
+              <!-- 流入元の横棒グラフはJSで生成されます -->
+            </div>
+          </div>
+          
+          <!-- 日別リード視聴数グラフ -->
+          <div class="analytics-graphs">
+            <div class="graph-container">
+              <h3>日別リード視聴回数</h3>
+              <canvas id="leadsChart"></canvas>
+            </div>
+          </div>
+          
+          <!-- 切り抜きコンテンツのリード貢献度 -->
+          <div class="analytics-details" id="leadClipsSection">
+            <h3>切り抜きコンテンツのリード貢献度</h3>
+            <p class="section-description">各切り抜きがどれだけリード獲得に貢献しているかを確認できます</p>
+            
+            <div class="clip-contribution-table-container">
+              <table class="analytics-table clip-contribution-table">
+                <thead>
+                  <tr>
+                    <th>切り抜きタイトル</th>
+                    <th>再生数</th>
+                    <th>リード獲得数</th>
+                    <th>コンバージョン率</th>
+                    <th>売上貢献度</th>
+                    <th>状態</th>
+                  </tr>
+                </thead>
+                <tbody id="clipContributionTableBody">
+                  <!-- 切り抜きコンテンツのデータはJSで動的に追加されます -->
+                </tbody>
+              </table>
+            </div>
+            
+            <div id="noClipsMessage" class="no-data-message" style="display: none;">
+              このエピソードにはリード設定された切り抜きがありません。
+            </div>
+          </div>
+        </div>
+        
+        <!-- マネタイズ分析タブ -->
+        <div id="monetizationTab" class="tab-pane">
+          <div class="analytics-cards">
+            <div class="analytics-card">
+              <h3>総収益</h3>
+              <div class="card-value" id="totalRevenue">-</div>
+              <div class="card-trend" id="revenueTrend">-</div>
+            </div>
+            <div class="analytics-card">
+              <h3>単価</h3>
+              <div class="card-value" id="price">¥<%= episode.price || 0 %></div>
+            </div>
+            <div class="analytics-card">
+              <h3>コンバージョン率</h3>
+              <div class="card-value" id="conversionRate">-</div>
+              <div class="card-trend" id="conversionTrend">-</div>
+            </div>
+          </div>
+          
+          <div class="analytics-graphs">
+            <div class="graph-container">
+              <h3>日別収益</h3>
+              <canvas id="revenueChart"></canvas>
+            </div>
+          </div>
+          
+          <div class="analytics-details">
+            <h3>購入者属性</h3>
+            <div class="user-stats">
+              <canvas id="userChart" style="max-width: 400px; margin: 0 auto;"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- サイドバー -->
+  <div class="analytics-sidebar">
+    <h3>エピソード一覧</h3>
+    <div class="episode-list">
+      <a href="/works/<%= work._id %>/analyze" class="episode-item work-item">
+        <div class="work-thumb">
+          <% if (work.thumbnailUrl) { %>
+            <img src="<%= work.thumbnailUrl %>" alt="<%= work.title %>">
+          <% } else { %>
+            <div class="no-thumb"></div>
+          <% } %>
+        </div>
+        <div class="work-info">
+          <div class="work-title"><%= work.title %></div>
+          <div class="work-meta">作品全体</div>
+        </div>
+      </a>
+      
+      <% episodes.forEach(ep => { %>
+        <a href="/works/<%= work._id %>/episodes/<%= ep._id %>/analyze" 
+           class="episode-item <%= (ep._id.toString() === episode._id.toString()) ? 'active' : '' %>">
+          <div class="episode-thumb">
+            <% if (ep.thumbnailUrl) { %>
+              <img src="<%= ep.thumbnailUrl %>" alt="<%= ep.title %>">
+            <% } else { %>
+              <div class="no-thumb"></div>
+            <% } %>
+          </div>
+          <div class="episode-info">
+            <div class="episode-title"><%= ep.title || 'エピソード ' + ep.episodeNumber %></div>
+            <div class="episode-meta">
+              <span class="episode-duration"><%= ep.duration || '00:00:00' %></span>
+              <span class="episode-price"><%= ep.price === 0 ? '無料' : '¥' + ep.price %></span>
+            </div>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+</div>
+
+<!-- グラフ描画用のライブラリ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- 分析画面用のスクリプト -->
+<script>
+  // データの初期化
+  const viewsData = JSON.parse('<%- viewsData %>');
+  const retentionData = JSON.parse('<%- retentionData %>');
+  const leadsData = JSON.parse('<%- leadsData %>');
+  const monetizationData = JSON.parse('<%- monetizationData %>');
+  
+  // 視聴者層データ（ダミーデータ）
+  const audienceData = {
+    age: {
+      '10-19': 15,
+      '20-29': 38,
+      '30-39': 24,
+      '40-49': 16,
+      '50-59': 5,
+      '60+': 2
+    },
+    gender: {
+      '男性': 62,
+      '女性': 35,
+      'その他': 3
+    },
+    comments: 156,
+    likes: 842
+  };
+  
+  // DOM要素が読み込まれた後に実行
+  document.addEventListener('DOMContentLoaded', function() {
+    // タブ切り替え
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        // アクティブなタブを非アクティブに
+        document.querySelector('.tab-btn.active').classList.remove('active');
+        document.querySelector('.tab-pane.active').classList.remove('active');
+        
+        // クリックされたタブをアクティブに
+        this.classList.add('active');
+        const tabId = this.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+        
+        // タブに応じたグラフを再描画
+        if(tabId === 'viewsTab') {
+          renderViewsCharts();
+        } else if(tabId === 'leadsTab') {
+          renderLeadsCharts();
+        } else if(tabId === 'monetizationTab') {
+          renderMonetizationCharts();
+        }
+      });
+    });
+    
+    // エピソード選択
+    const episodeSelector = document.getElementById('episodeSelector');
+    episodeSelector.addEventListener('change', function() {
+      const episodeId = this.value;
+      window.location.href = `/works/<%= work._id %>/episodes/${episodeId}/analyze`;
+    });
+    
+    // 期間選択
+    const periodBtns = document.querySelectorAll('.period-btn');
+    periodBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelector('.period-btn.active').classList.remove('active');
+        this.classList.add('active');
+        
+        const period = this.getAttribute('data-period');
+        // ここで期間に応じたデータを再取得してグラフを更新
+        // TODO: 本実装時はAPIからデータを取得
+        updateChartsForPeriod(period);
+      });
+    });
+    
+    // 初期表示
+    renderViewsCharts();
+    renderViewsData();
+  });
+  
+  // 視聴者タブのグラフ描画
+  function renderViewsCharts() {
+    // 年齢層グラフ
+    const ageCtx = document.getElementById('ageChart').getContext('2d');
+    const ageChart = new Chart(ageCtx, {
+      type: 'pie',
+      data: {
+        labels: Object.keys(audienceData.age),
+        datasets: [{
+          label: '年齢層分布',
+          data: Object.values(audienceData.age),
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
+            'rgba(75, 192, 192, 0.5)',
+            'rgba(153, 102, 255, 0.5)',
+            'rgba(255, 159, 64, 0.5)'
+          ],
+          borderColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 206, 86)',
+            'rgb(75, 192, 192)',
+            'rgb(153, 102, 255)',
+            'rgb(255, 159, 64)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.raw || 0;
+                return `${label}: ${value}%`;
+              }
+            }
+          },
+          legend: {
+            position: 'right'
+          }
+        }
+      }
+    });
+    
+    // 性別グラフ
+    const genderCtx = document.getElementById('genderChart').getContext('2d');
+    const genderChart = new Chart(genderCtx, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(audienceData.gender),
+        datasets: [{
+          label: '性別分布',
+          data: Object.values(audienceData.gender),
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(255, 206, 86, 0.5)'
+          ],
+          borderColor: [
+            'rgb(54, 162, 235)',
+            'rgb(255, 99, 132)',
+            'rgb(255, 206, 86)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.raw || 0;
+                return `${label}: ${value}%`;
+              }
+            }
+          },
+          legend: {
+            position: 'right'
+          }
+        }
+      }
+    });
+    
+    // 視聴数推移グラフ
+    const viewsTrendCtx = document.getElementById('viewsTrendChart').getContext('2d');
+    const viewsTrendChart = new Chart(viewsTrendCtx, {
+      type: 'line',
+      data: {
+        labels: viewsData.map(item => item.date),
+        datasets: [{
+          label: '視聴回数',
+          data: viewsData.map(item => item.views),
+          backgroundColor: 'rgba(54, 162, 235, 0.1)',
+          borderColor: 'rgb(54, 162, 235)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+    
+    renderViewsData();
+  }
+  
+  // リード獲得分析タブのグラフ描画
+  function renderLeadsCharts() {
+    const leadsCtx = document.getElementById('leadsChart').getContext('2d');
+    const leadsChart = new Chart(leadsCtx, {
+      type: 'line',
+      data: {
+        labels: leadsData.map(item => item.date),
+        datasets: [{
+          label: 'リード視聴回数',
+          data: leadsData.map(item => item.views),
+          borderColor: 'rgb(255, 99, 132)',
+          tension: 0.1,
+          fill: false
+        }, {
+          label: 'リード視聴完了数',
+          data: leadsData.map(item => item.completions),
+          borderColor: 'rgb(255, 159, 64)',
+          tension: 0.1,
+          fill: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+    
+    // サマリーカードを更新
+    document.getElementById('totalLeadViews').textContent = leadsData.reduce((sum, item) => sum + item.views, 0);
+    document.getElementById('leadCompletionRate').textContent = 
+      (leadsData.reduce((sum, item) => sum + item.completions, 0) / 
+       leadsData.reduce((sum, item) => sum + item.views, 0) * 100).toFixed(1) + '%';
+    document.getElementById('leadConversionRate').textContent = '6.2%'; // ダミー値
+  }
+  
+  // マネタイズ分析タブのグラフ描画
+  function renderMonetizationCharts() {
+    // 日別収益グラフ
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    const revenueChart = new Chart(revenueCtx, {
+      type: 'bar',
+      data: {
+        labels: viewsData.map(item => item.date),
+        datasets: [{
+          label: '収益 (円)',
+          data: viewsData.map(item => item.revenue),
+          backgroundColor: 'rgba(255, 205, 86, 0.5)',
+          borderColor: 'rgb(255, 205, 86)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+    
+    // 購入者属性グラフ
+    const userAttributesData = JSON.parse('<%- userAttributesData %>');
+    const userCtx = document.getElementById('userChart').getContext('2d');
+    const userChart = new Chart(userCtx, {
+      type: 'pie',
+      data: {
+        labels: userAttributesData.map(item => item.type),
+        datasets: [{
+          data: userAttributesData.map(item => item.percentage),
+          backgroundColor: [
+            'rgba(75, 192, 192, 0.5)',
+            'rgba(153, 102, 255, 0.5)',
+            'rgba(255, 159, 64, 0.5)'
+          ],
+          borderColor: [
+            'rgb(75, 192, 192)',
+            'rgb(153, 102, 255)',
+            'rgb(255, 159, 64)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+    
+    // サマリーカードを更新
+    document.getElementById('totalRevenue').textContent = '¥' + monetizationData.totalRevenue.toLocaleString();
+    document.getElementById('conversionRate').textContent = (monetizationData.conversionRate * 100).toFixed(1) + '%';
+  }
+  
+  // 視聴者データの表示
+  function renderViewsData() {
+    // 総視聴回数の計算
+    const totalViews = viewsData.reduce((sum, item) => sum + item.views, 0);
+    document.getElementById('totalViews').textContent = totalViews.toLocaleString();
+    
+    // コメント数の表示（ダミーデータを使用）
+    document.getElementById('totalComments').textContent = audienceData.comments.toLocaleString();
+    document.getElementById('commentsTrend').textContent = '+7% 前期比';
+    
+    // いいね数の表示（ダミーデータを使用）
+    document.getElementById('totalLikes').textContent = audienceData.likes.toLocaleString();
+    document.getElementById('likesTrend').textContent = '+15% 前期比';
+    
+    // 視聴回数トレンドの表示
+    const viewsChange = Math.round((viewsData[viewsData.length - 1].views - viewsData[0].views) / viewsData[0].views * 100);
+    const trendSymbol = viewsChange >= 0 ? '+' : '';
+    document.getElementById('viewsTrend').textContent = `${trendSymbol}${viewsChange}% 前期比`;
+  }
+  
+  // 期間に応じたデータ更新（ダミー実装）
+  function updateChartsForPeriod(period) {
+    console.log(`期間が${period}に変更されました`);
+    // 実際の実装では、ここでAPIからデータを取得して表示を更新
+    // 現在はダミーデータを使用しているため何もしない

@@ -9,6 +9,7 @@ const Work    = require('./models/Work');
 const Episode = require('./models/Episode');
 const contentsRoutes = require('./routes/contentsRoutes');
 const shortsRoutes = require('./routes/shortsRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 
 const app = express();
 
@@ -35,6 +36,7 @@ mongoose.connect(process.env.MONGO_URI)
 /* ---------- ルート ---------- */
 app.use('/', contentsRoutes);
 app.use('/shorts', shortsRoutes);
+app.use('/', analyticsRoutes);
 
 /* ホームだけ直書き */
 app.get('/', async (req, res) => {
