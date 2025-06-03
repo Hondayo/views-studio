@@ -4,7 +4,6 @@ const expressLayouts  = require('express-ejs-layouts');
 const mongoose        = require('mongoose');
 const path            = require('path');
 const methodOverride  = require('method-override');
-const cookieParser    = require('cookie-parser');
 
 const Work    = require('./models/Work');
 const Episode = require('./models/Episode');
@@ -12,14 +11,12 @@ const contentsRoutes = require('./routes/contentsRoutes');
 const shortsRoutes = require('./routes/shortsRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 
-
 const app = express();
 
 /* ---------- ミドルウェア ---------- */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));                 // ① body 先にパース
 app.use(methodOverride('_method', { methods: ['POST', 'GET'] })); // ② _method=DELETE を変換
-app.use(cookieParser());                                         // ③ Cookie解析
 
 /* ---------- レイアウト ---------- */
 app.use(expressLayouts);
@@ -37,13 +34,6 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err  => console.error('MongoDB 接続失敗:', err));
 
 /* ---------- ルート ---------- */
-// ログインページの表示
-app.get('/login', (req, res) => {
-  res.render('partials/login', {
-    title: 'ログイン',
-  });
-});
-
 app.use('/', contentsRoutes);
 app.use('/shorts', shortsRoutes);
 app.use('/', analyticsRoutes);
