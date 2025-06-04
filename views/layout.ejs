@@ -1,18 +1,28 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <!-- =============================
+       共通 <head> 設定
+       - メタ情報
+       - タイトル
+       - グローバル/ページ固有CSS
+  ============================== -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title><%= typeof title !== 'undefined' ? title : 'Views Studio' %></title>
 
+  <!-- グローバルCSS -->
   <link rel="stylesheet" href="/styles.css" />
   <% if (typeof pageStyle !== 'undefined') { %>
+    <!-- ページ固有CSS -->
     <link rel="stylesheet" href="/pages/<%= pageStyle %>.css" />
   <% } %>
 </head>
 
 <body>
-  <!-- ─────── ▼ トップバー ▼ ─────── -->
+  <!-- =============================
+       トップバー（全ページ共通）
+  ============================== -->
   <header class="topbar">
     <button id="topbar-toggle" class="topbar-toggle">≡</button>
     <span class="brand-name">Views&nbsp;Studio</span>
@@ -32,20 +42,27 @@
         </a>
       </div>
     </div>
-
   </header>
 
+  <!-- =============================
+       サイドバー＋メインコンテンツレイアウト
+  ============================== -->
   <div class="page-layout">
+    <!-- サイドバー（共通） -->
     <%- include('partials/sidebar') %>
 
+    <!-- メインコンテンツ（各ページで差し替え） -->
     <main class="main-content">
       <%- body %>
     </main>
   </div>
 
+  <!-- =============================
+       共通JS（トップバー制御等）
+  ============================== -->
   <script src="/js/topbar.js"></script>
-  <script src="/js/topbar-create.js"></script>
   <% if (typeof pageScript !== 'undefined') { %>
+    <!-- ページ固有JS -->
     <script src="/js/<%= pageScript %>.js"></script>
   <% } %>
 </body>
