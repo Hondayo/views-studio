@@ -118,10 +118,10 @@ router.put('/works/:id',
     { name: 'thumbnailVideo', maxCount: 1 }
   ]),
   asyncHandler(async (req, res) => {
-    // bodyから title / releaseDate / rating / cast / studio / tags などを取得
-    const { title, releaseDate, rating, cast, studio, tags } = req.body;
+    // bodyから title / description / releaseDate / rating / cast / studio / tags などを取得
+    const { title, description, releaseDate, rating, cast, studio, tags } = req.body;
 
-    const update = { title, releaseDate, rating, cast, studio, tags: parseTags(tags) };
+    const update = { title, description, releaseDate, rating, cast, studio, tags: parseTags(tags) };
 
     // 新しいサムネイル画像アップロード
     if (req.files?.thumbnail?.[0]) {
