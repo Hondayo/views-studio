@@ -1,46 +1,55 @@
-/* ───────── ページ固有のスタイル読み込み ───────── */
+/* =============================
+   ページ固有スタイルの一括インポート
+   - 各ページ/パーツごとに分割管理
+   - 必要なCSSのみ個別に編集可能
+============================= */
+@import url("./pages/modal.css");        /* モーダルウィンドウ用 */
+@import url("./pages/topbar.css");       /* トップバー用 */
+@import url("./pages/sidebar.css");      /* サイドバー用 */
+@import url("./pages/home.css");         /* ホーム画面用 */
+@import url("./pages/contents.css");     /* コンテンツ一覧用 */
+@import url("./pages/newWork.css");      /* 新規作品投稿用 */
+@import url("./pages/episodeUpload.css");/* エピソードアップロード用 */
+@import url("./pages/adminDashboard.css");/* 管理ダッシュボード用 */
+@import url("./pages/workDetail.css");   /* 作品詳細ページ用 */
+@import url("./pages/workEdit.css");     /* 作品編集ページ用 */
+@import url("./pages/shortNew.css");     /* ショート動画投稿用 */
 
-@import url("./pages/modal.css");
-@import url("./pages/topbar.css");
-@import url("./pages/sidebar.css");
-@import url("./pages/home.css");
-@import url("./pages/contents.css");
-@import url("./pages/newWork.css");
-@import url("./pages/episodeUpload.css");
-@import url("./pages/adminDashboard.css");
-@import url("./pages/workDetail.css");
-@import url("./pages/workEdit.css");
-@import url("./pages/shortNew.css");
 
-
-
-/* ───────── 1) リセット & 基本設定 ───────── */
+/* =============================
+   1) リセット & 基本設定
+   - すべての要素の余白リセット
+   - ルートの基本フォント・背景・色
+============================= */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
   width: 100%;
   height: 100%;
   font-family: sans-serif;
-  background: var(--bg-main);
+  background: var(--bg-main);   /* カラーパレットは:rootで定義 */
   color: var(--text-main);
 }
 
 
-/* ───────── 2) 共通レイアウト ───────── */
-body {                      /* layout.ejs で使う本体 */
+/* =============================
+   2) 共通レイアウト（layout.ejs対応）
+   - サイドバー＋メインの2カラム構成
+   - 高さ100vh固定
+============================= */
+body {
   display: flex;
   flex-direction: column;
 }
 
-.page-layout {              /* --- Sidebar --- */
+.page-layout {
   display: flex;
   width: 100%;
   height: 100vh;
   overflow: hidden;
 }
 
-
-.main-content {             /* 残り領域をすべて使用 */
+.main-content {
   flex: 1;
   overflow-y: auto;
   background: var(--bg-main);
@@ -49,7 +58,10 @@ body {                      /* layout.ejs で使う本体 */
 }
 
 
-/* ───────── 3) 汎用ボタン ───────── */
+/* =============================
+   3) 汎用ボタン・アクション
+   - ボタンやツールチップの共通デザイン
+============================= */
 .epcard-actions {
   display: flex;
   gap: 16px;
@@ -100,7 +112,10 @@ body {                      /* layout.ejs で使う本体 */
 .btn:hover { background: var(--accent-hover); }
 
 
-/* ───────── 4) 汎用カード（例） ───────── */
+/* =============================
+   4) 汎用カードデザイン（例）
+   - カード型UIの共通スタイル
+============================= */
 .card {
   background: var(--bg-card);
   border-radius: 10px;

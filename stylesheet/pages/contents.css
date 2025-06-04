@@ -1,4 +1,7 @@
-/* ========= 作品一覧のグリッドレイアウト ========== */
+/* =============================
+  作品一覧ページのグリッド全体レイアウト
+  （カードを等間隔で並べる）
+============================= */
 .works-grid {
   /* カードをゆったり配置できるように設定 */
   display: grid;
@@ -7,13 +10,20 @@
   padding: 24px 0;
 }
 
-/* ========= メニューバー風タブ ========== */
+/* =============================
+  ページ上部のタブ切替バー全体
+  （"Works"/"Shorts"などの切替）
+============================= */
 .menu-bar {
   display: flex;
   border-bottom: 2px solid #ececec;
   margin-bottom: 24px;
   background: #fff;
 }
+/* =============================
+  タブ切替バー内の各ボタン
+  （未選択時）
+============================= */
 .menu-bar-btn {
   flex: 1 1 0;
   background: none;
@@ -26,13 +36,20 @@
   cursor: pointer;
   transition: border-color 0.18s, color 0.18s;
 }
+/* =============================
+  タブ切替バー内のアクティブなボタン
+  （選択中タブの強調）
+============================= */
 .menu-bar-btn.active {
   border-bottom: 3px solid #111;
   color: #111;
   background: #fafafa;
 }
 
-/* ========= 各カードの見た目 ========== */
+/* =============================
+  有料コンテンツ（Works）のカード全体
+  （横並びレイアウト）
+============================= */
 .contents-epcard-main {
   display: flex;
   flex-direction: row;
@@ -44,6 +61,10 @@
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
+/* =============================
+  カード内サムネイル画像の外枠
+  （角丸・中央寄せ）
+============================= */
 .contents-epcard-thumb {
   flex: 0 0 140px;
   max-width: 140px;
@@ -56,6 +77,9 @@
   border-radius: 22px; /* サムネイルと同じ角丸 */
 }
 
+/* =============================
+  カード内：作品説明・タイトル等のブロック
+============================= */
 .contents-epcard-descblock {
   flex: 2 1 0;
   min-width: 160px;
@@ -66,6 +90,10 @@
   justify-content: flex-start;
   margin: 0 8px;
 }
+
+/* =============================
+  カード内：作品メタ情報（年・タグ等）
+============================= */
 .contents-epcard-meta {
   flex: 1.5 1 0; /* 横幅を広げる */
   min-width: 200px;
@@ -75,8 +103,6 @@
   justify-content: flex-start;
   align-items: flex-start;
   gap: 4px;
-  /* background: #f9f9f9; 削除で白背景に */
-  border-radius: 4px;
   padding: 12px 12px;
   font-size: 0.95em;
   color: #222;
@@ -84,13 +110,9 @@
   margin-left: -36px;
 }
 
-.contents-epcard-title {
-  font-weight: bold;
-  margin-bottom: 2px;
-  font-size: 1.06em;
-  color: #222;
-  white-space: normal;
-}
+/* =============================
+  カード内：リード文（作品 or エピソード）
+============================= */
 .contents-epcard-lead-work, .contents-epcard-lead-episode {
   display: block;
   margin-top: 1px;
@@ -98,6 +120,11 @@
   text-align: left;
   width: 100%;
 }
+
+/* =============================
+  カード右端：アクションボタン群
+  （編集・分析・削除など）
+============================= */
 .contents-epcard-actions {
   flex: 0 0 25%;
   min-width: 180px;
@@ -112,6 +139,9 @@
 }
 
 /* アクションボタンの高さ・幅・中央揃え */
+/* =============================
+  アクションボタン（編集/分析/削除）の共通サイズ
+============================= */
 .contents-epcard-actions > a,
 .contents-epcard-actions > form > button {
   height: 48px;
@@ -128,15 +158,18 @@
   transition: background 0.18s;
 }
 
+/* =============================
+  アクションボタン内のアイコン画像
+============================= */
 .contents-epcard-actions img {
   width: 24px;
   height: 24px;
   object-fit: contain;
 }
 
-
-
-
+/* =============================
+  カード内：動画プレビューサムネイル
+============================= */
 .contents-epcard-video {
   width: 100%;
   aspect-ratio: 16 / 9; /* 16:9の比率で統一（必要に応じて） */
@@ -146,54 +179,26 @@
   display: block;
 }
 
-
-
-
+/* =============================
+  カード内：作品説明文
+============================= */
 .contents-epcard-desc {
   margin-top: 20px;
   font-size: 1em;
   color: #222;
   margin-bottom: 6px;
-}
-
-.epcard-tags {
-  margin-top: 2px;
-}
-.epcard-tag {
-  margin-right: 6px;
   color: #1976d2;
   font-weight: bold;
   font-size: 0.95em;
 }
 
 
-.contents-epcard-leadblock {
-  min-width: 160px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  margin: 0 8px;
-  gap: 6px;
-  color: #333;
-}
-
-.contents-epcard-lead {
-  font-weight: bold;
-  margin-bottom: 4px;
-  color: #000000;
-  font-size: 1.06em;
-}
-
-
-.contents-epcard-lead-meta {
-  font-size: 0.97em;
-  color: #666;
-  margin-top: 2px;
-}
 
 
 
-
+/* =============================
+  有料コンテンツ（Works）カードの外枠
+============================= */
 .work-card {
   position: relative;
   cursor: pointer;
@@ -204,17 +209,26 @@
   transition: transform 0.2s ease;
 }
 
+/* =============================
+  カードホバー時の浮き上がり演出
+============================= */
 .work-card:hover {
   transform: translateY(-2px);
 }
 
 /* カード内リンクの装飾をリセット */
+/* =============================
+  カード内のリンク装飾リセット
+============================= */
 .card-link {
   display: block;
   text-decoration: none;
 }
 
-/* ========= サムネイル ========== */
+/* =============================
+  カード内サムネイル画像のスタイル
+  （16:9比率、角丸、カバー表示）
+============================= */
 .work-thumbnail {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -222,7 +236,10 @@
   display: block;
 }
 
-/* ========= タイトル ========== */
+/* =============================
+  カード内タイトル部分のスタイル
+  （作品タイトルの見た目）
+============================= */
 .work-card .title {
   margin: 16px;
   font-size: 1.2rem;
@@ -231,7 +248,10 @@
   line-height: 1.4;
 }
 
-/* ========= 3‑dot ボタン ========== */
+/* =============================
+  カード右上の3ドットメニューボタン
+  （メニュー開閉トリガー）
+============================= */
 .menu-btn {
   position: absolute;
   top: 8px;   /* サムネイル内での余白を調整 */
@@ -254,7 +274,10 @@
   background: rgba(0, 0, 0, 0.85);
 }
 
-/* ========= ポップアップメニュー ========== */
+/* =============================
+  3ドットメニュー押下時のポップアップ
+  （削除などの操作メニュー）
+============================= */
 .card-menu {
   position: absolute;
   top: 48px;
@@ -272,6 +295,10 @@
   display: flex;
 }
 
+/* =============================
+  ポップアップ内の「削除する」ボタン
+  （有料作品カード用）
+============================= */
 .delete-btn {
   background: rgb(15, 11, 11); 
   color: #f44336;
@@ -293,6 +320,10 @@
   color: #fff;
 }
 
+/* =============================
+  ショート動画カードの「削除」ボタン
+  （ショート動画用）
+============================= */
 .delete-clip-btn {
   background: #ffffff;
   cursor: pointer;
