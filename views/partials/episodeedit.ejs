@@ -12,7 +12,7 @@
 
     <form id="episodeForm"
           class="upload-form"
-          action="/works/<%= work._id %>/episodes/<%= episode._id %>/edit" 
+          action="/works/<%= work._id %>/episodes/<%= episode._id %>/edit?_method=PUT" 
           method="POST" 
           enctype="multipart/form-data"
           data-episode-id="<%= episode._id %>"
