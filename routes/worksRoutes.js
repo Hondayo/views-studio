@@ -1,4 +1,4 @@
-/* contentsRoutes.js — refactor without changing behaviour */
+/* worksRoutes.js — routes for works and episodes */
 
 /* ────────── modules ────────── */
 const express    = require('express');
@@ -60,16 +60,6 @@ function formatDurationMinimized(duration) {
     : `${m}:${String(s).padStart(2, '0')}`;
 }
 
-/** 売上等ダッシュボード統計 */
-const getStats = async () => {
-  const totalWorks    = await Work.countDocuments();
-  const totalEpisodes = await Episode.countDocuments();
-  const revenueAgg    = await Episode.aggregate([
-    { $match: { isPaid: true } },
-    { $group: { _id: null, total: { $sum: '$price' } } }
-  ]);
-  return { totalWorks, totalEpisodes, totalRevenue: revenueAgg[0]?.total ?? 0 };
-};
 
 /* ========== Work routes ========== */
 
@@ -310,69 +300,8 @@ router.post('/works/:id/episodes',
 
 
 
-/* ========== Dashboard & Home ========== */
-
-// routes/contentsRoutes.js など
-router.get('/admin', async (_req, res) => {
-  const works  = await Work.find().lean();
-  const eps    = await Episode.find().lean();
-  const episodesByWork = eps.reduce((map, ep) => {
-    (map[ep.workId] ||= []).push(ep);
-    return map;
-  }, {});
-
-  const stats = await getStats();
-
-  res.render('partials/adminDashboard', {
-    layout: 'layout',
-    title : 'ダッシュボード',
-    pageStyle: 'adminDashboard',
-    stats,
-    works,
-    episodesByWork
-  });
-});
-
-// 作品検索API
-router.get('/api/works', async (req, res) => {
-  const q = req.query.q || '';
-  const works = await Work.find({
-    isDraft: false,
-    title: { $regex: new RegExp(q, 'i') }
-  });
-  res.json(works);
-});
-
-// 指定作品のエピソード一覧
-router.get('/api/works/:id/episodes', async (req, res) => {
-  try {
-    const episodes = await Episode.find({ workId: req.params.id });
-    res.json(episodes);
-  } catch (error) {
-    console.error('Error fetching episodes:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// 指定作品の特定エピソードを取得するAPI
-router.get('/api/works/:workId/episodes/:episodeId', asyncHandler(async (req, res) => {
-  const { workId, episodeId } = req.params;
-  
-  try {
-    // 作品とエピソードを同時に取得
-    const episode = await Episode.findById(episodeId);
-    
-    if (!episode) {
-      return res.status(404).json({ error: 'エピソードが見つかりません' });
-    }
-    
-    // エピソードデータを返還
-    res.json({ episode });
-  } catch (error) {
-    console.error('Error fetching episode:', error);
-    res.status(500).json({ error: error.message });
-  }
-}));
+/* ========== Episode editing routes ==========
+   (admin and API routes moved to separate files) */
 
 
 /** エピソード編集画面表示 */
