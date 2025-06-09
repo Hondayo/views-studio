@@ -9,6 +9,7 @@ const cloudinary = require('../config/cloudinary');
 
 const Work    = require('../models/Work');
 const Episode = require('../models/Episode');
+const ShortClip = require('../models/ShortClip');
 
 /* ────────── multer (memory) ────────── */
 const upload = multer({ storage: multer.memoryStorage() });
@@ -36,6 +37,28 @@ const uploadToCloudinary = ({ buffer, mimetype }, folder) =>
 
 /** カンマ区切りタグを配列化 */
 const parseTags = tags => (tags ? tags.split(',').map(t => t.trim()) : []);
+
+/** 分を hh:mm:ss 形式に変換 */
+function formatMinutesToHMS(minutes) {
+  if (typeof minutes !== 'number' || isNaN(minutes)) return '00:00:00';
+  const h = Math.floor(minutes / 60);
+  const mm = minutes % 60;
+  return [h, mm, 0].map(v => String(v).padStart(2, '0')).join(':');
+}
+
+/** duration を最小限形式に */
+function formatDurationMinimized(duration) {
+  if (!duration) return '0:00';
+  let h = 0, m = 0, s = 0;
+  if (typeof duration === 'number') duration = String(duration);
+  const parts = duration.split(':').map(Number);
+  if (parts.length === 3) [h, m, s] = parts;
+  else if (parts.length === 2) [m, s] = parts;
+  else if (parts.length === 1) s = parts[0];
+  return h > 0
+    ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+    : `${m}:${String(s).padStart(2, '0')}`;
+}
 
 /** 売上等ダッシュボード統計 */
 const getStats = async () => {
@@ -145,29 +168,6 @@ router.put('/works/:id',
 
 
 /** 作品ページ */
-const ShortClip = require('../models/ShortClip');
-
-// 分をhh:mm:ss形式に変換する関数
-function formatMinutesToHMS(minutes) {
-  if (typeof minutes !== 'number' || isNaN(minutes)) return '00:00:00';
-  const h = Math.floor(minutes / 60);
-  const mm = minutes % 60;
-  return [h, mm, 0].map(v => String(v).padStart(2, '0')).join(':');
-}
-
-// 最小限形式でdurationを返す
-function formatDurationMinimized(duration) {
-  if (!duration) return '0:00';
-  let h = 0, m = 0, s = 0;
-  if (typeof duration === 'number') duration = String(duration);
-  const parts = duration.split(':').map(Number);
-  if (parts.length === 3) [h, m, s] = parts;
-  else if (parts.length === 2) [m, s] = parts;
-  else if (parts.length === 1) s = parts[0];
-
-  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-  else return `${m}:${String(s).padStart(2, '0')}`;
-}
 
 router.get('/works/:id', asyncHandler(async (req, res) => {
   const work     = await Work.findById(req.params.id);
@@ -314,7 +314,6 @@ router.post('/works/:id/episodes',
 
 // routes/contentsRoutes.js など
 router.get('/admin', async (_req, res) => {
-  // ① 作品とエピソード
   const works  = await Work.find().lean();
   const eps    = await Episode.find().lean();
   const episodesByWork = eps.reduce((map, ep) => {
@@ -322,12 +321,7 @@ router.get('/admin', async (_req, res) => {
     return map;
   }, {});
 
-  // ③ 既存サマリー
-  const stats = {
-    totalWorks    : works.length,
-    totalEpisodes : eps.length,
-    totalRevenue  : eps.filter(e => e.isPaid).reduce((s,e)=>s+e.price,0)
-  };
+  const stats = await getStats();
 
   res.render('partials/adminDashboard', {
     layout: 'layout',
