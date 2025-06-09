@@ -7,7 +7,9 @@ const methodOverride  = require('method-override');
 
 const Work    = require('./models/Work');
 const Episode = require('./models/Episode');
-const contentsRoutes = require('./routes/contentsRoutes');
+const worksRoutes    = require('./routes/worksRoutes');
+const adminRoutes    = require('./routes/adminRoutes');
+const apiRoutes      = require('./routes/apiRoutes');
 const shortsRoutes = require('./routes/shortsRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 
@@ -34,7 +36,9 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err  => console.error('MongoDB 接続失敗:', err));
 
 /* ---------- ルート ---------- */
-app.use('/', contentsRoutes);
+app.use('/', worksRoutes);
+app.use('/', adminRoutes);
+app.use('/', apiRoutes);
 app.use('/shorts', shortsRoutes);
 app.use('/', analyticsRoutes);
 

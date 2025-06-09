@@ -126,12 +126,3 @@ router.get('/:id', asyncHandler(async (req, res) => {
 }));
 
 module.exports = router;
-router.get('/new', (req, res) => {
-  res.render('partials/shortNew', {
-    layout: 'layout',
-    title: 'ショート動画投稿',
-    pageStyle: 'shortNew'
-  });
-});
-
-module.exports = router;

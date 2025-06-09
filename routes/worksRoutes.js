@@ -1,4 +1,4 @@
-/* contentsRoutes.js — refactor without changing behaviour */
+/* worksRoutes.js — routes for works and episodes */
 
 /* ────────── modules ────────── */
 const express    = require('express');
@@ -9,6 +9,7 @@ const cloudinary = require('../config/cloudinary');
 
 const Work    = require('../models/Work');
 const Episode = require('../models/Episode');
+const ShortClip = require('../models/ShortClip');
 
 /* ────────── multer (memory) ────────── */
 const upload = multer({ storage: multer.memoryStorage() });
@@ -37,16 +38,28 @@ const uploadToCloudinary = ({ buffer, mimetype }, folder) =>
 /** カンマ区切りタグを配列化 */
 const parseTags = tags => (tags ? tags.split(',').map(t => t.trim()) : []);
 
-/** 売上等ダッシュボード統計 */
-const getStats = async () => {
-  const totalWorks    = await Work.countDocuments();
-  const totalEpisodes = await Episode.countDocuments();
-  const revenueAgg    = await Episode.aggregate([
-    { $match: { isPaid: true } },
-    { $group: { _id: null, total: { $sum: '$price' } } }
-  ]);
-  return { totalWorks, totalEpisodes, totalRevenue: revenueAgg[0]?.total ?? 0 };
-};
+/** 分を hh:mm:ss 形式に変換 */
+function formatMinutesToHMS(minutes) {
+  if (typeof minutes !== 'number' || isNaN(minutes)) return '00:00:00';
+  const h = Math.floor(minutes / 60);
+  const mm = minutes % 60;
+  return [h, mm, 0].map(v => String(v).padStart(2, '0')).join(':');
+}
+
+/** duration を最小限形式に */
+function formatDurationMinimized(duration) {
+  if (!duration) return '0:00';
+  let h = 0, m = 0, s = 0;
+  if (typeof duration === 'number') duration = String(duration);
+  const parts = duration.split(':').map(Number);
+  if (parts.length === 3) [h, m, s] = parts;
+  else if (parts.length === 2) [m, s] = parts;
+  else if (parts.length === 1) s = parts[0];
+  return h > 0
+    ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+    : `${m}:${String(s).padStart(2, '0')}`;
+}
+
 
 /* ========== Work routes ========== */
 
@@ -145,29 +158,6 @@ router.put('/works/:id',
 
 
 /** 作品ページ */
-const ShortClip = require('../models/ShortClip');
-
-// 分をhh:mm:ss形式に変換する関数
-function formatMinutesToHMS(minutes) {
-  if (typeof minutes !== 'number' || isNaN(minutes)) return '00:00:00';
-  const h = Math.floor(minutes / 60);
-  const mm = minutes % 60;
-  return [h, mm, 0].map(v => String(v).padStart(2, '0')).join(':');
-}
-
-// 最小限形式でdurationを返す
-function formatDurationMinimized(duration) {
-  if (!duration) return '0:00';
-  let h = 0, m = 0, s = 0;
-  if (typeof duration === 'number') duration = String(duration);
-  const parts = duration.split(':').map(Number);
-  if (parts.length === 3) [h, m, s] = parts;
-  else if (parts.length === 2) [m, s] = parts;
-  else if (parts.length === 1) s = parts[0];
-
-  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-  else return `${m}:${String(s).padStart(2, '0')}`;
-}
 
 router.get('/works/:id', asyncHandler(async (req, res) => {
   const work     = await Work.findById(req.params.id);
@@ -310,75 +300,8 @@ router.post('/works/:id/episodes',
 
 
 
-/* ========== Dashboard & Home ========== */
-
-// routes/contentsRoutes.js など
-router.get('/admin', async (_req, res) => {
-  // ① 作品とエピソード
-  const works  = await Work.find().lean();
-  const eps    = await Episode.find().lean();
-  const episodesByWork = eps.reduce((map, ep) => {
-    (map[ep.workId] ||= []).push(ep);
-    return map;
-  }, {});
-
-  // ③ 既存サマリー
-  const stats = {
-    totalWorks    : works.length,
-    totalEpisodes : eps.length,
-    totalRevenue  : eps.filter(e => e.isPaid).reduce((s,e)=>s+e.price,0)
-  };
-
-  res.render('partials/adminDashboard', {
-    layout: 'layout',
-    title : 'ダッシュボード',
-    pageStyle: 'adminDashboard',
-    stats,
-    works,
-    episodesByWork
-  });
-});
-
-// 作品検索API
-router.get('/api/works', async (req, res) => {
-  const q = req.query.q || '';
-  const works = await Work.find({
-    isDraft: false,
-    title: { $regex: new RegExp(q, 'i') }
-  });
-  res.json(works);
-});
-
-// 指定作品のエピソード一覧
-router.get('/api/works/:id/episodes', async (req, res) => {
-  try {
-    const episodes = await Episode.find({ workId: req.params.id });
-    res.json(episodes);
-  } catch (error) {
-    console.error('Error fetching episodes:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// 指定作品の特定エピソードを取得するAPI
-router.get('/api/works/:workId/episodes/:episodeId', asyncHandler(async (req, res) => {
-  const { workId, episodeId } = req.params;
-  
-  try {
-    // 作品とエピソードを同時に取得
-    const episode = await Episode.findById(episodeId);
-    
-    if (!episode) {
-      return res.status(404).json({ error: 'エピソードが見つかりません' });
-    }
-    
-    // エピソードデータを返還
-    res.json({ episode });
-  } catch (error) {
-    console.error('Error fetching episode:', error);
-    res.status(500).json({ error: error.message });
-  }
-}));
+/* ========== Episode editing routes ==========
+   (admin and API routes moved to separate files) */
 
 
 /** エピソード編集画面表示 */
