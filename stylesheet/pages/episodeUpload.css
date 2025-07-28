@@ -154,29 +154,23 @@
 }
 
 /* プレビューあらすじ - エピソードあらすじと同じサイズに統一 */
-.preview-description {
-  font-size: 0.88em;
-  color: #ccc;
-  margin-top: 2px;
-  margin-bottom: 6px;
-  line-height: 1.4;
-  white-space: pre-line;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: max-height 0.2s;
+
+
+/* ============================================================ */
+/*  プレビュー文字色・太さを newWork と完全統一                   */
+/* ============================================================ */
+.preview-phone-screen {
+  color: #eee; /* デフォルト本文 */
+  font-family: sans-serif;
+}
+.title-row .preview-title,
+.preview-title,
+.phone-work-title {
+  color: #fff !important;
+  font-weight: 700 !important; /* 明示的に 700 に固定 */
+  font-family: sans-serif;
 }
 
-/* 展開時のスタイル */
-.preview-description.expanded {
-  -webkit-line-clamp: unset;
-  line-clamp: unset;
-  max-height: none;
-  overflow: visible;
-}
 
 
 .episode-list-scroll {
@@ -187,17 +181,7 @@
   padding-right: 4px;
 }
 
-.episode-card {
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent;
-  background: #222;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  padding: 10px;
-  color: #fff;
-  font-size: 0.93em;
-}
+
 
 .ep-title {
   font-weight: bold;
@@ -245,23 +229,22 @@
 
 /* 続きを見るトグル - 中央配置 */
 .toggle-link {
-  color: #0088ff !important;
+  color: #999;
   font-size: 0.75em;
   cursor: pointer;
-  margin: 8px auto 12px;
+  margin: 0 auto 2px;
   display: block;
   text-align: center;
+  padding: 0;
+  background: none;
+  border: none;
+  transition: none;
   width: 100%;
-  position: relative;
-  padding: 4px 0;
-  background: linear-gradient(to right, transparent, rgba(0, 136, 255, 0.1), transparent);
-  border-radius: 4px;
-  transition: all 0.2s ease;
 }
 
 .toggle-link:hover {
-  text-decoration: underline;
-  background: linear-gradient(to right, transparent, rgba(0, 136, 255, 0.2), transparent);
+  color: #ccc;
+  text-decoration: none;
 }
 .toggle-link.hidden {
   display: none;
@@ -316,26 +299,6 @@
 }
 
 /* 「---続きを見る---」リンク - 統合されたスタイル */
-.toggle-link {
-  color: #ffffff !important;
-  font-size: 0.75em;
-  cursor: pointer;
-  margin: 8px auto 12px;
-  display: block;
-  text-align: center;
-  width: 100%;
-  position: relative;
-  padding: 4px 0;
-  background: linear-gradient(to right, transparent, rgba(0, 136, 255, 0.1), transparent);
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-
-.toggle-link:hover {
-  text-decoration: underline;
-  background: linear-gradient(to right, transparent, rgba(0, 136, 255, 0.2), transparent);
-}
-
 .toggle-link.block {
   display: block;
 }

@@ -1,0 +1,173 @@
+<!-- =============================
+     分析ダッシュボードページ 部分テンプレート
+     - 全体視聴数・売上の表示
+     - 作品ごとの視聴数・売上の表示
+     - 作品詳細モーダル
+   ============================== -->
+
+<!-- ===== 分析用CSS読み込み ===== -->
+
+
+<div class="analytics-page">
+    <div class="analytics-container">
+        <!-- メインコンテンツ部分 -->
+        <div class="analytics-main-content">
+            <!-- ヘッダー部分 -->
+            <div class="analytics-header">
+                <div class="analytics-title">
+                    <h1>分析ダッシュボード</h1>
+                    <p class="subtitle">全体の視聴状況と売上を確認</p>
+                </div>
+            </div>
+            
+            <!-- 全体統計カード -->
+            <div class="analytics-cards">
+                <div class="analytics-card">
+                    <h3>総視聴回数</h3>
+                    <div class="card-value">10,800</div>
+                    <div class="card-trend trend-up">
+                        全作品合計
+                    </div>
+                </div>
+                <div class="analytics-card">
+                    <h3>総売上</h3>
+                    <div class="card-value">¥278,000</div>
+                    <div class="card-trend trend-up">
+                        全作品合計
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 作品別統計 -->
+            <div class="analytics-section">
+                <h2 class="section-title">作品別統計</h2>
+                <div class="works-grid">
+                    <% if (works && works.length > 0) { %>
+                        <% works.forEach((work, index) => { %>
+                            <div class="work-analytics-card" data-work-id="<%= work._id %>">
+                                <img src="<%= work.coverImage || '/images/no-image.jpg' %>" alt="<%= work.title %>" class="work-thumb">
+                                <div class="work-info">
+                                    <h3 class="work-title"><%= work.title %></h3>
+                                    <div class="work-metrics">
+                                        <div class="work-metric">
+                                            <span class="metric-label">視聴数:</span>
+                                            <span class="metric-value"><%= work.views.toLocaleString() %></span>
+                                        </div>
+                                        <div class="work-metric">
+                                            <span class="metric-label">売上:</span>
+                                            <span class="metric-value">¥<%= work.revenue.toLocaleString() %></span>
+                                        </div>
+                                        <div class="work-metric">
+                                            <span class="metric-label">エピソード数:</span>
+                                            <span class="metric-value"><%= work.episodeCount %>話</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="no-works-message">
+                            <p>表示できる作品がありません</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右側の作品一覧サイドバー -->
+        <div class="analytics-sidebar">
+            <div class="sidebar-header">
+                <h3>作品一覧</h3>
+            </div>
+            <ul class="work-list">
+                <% if (works && works.length > 0) { %>
+                    <% works.forEach(work => { %>
+                        <li class="work-list-item" data-work-id="<%= work._id %>">
+                            <img src="<%= work.coverImage || '/images/no-image.jpg' %>" alt="<%= work.title %>" class="work-list-thumb">
+                            <div class="work-list-info">
+                                <div class="work-list-title"><%= work.title %></div>
+                            </div>
+                        </li>
+                    <% }); %>
+                <% } else { %>
+                    <li class="work-list-item no-works">
+                        <div class="work-list-info">
+                            <div class="work-list-title">表示できる作品がありません</div>
+                        </div>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 作品詳細モーダル -->
+    <div id="work-detail-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-work-title">作品詳細</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- タブメニュー -->
+                <div class="modal-tabs">
+                    <button class="modal-tab-btn active" data-tab="viewers">視聴者情報</button>
+                    <button class="modal-tab-btn" data-tab="leads">リード獲得</button>
+                    <button class="modal-tab-btn" data-tab="episodes">エピソード</button>
+                </div>
+                
+                <!-- タブ内容 -->
+                <div class="modal-tab-content">
+                    <div class="modal-tab-pane active" id="viewers-tab">
+                        <p>視聴者情報の詳細がここに表示されます。</p>
+                    </div>
+                    <div class="modal-tab-pane" id="leads-tab">
+                        <p>リード獲得の詳細がここに表示されます。</p>
+                    </div>
+                    <div class="modal-tab-pane" id="episodes-tab">
+                        <div class="episodes-list">
+                            <!-- エピソードリスト（動的に生成） -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 作品クリック時の詳細表示
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('work-detail-modal');
+        const modalClose = document.querySelector('.modal-close');
+        const workCards = document.querySelectorAll('.work-analytics-card');
+        const workListItems = document.querySelectorAll('.work-list-item');
+        const modalTitle = document.getElementById('modal-work-title');
+        const tabButtons = document.querySelectorAll('.modal-tab-btn');
+        const tabPanes = document.querySelectorAll('.modal-tab-pane');
+        
+        // サンプルエピソードデータ
+        const sampleEpisodes = [
+            { id: 1, title: 'エピソード1: 序章', views: 1250, revenue: 35000 },
+            { id: 2, title: 'エピソード2: 出会い', views: 980, revenue: 27500 },
+            { id: 3, title: 'エピソード3: 葛藤', views: 1120, revenue: 31500 },
+            { id: 4, title: 'エピソード4: 決断', views: 875, revenue: 24500 },
+        ];
+        
+        // 作品カードクリック時
+        workCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const workId = this.getAttribute('data-work-id');
+                window.location.href = `/work/${workId}`;
+            });
+        });
+        
+        // 作品リストアイテムクリック時
+        workListItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const workId = this.getAttribute('data-work-id');
+                window.location.href = `/work/${workId}`;
+            });
+        });
+
+    });
+</script>

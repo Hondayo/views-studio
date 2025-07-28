@@ -5,8 +5,8 @@ const Schema = mongoose.Schema;
 
 const shortClipSchema = new Schema({
   title: {
-    type: String,
-    required: true
+    type: String
+    // タイトルはオプショナルに変更（説明文とタグで分離保存のため）
   },
   episodeTitle: {
     type: String // エピソード名（任意）
@@ -33,6 +33,18 @@ const shortClipSchema = new Schema({
   duration: {
     type: Number, // 秒数など必要に応じて
     default: 0
+  },
+  // 作品・エピソード関連情報
+  workId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Work' // 関連する作品のID
+  },
+  workTitle: {
+    type: String // 作品タイトル（検索用）
+  },
+  episodeId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Episode' // 関連するエピソードのID
   },
   createdAt: {
     type: Date,

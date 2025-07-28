@@ -1,12 +1,13 @@
 <div class="container">
+  <h1 class="page-title">切り抜き動画を投稿</h1>
   <!--▼ アップロードBOX (ドラッグ&ドロップ or 選択) ▼ -->
   <div class="upload-box">
     <!--1) ドラッグ＆ドロップ領域 (初期表示) -->
     <div class="upload-section" id="uploadSection">
       <div class="upload-icon">🎬</div>
-      <p>アップロードする動画を選択<br>またはドラッグ＆ドロップ</p>
+      <p>動画をアップロード<br>またはドラッグ＆ドロップ</p>
       <button class="select-btn" id="selectBtn">動画を選択</button>
-      <input type="file" id="fileInput" accept="video/*" hidden />
+      <!-- ファイル入力はフォーム内に移動しました -->
     </div>
 
     <!--▼ 進捗表示エリア ▼ -->
@@ -27,6 +28,15 @@
   <div class="post-container" id="postContainer" style="display: none;">
     <!--左: 入力フォーム -->
     <div class="description-form">
+      <!-- リード先検索ボタンと選択情報を横並びに配置 -->
+      <div class="lead-selection-container">
+        <button id="searchLeadBtn" class="lead-search-btn lead-search-btn-small">リード先を検索</button>
+        <div id="selectedContainer" class="selected-container" style="display: none;">
+          <p id="selectedStatusText"></p>
+          <button id="rechooseBtn" class="btn-secondary btn-small">変更</button>
+        </div>
+      </div>
+      
       <label for="descriptionInput" class="description-label">説明 / #ハッシュタグ</label>
       <textarea 
         id="descriptionInput" 
@@ -89,8 +99,14 @@
 
 
 <!--▼ 作品選択フォーム ＋ エピソード選択UI 全体ラッパ -->
+<!-- 背景オーバーレイ -->
+<div class="work-section-overlay" id="workSectionOverlay"></div>
+
 <div class="work-section" id="workSelectionBlock" style="display: none;">
-  <h2>リードするコンテンツを選択</h2>
+  <div class="work-section-header">
+    <h2>リード先を検索</h2>
+    <button id="closeWorkSelectionBtn" class="close-btn">&times;</button>
+  </div>
 
   <!--検索バー -->
   <div class="work-search-bar">
@@ -133,26 +149,25 @@
 </div>
 
 <form id="uploadForm" method="post" enctype="multipart/form-data">
-  <!-- ...既存のフォーム要素... -->
-
-  <!-- 選択された作品名・エピソード名を送信するhidden input（ここに1セットだけ配置） -->
-  <input type="hidden" name="title" id="hiddenWorkTitle" value="">
+  <!-- ファイル入力要素をフォーム内に移動し、name属性を追加 -->
+  <input type="file" id="fileInput" name="videoFile" accept="video/*" hidden />
+  
+  <!-- 選択された作品・エピソード情報と説明・タグを送信するhidden input -->
+  <input type="hidden" name="workId" id="hiddenWorkId" value="">
+  <input type="hidden" name="workTitle" id="hiddenWorkTitle" value="">
+  <input type="hidden" name="episodeId" id="hiddenEpisodeId" value="">
   <input type="hidden" name="episodeTitle" id="hiddenEpisodeTitle" value="">
+  <input type="hidden" name="description" id="hiddenDescription" value="">
+  <input type="hidden" name="tags" id="hiddenTags" value="">
 
   <!-- ここに投稿ボタンや他のフォーム要素が続く -->
   <!-- 投稿ボタンをform内に移動 -->
   <div class="submit-button-container" id="submitButtonContainer" style="display: none;">
-    <button id="submitBtn" class="submit-btn" type="submit">投稿する</button>
+    <button id="submitBtn" class="submit-btn" type="submit">切り抜きを投稿する</button>
   </div>
 </form>
 
-<div id="selectedContainer" class="selected-container" style="display: none;">
-  <div class="selected-title-row">
-    <h2>リードするコンテンツ</h2>
-    <button id="rechooseBtn" class="btn-secondary">変更する</button>
-  </div>
-  <p id="selectedStatusText"></p>
-</div>
+<!-- 選択情報はリード検索ボタンの横に移動しました -->
 
 
 

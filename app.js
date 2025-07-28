@@ -1,3 +1,4 @@
+// MongoDB接続設定は .env の MONGO_URI を使用）
 require('dotenv').config();
 const express         = require('express');
 const expressLayouts  = require('express-ejs-layouts');
@@ -7,9 +8,8 @@ const methodOverride  = require('method-override');
 
 const Work    = require('./models/Work');
 const Episode = require('./models/Episode');
-const contentsRoutes = require('./routes/contentsRoutes');
-const shortsRoutes = require('./routes/shortsRoutes');
-const analyticsRoutes = require('./routes/analyticsRoutes');
+// メインルーターをインポート（すべてのルートが統合されています）
+const routes = require('./routes/index');
 
 const app = express();
 
@@ -25,34 +25,33 @@ app.set('layout', 'layout');
 /* ---------- テンプレート / 静的 ---------- */
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.use(express.static(path.join(__dirname, 'stylesheet')));
-app.use(express.static(path.join(__dirname, 'public'))); 
+
+// 静的ファイルの提供設定
+app.use(express.static(path.join(__dirname, '/')));
+app.use('/stylesheet', express.static(path.join(__dirname, 'stylesheet')));
+app.use('/public', express.static(path.join(__dirname, 'public'))); 
 
 /* ---------- DB ---------- */
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB 接続成功'))
-  .catch(err  => console.error('MongoDB 接続失敗:', err));
+const MONGO_URI = process.env.MONGO_URI;
+
+// DB接続処理を非同期で試行し、エラー時にも続行できるように修正
+mongoose.connect(MONGO_URI, {
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 30000,
+  connectTimeoutMS: 30000
+})
+  .then(() => {
+    console.log('MongoDB 接続成功');
+  })
+  .catch(err => {
+    console.error('MongoDB 接続失敗:', err);
+    process.exit(1); // 接続できなければ起動しない
+  });
 
 /* ---------- ルート ---------- */
-app.use('/', contentsRoutes);
-app.use('/shorts', shortsRoutes);
-app.use('/', analyticsRoutes);
-
-/* ホームだけ直書き */
-app.get('/', async (req, res) => {
-  const totalWorks    = await Work.countDocuments();
-  const totalEpisodes = await Episode.countDocuments();
-  const paidEpisodes  = await Episode.find({ isPaid: true });
-  const totalRevenue  = paidEpisodes.reduce((s, ep) => s + (ep.price || 0), 0);
-
-  res.render('partials/home', {
-    layout: 'layout',
-    title: 'ホーム',
-    pageStyle: 'home',
-    stats: { totalWorks, totalEpisodes, totalRevenue }
-  });
-});
+// すべてのルートを統合した index.js を使用
+app.use('/', routes);
 
 /* ---------- サーバ ---------- */
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;  // 3000から3001に変更
 app.listen(port, () => console.log(`Server started on port ${port}`));

@@ -505,12 +505,48 @@ body, .viewer-page, .viewer-container, .workdetail-header, .workdetail-meta, .wo
 }
 
 
-/* --- 動画時間と価格の間隔・見やすさ向上 --- */
+/* ---------- 動画時間と価格の間隔・見やすさ向上 --- */
+
+/* ============================================================ */
+/*  プレビュー文字色・太さを episodeUpload/newWork と統一         */
+/*    - タイトル         : #fff, bold (700)                     */
+/*    - 本文(基本)       : #eee                                 */
+/*    - あらすじ/サブ情報 : #ccc                                 */
+/* ============================================================ */
+.viewer-page,
+.viewer-page .work-card,
+.viewer-page .thumbnail-wrapper,
+.viewer-page .hero-info {
+  color: #eee !important;
+}
+/* タイトル類 */
+.viewer-page .preview-title,
+.viewer-page .work-title,
+.viewer-page .epcard-title {
+  color: #fff !important;
+  font-weight: 700 !important;
+}
+/* あらすじや詳細説明 */
+.viewer-page .preview-description {
+  color: #ccc !important;
+  font-weight: normal !important;
+}
+
+/* エピソードあらすじの文字色を黒に変更 */
+.viewer-page .epcard-desc-text {
+  color: #000 !important;
+  font-weight: normal !important;
+}
+
+/* エピソードメタ情報（時間・価格）の表示調整 */
 .epcard-meta {
   display: flex;
   align-items: center;
-  gap: 56px;
-  margin-bottom: 8px;
+  margin-top: 8px;
+}
+
+.epcard-duration {
+  margin-right: 30px; /* 時間と価格の間に余白を追加 */
 }
 
 /* エピソードカード内サムネイル（画像・動画共通） */

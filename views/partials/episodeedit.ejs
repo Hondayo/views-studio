@@ -17,7 +17,7 @@
           enctype="multipart/form-data"
           data-episode-id="<%= episode._id %>"
           data-work-id="<%= work._id %>">
-      <input type="hidden" name="_method" value="PUT">
+      
 
       <!-- 1) 動画ファイル（既存のビデオがある場合は表示） -->
       <div id="mainDrop" class="drop-full">
@@ -187,6 +187,8 @@
                   <% } %>
                 </div>
                 <div class="ep-title"><%= ep.title %></div>
+                <div class="ep-desc"><%= ep.description %></div>
+                <div class="toggle-link hidden">---続きを見る---</div>
                 <div class="ep-meta">
                   <span class="ep-duration" data-seconds="<%= ep.durationSeconds %>">
                     <% if ((!ep.durationSeconds || ep.durationSeconds === 0) && ep.duration) { %>
@@ -195,8 +197,6 @@
                   </span>
                   <span class="ep-price"><%= (!ep.price || ep.price === 0) ? '無料' : ep.price + '円' %></span>
                 </div>
-                <div class="ep-desc"><%= ep.description %></div>
-                <div class="toggle-link hidden">---続きを見る---</div>
               </div>
             <% }) %>
           </div>

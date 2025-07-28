@@ -28,6 +28,16 @@
     font-weight: 700;
   }
   
+  .brand-link {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  
+  .brand-link:hover {
+    opacity: 0.8;
+  }
+  
   /* トップバーの下にコンテンツを押し下げる */
   .page-layout { margin-top: 56px; }
 

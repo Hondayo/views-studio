@@ -59,22 +59,12 @@ const _episodeAnalyticsImpl = (() => {
   };
   
   /**
-   * 期間選択ボタンの設定
+   * 期間関連の設定
+   * 注：期間選択ボタンは削除されたため、デフォルト期間を設定
    */
-  const setupPeriodButtons = () => {
-    const periodButtons = document.querySelectorAll('.period-btn');
-    
-    periodButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        // アクティブな期間を更新
-        periodButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        
-        // 期間を保存して分析データを更新
-        currentPeriod = button.dataset.period;
-        updateAnalyticsDisplays();
-      });
-    });
+  const setupPeriod = () => {
+    // デフォルト期間を7日間に設定
+    currentPeriod = '7days';
   };
   
   /**
@@ -612,8 +602,8 @@ const _episodeAnalyticsImpl = (() => {
         // タブのセットアップ
         setupTabs();
         
-        // 期間ボタンの設定
-        setupPeriodButtons();
+        // 期間の初期設定
+        setupPeriod();
         
         // エピソード選択機能の設定
         setupEpisodeSelector();
@@ -646,7 +636,7 @@ const _episodeAnalyticsImpl = (() => {
   return {
     initialize,
     setupTabs,
-    setupPeriodButtons,
+    setupPeriod,
     setupEpisodeSelector,
     updateAnalyticsDisplays
   };

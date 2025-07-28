@@ -6,7 +6,7 @@
    ============================== -->
 
 <!-- ===== 共通CSS/JS読み込み ===== -->
-<link rel="stylesheet" href="/stylesheet/pages/contents.css">
+
 <script src="/js/contents.js" defer></script>
 
 <h1 class="page-title">コンテンツ</h1>
@@ -62,13 +62,21 @@
                   <span class="contents-epcard-tag">#<%= tag %></span>
                 <% }) %>
               </div>
+            <% } else { %>
+              <div class="contents-epcard-tags">
+                <span class="contents-epcard-no-tags">タグなし</span>
+              </div>
             <% } %>
           </div>
           <!-- メタ情報 -->
           <div class="contents-epcard-meta">
             <div class="contents-epcard-lead">リード先</div>
-            <div class="contents-epcard-lead-work">作品: <%= short.title || '-' %></div>
-            <div class="contents-epcard-lead-episode">エピソード: <%= short.episodeTitle || '-' %></div>
+            <div class="contents-epcard-lead-work">
+              作品: <%= short.workTitle || (short.workId && short.workId.title) || '-' %>
+            </div>
+            <div class="contents-epcard-lead-episode">
+              エピソード: <%= short.episodeTitle || (short.episodeId && short.episodeId.title) || '-' %>
+            </div>
           </div>
           <!-- 編集・分析・削除アクション -->
           <div class="contents-epcard-actions">
