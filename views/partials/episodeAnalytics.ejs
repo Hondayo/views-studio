@@ -1,0 +1,475 @@
+<!-- =============================
+     エピソード分析ページ 部分テンプレート
+     - エピソード単位の視聴数・売上の表示
+     - 視聴者情報・リード獲得情報の表示
+   ============================== -->
+
+<!-- ===== 分析用CSS読み込み ===== -->
+
+
+<div class="analytics-page">
+    <div class="analytics-container">
+        <!-- メインコンテンツ部分 -->
+        <div class="analytics-main-content">
+            <!-- ヘッダー部分 -->
+            <div class="analytics-header">
+                <div class="analytics-title">
+                    <h1><%= episode.title %></h1>
+                    <div class="episode-meta">
+                        <span class="publish-date"><i class="fas fa-calendar-alt"></i> 公開日: <%= episode.publishDate %></span>
+                        <span class="episode-work">
+                            <i class="fas fa-book"></i> 作品: 
+                            <a href="/work/<%= episode.workId %>" class="work-analytics-link"><%= episode.workTitle %></a>
+                        </span>
+                    </div>
+                </div>
+                <div class="episode-thumb-large">
+                    <img src="/images/no-image.jpg" alt="<%= episode.title %>">
+                    <div class="episode-number-badge">第 <%= episode.episodeNumber || '?' %> 話</div>
+                </div>
+            </div>
+            
+            <!-- タブ部分 -->
+            <div class="analytics-tabs">
+                <button class="tab-btn active" data-tab="viewers">視聴者</button>
+                <button class="tab-btn" data-tab="leads">リード獲得</button>
+                <button class="tab-btn" data-tab="monetize">マネタイズ</button>
+            </div>
+            
+            <!-- 視聴者タブパネル -->
+            <div class="tab-pane active" id="viewers-tab">
+                <!-- KPIカード -->
+                <div class="analytics-cards">
+                    <div class="analytics-card">
+                        <h3>視聴回数</h3>
+                        <div class="card-value">1,250</div>
+                        <div class="card-trend trend-up">
+                            <span class="trend-value">+15%</span> 
+                            先週比
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>平均視聴時間</h3>
+                        <div class="card-value">4.5分</div>
+                        <div class="card-trend trend-down">
+                            <span class="trend-value">-2%</span> 
+                            先週比
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>完全視聴率</h3>
+                        <div class="card-value">85%</div>
+                        <div class="card-trend trend-flat">
+                            <span class="trend-value">±0%</span> 
+                            先週比
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- グラフ -->
+                <div class="analytics-graph">
+                    <h3>視聴数推移（過去30日間）</h3>
+                    <canvas id="viewsChart" width="600" height="250"></canvas>
+                </div>
+                
+                <!-- 視聴者属性 -->
+                <div class="analytics-sections">
+                    <div class="analytics-section">
+                        <h3>性別</h3>
+                        <div class="donut-chart-container">
+                            <canvas id="genderChart" width="200" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-section">
+                        <h3>年齢層</h3>
+                        <div class="donut-chart-container">
+                            <canvas id="ageChart" width="200" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-section">
+                        <h3>デバイス</h3>
+                        <div class="donut-chart-container">
+                            <canvas id="deviceChart" width="200" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- リード獲得タブパネル -->
+            <div class="tab-pane" id="leads-tab">
+                <!-- KPIカード -->
+                <div class="analytics-cards">
+                    <div class="analytics-card">
+                        <h3>リード獲得数</h3>
+                        <div class="card-value">120</div>
+                        <div class="card-trend trend-up">
+                            <span class="trend-value">+10%</span> 
+                            先週比
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>リード獲得率</h3>
+                        <div class="card-value">9.6%</div>
+                        <div class="card-trend trend-up">
+                            <span class="trend-value">+5%</span> 
+                            先週比
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>リードあたりコスト</h3>
+                        <div class="card-value">¥250</div>
+                        <div class="card-trend trend-down">
+                            <span class="trend-value">-8%</span> 
+                            先週比
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- グラフ -->
+                <div class="analytics-graph">
+                    <h3>リード獲得推移（過去30日間）</h3>
+                    <canvas id="leadsChart" width="600" height="250"></canvas>
+                </div>
+            </div>
+            
+            <!-- マネタイズタブパネル -->
+            <div class="tab-pane" id="monetize-tab">
+                <!-- KPIカード -->
+                <div class="analytics-cards">
+                    <div class="analytics-card">
+                        <h3>売上</h3>
+                        <div class="card-value">¥35,000</div>
+                        <div class="card-trend trend-up">
+                            <span class="trend-value">+12%</span> 
+                            先週比
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>平均販売単価</h3>
+                        <div class="card-value">¥290</div>
+                        <div class="card-trend trend-flat">
+                            <span class="trend-value">±0%</span> 
+                            先週比
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>ROAS</h3>
+                        <div class="card-value">280%</div>
+                        <div class="card-trend trend-up">
+                            <span class="trend-value">+5%</span> 
+                            先週比
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- グラフ -->
+                <div class="analytics-graph">
+                    <h3>売上推移（過去30日間）</h3>
+                    <canvas id="revenueChart" width="600" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+            
+        <!-- 右側のエピソードサイドバー -->
+        <div class="analytics-episode-bar">      <!-- サイドバーコンテンツ -->
+                <div class="analytics-episode-container">
+                    <div class="analytics-sidenav">
+                        <div class="sidenav-search">
+                            <input type="text" id="episodeSearchSidebar" placeholder="エピソードを検索..." class="episode-search-input">
+                        </div>
+                        <div class="sidenav-section">
+                            <h4><i class="fas fa-list-ul"></i> この作品の他のエピソード</h4>
+                            <ul class="episode-nav-list" id="episodeSidebarList">
+                                <% // ここにはサーバーから渡されたエピソードリストが表示されます %>
+                                <% // 実装時には以下のサンプルで代用 %>
+                                <li class="<%= episode.id === '1' ? 'active' : '' %>">
+                                    <a href="/episode/1" class="<%= episode.id === '1' ? 'active' : '' %>">
+                                        <div class="episode-nav-item">
+                                            <span class="episode-number">1.</span>
+                                            <span class="episode-title">第1話: 始まりの物語</span>
+                                            <span class="episode-stats">
+                                                <span class="stat-views"><i class="fas fa-eye"></i> 1,250</span>
+                                            </span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="<%= episode.id === '2' ? 'active' : '' %>">
+                                    <a href="/episode/2" class="<%= episode.id === '2' ? 'active' : '' %>">
+                                        <div class="episode-nav-item">
+                                            <span class="episode-number">2.</span>
+                                            <span class="episode-title">第2話: 新たな出会い</span>
+                                            <span class="episode-stats">
+                                                <span class="stat-views"><i class="fas fa-eye"></i> 980</span>
+                                            </span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="<%= episode.id === '3' ? 'active' : '' %>">
+                                    <a href="/episode/3" class="<%= episode.id === '3' ? 'active' : '' %>">
+                                        <div class="episode-nav-item">
+                                            <span class="episode-number">3.</span>
+                                            <span class="episode-title">第3話: 運命の選択</span>
+                                            <span class="episode-stats">
+                                                <span class="stat-views"><i class="fas fa-eye"></i> 820</span>
+                                            </span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- 分析用JavaScript -->
+<script>
+    // 固定のダミーデータ
+    const viewsTimeSeries = [{date: '2024-07-01', views: 100}, {date: '2024-07-02', views: 120}]; 
+    const leadsTimeSeries = [{date: '2024-07-01', leads: 10}, {date: '2024-07-02', leads: 15}]; 
+    
+    // 図表初期化
+    document.addEventListener('DOMContentLoaded', function() {
+        // タブ切り替え
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // ボタンのactive切り替え
+                tabBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // タブパネルの切り替え
+                const tabId = this.getAttribute('data-tab');
+                tabPanes.forEach(pane => pane.classList.remove('active'));
+                document.getElementById(tabId + '-tab').classList.add('active');
+                
+                // 選択タブに応じた図表再描画
+                initCharts();
+            });
+        });
+        
+        // サイドバーのエピソード検索機能
+        const searchSidebar = document.getElementById('episodeSearchSidebar');
+        if (searchSidebar) {
+            searchSidebar.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                const episodes = document.querySelectorAll('#episodeSidebarList li');
+                
+                episodes.forEach(episode => {
+                    const title = episode.querySelector('.episode-title').textContent.toLowerCase();
+                    const episodeNumber = episode.querySelector('.episode-number').textContent.toLowerCase();
+                    
+                    if (title.includes(query) || episodeNumber.includes(query)) {
+                        episode.style.display = '';
+                    } else {
+                        episode.style.display = 'none';
+                    }
+                });
+            });
+        }
+        
+        // エピソードサムネイルにホバー時のエフェクト
+        const episodeThumb = document.querySelector('.episode-thumb-large');
+        if (episodeThumb) {
+            episodeThumb.addEventListener('mouseover', function() {
+                this.classList.add('hover');
+            });
+            
+            episodeThumb.addEventListener('mouseout', function() {
+                this.classList.remove('hover');
+            });
+        }
+        
+        // 図表初期化
+        initCharts();
+    });
+    
+    function initCharts() {
+        // 視聴数推移グラフ
+        const viewsCtx = document.getElementById('viewsChart').getContext('2d');
+        new Chart(viewsCtx, {
+            type: 'line',
+            data: {
+                labels: viewsTimeSeries.map(item => item.date),
+                datasets: [{
+                    label: '視聴数',
+                    data: viewsTimeSeries.map(item => item.views),
+                    borderColor: '#4e73df',
+                    backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#4e73df',
+                    pointBorderColor: '#fff',
+                    pointHoverRadius: 5,
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        // リード獲得推移グラフ
+        const leadsCtx = document.getElementById('leadsChart').getContext('2d');
+        new Chart(leadsCtx, {
+            type: 'line',
+            data: {
+                labels: leadsTimeSeries.map(item => item.date),
+                datasets: [{
+                    label: 'リード獲得数',
+                    data: leadsTimeSeries.map(item => item.leads),
+                    borderColor: '#36b9cc',
+                    backgroundColor: 'rgba(54, 185, 204, 0.05)',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#36b9cc',
+                    pointBorderColor: '#fff',
+                    pointHoverRadius: 5,
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        // 性別ドーナツチャート
+        const genderCtx = document.getElementById('genderChart').getContext('2d');
+        new Chart(genderCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['男性', '女性', 'その他'],
+                datasets: [{
+                    data: [60, 35, 5],
+                    backgroundColor: ['#4e73df', '#e74a3b', '#858796']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%'
+            }
+        });
+        
+        // 年齢層ドーナツチャート
+        const ageCtx = document.getElementById('ageChart').getContext('2d');
+        new Chart(ageCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['10代', '20代', '30代', '40代', '50代+'],
+                datasets: [{
+                    data: [15, 40, 25, 15, 5],
+                    backgroundColor: ['#4e73df', '#1cc88a', '#f6c23e', '#e74a3b', '#858796']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%'
+            }
+        });
+        
+        // デバイスドーナツチャート
+        const deviceCtx = document.getElementById('deviceChart').getContext('2d');
+        new Chart(deviceCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['スマートフォン', 'タブレット', 'デスクトップ'],
+                datasets: [{
+                    data: [70, 15, 15],
+                    backgroundColor: ['#4e73df', '#1cc88a', '#f6c23e']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%'
+            }
+        });
+        
+        // 売上推移グラフ
+        const revenueCtx = document.getElementById('revenueChart');
+        if (revenueCtx) {
+            new Chart(revenueCtx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['7/1', '7/2', '7/3', '7/4', '7/5', '7/6', '7/7'],
+                    datasets: [{
+                        label: '売上',
+                        data: [12500, 14300, 9800, 11200, 15400, 13600, 17800],
+                        borderColor: '#1cc88a',
+                        backgroundColor: 'rgba(28, 200, 138, 0.05)',
+                        borderWidth: 2,
+                        pointRadius: 3,
+                        pointBackgroundColor: '#1cc88a',
+                        pointBorderColor: '#fff',
+                        pointHoverRadius: 5,
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    }
+</script>

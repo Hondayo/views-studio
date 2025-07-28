@@ -112,13 +112,13 @@
             <div class="detail-fields">
               <!-- レーティング -->
               <div class="form-subgroup">
-                <label for="rating">レーティング</label>
+                <label for="rating">視聴年齢制限</label>
                 <select id="rating" name="rating">
                   <option value="">-- 選択 --</option>
-                  <option value="G"     <%= work.rating==="G"     ? "selected" : "" %>     >G</option>
-                  <option value="PG-12" <%= work.rating==="PG-12" ? "selected" : "" %>    >PG-12</option>
-                  <option value="R15+"  <%= work.rating==="R15+"  ? "selected" : "" %>   >R15+</option>
-                  <option value="R18+"  <%= work.rating==="R18+"  ? "selected" : "" %>   >R18+</option>
+                  <option value="G"     <%= work.rating==="G"     ? "selected" : "" %>     >全年齢対象（G）</option>
+                  <option value="PG-12" <%= work.rating==="PG-12" ? "selected" : "" %>    >12歳以上推奨（PG-12）</option>
+                  <option value="R15+"  <%= work.rating==="R15+"  ? "selected" : "" %>   >15歳以上対象（R15+）</option>
+                  <option value="R18+"  <%= work.rating==="R18+"  ? "selected" : "" %>   >18歳以上対象（R18+）</option>
                 </select>
               </div>
   
@@ -270,6 +270,8 @@
                     <% } %>
                   </div>
                   <div class="ep-title"><%= ep.title %></div>
+                  <div class="ep-desc"><%= ep.description || '' %></div>
+                  <div class="toggle-link hidden">---続きを見る---</div>
                   <div class="ep-meta">
                     <span class="ep-duration" data-seconds="<%= ep.durationSeconds %>">
                       <% if ((!ep.durationSeconds || ep.durationSeconds === 0) && ep.duration) { %>
@@ -278,8 +280,6 @@
                     </span>
                     <span class="ep-price"><%= (!ep.price || ep.price === 0) ? '無料' : ep.price + '円' %></span>
                   </div>
-                  <div class="ep-desc"><%= ep.description || '' %></div>
-                  <div class="toggle-link hidden">---続きを見る---</div>
                   <div class="section-indicator">クリックで編集</div>
                 </div>
               <% }) %>

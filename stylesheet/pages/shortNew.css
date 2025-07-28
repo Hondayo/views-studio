@@ -52,7 +52,7 @@ body {
   color: #666;
 }
 .select-btn {
-  background: #ff5370;
+  background: #007bff;
   color: #fff;
   padding: 10px 18px;
   border-radius: 4px;
@@ -98,7 +98,7 @@ body {
   overflow: hidden;
 }
 .progress-bar {
-  background: #47c26e;
+  background: #007bff;
   width: 0%;
   height: 100%;
   transition: width 0.2s;
@@ -252,20 +252,123 @@ body {
   background: rgba(255,255,255,0.2);
 }
 
+/* リード先検索エリア（横並びコンテナ） */
+.lead-selection-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+/* リード先を検索ボタン */
+.lead-search-btn {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+/* 小さいバージョンの検索ボタン */
+.lead-search-btn-small {
+  width: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.lead-search-btn:hover {
+  background: #0056b3;
+}
+
+/* 選択情報コンテナ */
+.selected-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 120, 215, 0.05);
+  border-radius: 4px;
+  padding: 8px 12px;
+  border-left: 3px solid #0078d7;
+}
+
+#selectedStatusText {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* 変更ボタン（小） */
+.btn-secondary.btn-small {
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
 /*========== 作品一覧セクション ========== */
+/* 背景オーバーレイ */
+.work-section-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  display: none;
+}
+
 .work-section {
-  max-width: 1150px; /*アップロード表示ブロックと同じ幅に設定 */
-  margin: 0 auto; /*中央揃え */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 1000px;
+  height: 90%;
   background: #fff;
   padding: 20px;
-  margin-top: 20px;
+  z-index: 9999;
+  overflow-y: auto;
+  box-sizing: border-box;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  border: 1px solid #e0e0e0;
 }
+/* 作品選択UIのヘッダー */
+.work-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
 .work-section h2 {
   margin-top: 0;
   font-size: 1.3rem;
-  margin-bottom: 16px;
+  margin-bottom: 0;
+  color: #333;
+}
+
+/* 閉じるボタン */
+.close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 0 8px;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  color: #007bff;
 }
 .work-search-bar {
   display: flex;
@@ -280,7 +383,7 @@ body {
   font-size: 1rem; /*他のフォームと統一 */
 }
 .work-search-bar button {
-  background: #28a745;
+  background: #007bff;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -289,7 +392,7 @@ body {
   font-size: 1rem;
 }
 .work-search-bar button:hover {
-  background: #218838;
+  background: #0056b3;
 }
 
 /*カード一覧 */
@@ -396,14 +499,177 @@ body {
   width: 600px; /*作品より大きめの幅 */
   max-width: 90%;
   text-align: left;
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .episode-list-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   margin-bottom: 16px;
+  padding-right: 10px;
+}
+
+/* エピソードカード - 新スタイル */
+.ep-thumb {
+  width: 220px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #eee;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.ep-info {
+  flex: 1;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ep-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.ep-desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.4;
+}
+
+.ep-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-top: auto;
+}
+
+.ep-duration {
+  color: #666;
+}
+
+.ep-price {
+  font-weight: bold;
+  color: #555;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 .episode-card {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.episode-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.episode-card.selected,
+.episode-card[class*="selected"] {
+  border: 3px solid #0078d7 !important;
+  box-shadow: 0 0 12px rgba(0,120,215,0.7) !important;
+  transform: translateY(-2px);
+  position: relative;
+  z-index: 2;
+}
+
+/* 選択表示エリア */
+#selectedContainer {
+  margin: 15px 0;
+  padding: 10px;
+  background: rgba(0, 120, 215, 0.1);
+  border-radius: 6px;
+  border-left: 4px solid #0078d7;
+}
+
+.episode-thumb {
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+  background: #eee;
+  flex-shrink: 0;
+}
+
+.episode-card-info {
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.episode-card-info h4 {
+  margin-top: 0;
+  margin-bottom: 4px;
+  font-size: 16px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.episode-details {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+.episode-description {
+  font-size: 12px;
+  color: #666;
+  margin: 5px 0;
+  line-height: 1.4;
+}
+
+.episode-number {
+  background: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #555;
+}
+
+.episode-duration {
+  font-size: 12px;
+  color: #777;
+}
+
+.episode-price {
+  font-weight: bold;
+  color: #e67e22;
+}
+
+.paid-badge {
+  background: #e74c3c;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+/* 旧スタイル互換用（削除予定） */
+.episode-card2 {
   background: #fff;
   border: 2px solid #ddd;
   border-radius: 6px;
@@ -413,22 +679,17 @@ body {
   display: flex;
   flex-direction: column;
 }
-.episode-card:hover {
+.episode-card2:hover {
   transform: translateY(-2px);
 }
-.episode-card.selected {
+.episode-card2.selected {
   border-color: #007bff;
 }
-.episode-thumb {
-  width: 100%;
-  height: 80px;
-  object-fit: cover;
-  background: #eee;
-}
-.episode-card-info {
+.episode-card2-info {
   padding: 6px;
   font-size: 0.9rem;
 }
+
 .select-episode-button-area {
   text-align: right;
 }
@@ -493,7 +754,7 @@ body {
 }
 
 .hash-btn {
-  background: #28a745;
+  background: #007bff;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -504,7 +765,7 @@ body {
 }
 
 .hash-btn:hover {
-  background: #218838;
+  background: #0056b3;
 }
 
 /*投稿するボタンをページの一番下に配置 */

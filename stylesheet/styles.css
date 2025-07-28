@@ -14,8 +14,9 @@
 @import url("./pages/workDetail.css");   /* 作品詳細ページ用 */
 @import url("./pages/workEdit.css");     /* 作品編集ページ用 */
 @import url("./pages/shortNew.css");     /* ショート動画投稿用 */
-
-
+@import url("./pages/episodeAnalytics.css"); /* エピソード分析用 */
+@import url("./pages/analytics.css"); /* 分析用 */
+@import url("./pages/workAnalytics.css"); /* 作品分析用 */
 /* =============================
    1) リセット & 基本設定
    - すべての要素の余白リセット

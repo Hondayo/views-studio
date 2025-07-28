@@ -265,13 +265,15 @@ select {
   margin-bottom: 6px;
   white-space: pre-line;
   line-height: 1.4;
+  max-height: 3em; /* 厳密に2行分のみ表示 (1.4em × 2) */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
-  overflow: hidden;
+  overflow: hidden !important;
   text-overflow: ellipsis;
-  transition: max-height 0.2s;
+  word-break: break-word;
+  transition: none;
 }
 
 /* 展開時のスタイル */
@@ -287,22 +289,21 @@ select {
 
 /* 続きを見るトグル - 中央配置 */
 .toggle-link {
-  color: #0088ff !important;
+  color: #999;
   font-size: 0.75em;
   cursor: pointer;
-  margin: 8px auto 12px;
+  margin: 2px 0 4px 0;
   display: block;
-  text-align: center;
-  width: 100%;
-  position: relative;
-  padding: 4px 0;
-  background: linear-gradient(to right, transparent, rgba(0, 136, 255, 0.1), transparent);
-  border-radius: 4px;
+  text-align: left;
+  padding: 0;
+  background: none;
+  border: none;
+  transition: none;
 }
 
 .toggle-link:hover {
-  text-decoration: underline;
-  background: linear-gradient(to right, transparent, rgba(0, 136, 255, 0.2), transparent);
+  color: #ccc;
+  text-decoration: none;
 }
 
 .toggle-link.hidden {

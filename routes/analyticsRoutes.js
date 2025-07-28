@@ -103,7 +103,7 @@ router.get('/works/:id/analyze', asyncHandler(async (req, res) => {
     avgDuration: `${Math.floor(Math.random() * 5) + 1}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`
   }));
   
-  res.render('analytics/workAnalytics', {
+  res.render('partials/workAnalytics', {
     layout: 'layout',
     title: `${work.title} - 分析`,
     pageStyle: 'analytics',
@@ -161,7 +161,7 @@ router.get('/works/:workId/episodes/:episodeId/analyze', asyncHandler(async (req
     { type: 'VIPユーザー', percentage: 10 }
   ];
   
-  res.render('analytics/episodeAnalytics', {
+  res.render('partials/episodeAnalytics', {
     layout: 'layout',
     title: `${episode.title} - 分析`,
     pageStyle: 'analytics',
@@ -217,17 +217,112 @@ router.get('/api/analytics/:type/:id/monetization', asyncHandler(async (req, res
   res.json(monetizationData);
 }));
 
-// メイン分析ページ（サイドバーからのアクセス用）
+// メイン分析ページ（全体統計と作品一覧）
 router.get('/analytics', asyncHandler(async (req, res) => {
-  // 最新の作品を取得してその分析ページにリダイレクト
-  const latestWork = await Work.findOne().sort({ createdAt: -1 });
+  // 全作品を取得
+  const works = await Work.find().sort({ createdAt: -1 });
   
-  if (latestWork) {
-    res.redirect(`/works/${latestWork._id}/analyze`);
-  } else {
-    // 作品がない場合はコンテンツページにリダイレクト
-    res.redirect('/contents');
-  }
+  // 全体統計データ（ダミー）
+  const totalViews = 45280;
+  const totalRevenue = 128500;
+  
+  // 作品ごとの統計データ（ダミー）
+  // Promise.allを使用してmapの非同期処理を適切に処理
+  const workStatsPromises = works.map(async work => {
+    // 各作品のエピソード数を非同期で取得
+    const episodeCount = await Episode.countDocuments({ workId: work._id });
+    
+    return {
+      _id: work._id,
+      title: work.title,
+      coverImage: work.thumbnailUrl, // 正しいフィールド名を使用
+      views: Math.floor(Math.random() * 5000) + 1000,
+      revenue: Math.floor(Math.random() * 20000) + 5000,
+      episodeCount: episodeCount // 取得したエピソード数
+    };
+  });
+  
+  // すべてのPromiseが解決するのを待つ
+  const workStats = await Promise.all(workStatsPromises);
+  
+  res.render('partials/analytics', {
+    title: '分析 - Views Studio',
+    totalViews,
+    totalRevenue,
+    works: workStats
+  });
+}));
+
+// 作品分析ページ
+router.get('/work/:id', asyncHandler(async (req, res) => {
+  const workId = req.params.id;
+  
+  // DBから作品データを取得
+  const work = await Work.findById(workId);
+  if (!work) return res.status(404).send('作品が見つかりません');
+  
+  // 関連エピソードを取得
+  const episodes = await Episode.find({ workId: work._id }).sort({ episodeNumber: 1 });
+  
+  // 分析データ生成（現段階はサンプルでよい）
+  const totalViews = Math.floor(Math.random() * 5000) + 1000;
+  const totalRevenue = Math.floor(Math.random() * 50000) + 10000;
+  
+  // エピソードごとの統計データ（サンプル）
+  const episodesData = episodes.map(ep => ({
+    id: ep._id,
+    title: ep.title || `第${ep.episodeNumber}話`,
+    episodeNumber: ep.episodeNumber,
+    views: Math.floor(Math.random() * 2000) + 500,
+    revenue: Math.floor(Math.random() * 20000) + 5000
+  }));
+  
+  res.render('partials/workAnalytics', {
+    title: `${work.title} - 分析`,
+    pageStyle: 'pages/workAnalytics',
+    work: {
+      _id: work._id,
+      id: work._id,  // 互換性のため両方渡す
+      title: work.title,
+      publishDate: work.createdAt ? new Date(work.createdAt).toLocaleDateString('ja-JP') : '',
+      thumbnailUrl: work.thumbnailUrl,
+      totalViews: totalViews,
+      totalRevenue: totalRevenue
+    },
+    episodes: episodesData,
+    layout: 'layout'
+  });
+}));
+
+// エピソード分析ページ（モック用）
+router.get('/episode/:id', asyncHandler(async (req, res) => {
+  const episodeId = req.params.id;
+  
+  // 実際のエピソードデータを取得
+  const episode = await Episode.findById(episodeId);
+  if (!episode) return res.status(404).send('エピソードが見つかりません');
+  
+  // 関連する作品を取得
+  const work = await Work.findById(episode.workId);
+  
+  // 分析データ生成（現段階はサンプルでよい）
+  const views = Math.floor(Math.random() * 2000) + 500;
+  const revenue = Math.floor(Math.random() * 20000) + 5000;
+  
+  res.render('partials/episodeAnalytics', {
+    title: `${episode.title || `第${episode.episodeNumber}話`} - 分析`,
+    pageStyle: 'pages/episodeAnalytics',
+    episode: {
+      id: episode._id,
+      title: episode.title || `第${episode.episodeNumber}話`,
+      workId: episode.workId,
+      workTitle: work ? work.title : 'Unknown Work',
+      publishDate: episode.createdAt ? new Date(episode.createdAt).toLocaleDateString('ja-JP') : '',
+      views: views,
+      revenue: revenue
+    },
+    layout: 'layout'
+  });
 }));
 
 module.exports = router;
