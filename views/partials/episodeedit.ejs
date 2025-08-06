@@ -142,7 +142,7 @@
                 <% } %>
               </div>
               <div class="title-row">
-                <div class="preview-title" id="previewTitle"><%= work.title %></div>
+                <div class="preview-Title" id="previewTitle"><%= work.title %></div>
                 <button type="button" id="toggleExtra" class="extra-toggle-btn">詳細</button>
               </div>
               <div class="preview-description" id="workDescription"><%= work.description %></div>
@@ -308,5 +308,40 @@ body.loading::before {
   to {
     transform: rotate(360deg);
   }
+}
+/* ============================= */
+/* プレビュー専用レイアウト調整  */
+/* ============================= */
+.preview-phone-screen .episode-card {
+  display: flex;
+  flex-direction: column;
+  background: #222;
+  color: #eee;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+.preview-phone-screen .episode-card:last-child {
+  margin-bottom: 40px;
+}
+.preview-phone-screen .episode-card .ep-thumb-16x9 {
+  margin-bottom: 10px;
+}
+.preview-phone-screen .ep-title,
+.preview-phone-screen .ep-desc,
+.preview-phone-screen .ep-meta {
+  width: 100%;
+}
+.preview-phone-screen .ep-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+/* 白背景カードを暗いテーマに合わせて上書き */
+.preview-phone-screen .episode-card,
+.preview-phone-screen .episode-card * {
+  background-color: inherit;
 }
 </style>

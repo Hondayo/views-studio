@@ -7,13 +7,14 @@ const _episodeAnalyticsImpl = (() => {
   let analyticsData = {};
   let episodeId;
   let workId;
+  let episodeTitle;
   
   /**
    * タブ切り替え機能の初期化
    */
   const setupTabs = () => {
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabContents = document.querySelectorAll('.tab-pane');
+    const tabButtons = document.querySelectorAll('.episode-tab-button');
+    const tabContents = document.querySelectorAll('.episode-tab-content');
     
     if (tabButtons.length === 0 || tabContents.length === 0) {
       console.warn('タブ要素が見つかりません');
@@ -27,12 +28,12 @@ const _episodeAnalyticsImpl = (() => {
     });
     
     // 初期状態では最初のタブをアクティブにする
-    if (!document.querySelector('.tab-btn.active')) {
+    if (!document.querySelector('.episode-tab-button.active')) {
       const firstButton = tabButtons[0];
       firstButton.classList.add('active');
       
       // 対応するコンテンツもアクティブに
-      const firstTabId = firstButton.dataset.tab;
+      const firstTabId = firstButton.dataset.tab + '-tab';
       const firstContent = document.getElementById(firstTabId);
       if (firstContent) {
         firstContent.classList.add('active');
@@ -42,7 +43,7 @@ const _episodeAnalyticsImpl = (() => {
     // タブクリックハンドラー関数
     function tabClickHandler(event) {
       const clickedButton = event.currentTarget;
-      const tabId = clickedButton.dataset.tab;
+      const tabId = clickedButton.dataset.tab + '-tab';
       
       // アクティブなタブを更新
       tabButtons.forEach(btn => btn.classList.remove('active'));
@@ -336,6 +337,41 @@ const _episodeAnalyticsImpl = (() => {
   };
   
   /**
+   * 切り抜き詳細表示のトグル機能
+   * @param {HTMLElement} card - クリックされたカード要素
+   */
+  window.toggleClipDetails = (card) => {
+    if (!card) return;
+    
+    const detailsSection = card.querySelector('.clip-details-expanded');
+    const chevronIcon = card.querySelector('.toggle-details i');
+    
+    if (!detailsSection || !chevronIcon) return;
+    
+    // 現在の表示状態をチェック
+    const isExpanded = detailsSection.style.display !== 'none';
+    
+    // 表示状態を切り替え
+    if (isExpanded) {
+      // 閉じる
+      detailsSection.style.display = 'none';
+      chevronIcon.className = 'fas fa-chevron-down';
+      card.classList.remove('expanded');
+    } else {
+      // 開く
+      detailsSection.style.display = 'block';
+      chevronIcon.className = 'fas fa-chevron-up';
+      card.classList.add('expanded');
+      
+      // もしチャートがあれば再描画（レスポンシブ対応のため）
+      const chartCanvas = detailsSection.querySelector('canvas');
+      if (chartCanvas && chartCanvas.chart) {
+        chartCanvas.chart.resize();
+      }
+    }
+  };
+  
+  /**
    * トップ5の切り抜き表示をレンダリング
    * @param {Array} clipsData - 切り抜きデータの配列
    */
@@ -585,6 +621,14 @@ const _episodeAnalyticsImpl = (() => {
   };
   
   /**
+   * URLクエリパラメータから値を取得するヘルパー関数
+   */
+  const getQueryParam = (paramName) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(paramName);
+  };
+  
+  /**
    * 分析システムの初期化
    */
   const initialize = (data) => {
@@ -592,9 +636,85 @@ const _episodeAnalyticsImpl = (() => {
       // データを保存
       analyticsData = data || {};
       
-      // IDを取得
-      episodeId = document.getElementById('episodeId')?.value;
-      workId = document.getElementById('workId')?.value;
+      // URLパラメータからエピソード情報を取得
+      episodeId = getQueryParam('id') || document.getElementById('episodeId')?.value || 'dummy-episode-id';
+      episodeTitle = getQueryParam('title') || document.getElementById('episodeTitle')?.textContent || 'エピソードタイトル';
+      workId = getQueryParam('workId') || document.getElementById('workId')?.value || 'dummy-work-id';
+      
+      // タイトルを表示
+      const titleElement = document.getElementById('episode-title');
+      if (titleElement && episodeTitle) {
+        titleElement.textContent = episodeTitle;
+      }
+      
+      // ダミーデータの設定
+      if (!analyticsData.views) {
+        analyticsData = {
+          views: 1250,
+          revenue: 3500,
+          viewsTrend: +15,
+          revenueTrend: +8,
+          conversionRate: 3.2,
+          conversionTrend: 0,
+          episodeNumber: getQueryParam('episodeNumber') || 1,
+          publishDate: '2023-01-01',
+          thumbnailUrl: getQueryParam('thumbnailUrl') || '/images/no-image.jpg'
+        };
+      }
+      
+      // 統計情報とメタデータを表示
+      const totalViewsElement = document.getElementById('viewer-total-views');
+      const totalRevenueElement = document.getElementById('viewer-total-revenue');
+      const viewsTrendElement = document.getElementById('viewer-views-trend');
+      const revenueTrendElement = document.getElementById('viewer-revenue-trend');
+      const conversionRateElement = document.getElementById('viewer-conversion-rate');
+      const conversionTrendElement = document.getElementById('viewer-conversion-trend');
+      const episodeNumberElement = document.getElementById('episode-number');
+      const publishDateElement = document.getElementById('episode-publish-date');
+      const thumbnailElement = document.getElementById('episode-thumbnail');
+      
+      // 統計情報の表示
+      if (totalViewsElement) {
+        totalViewsElement.textContent = analyticsData.views?.toLocaleString() || '0';
+      }
+      
+      if (totalRevenueElement) {
+        totalRevenueElement.textContent = `¥${(analyticsData.revenue || 0).toLocaleString()}`;
+      }
+      
+      if (viewsTrendElement && analyticsData.viewsTrend !== undefined) {
+        const prefix = analyticsData.viewsTrend > 0 ? '+' : '';
+        viewsTrendElement.textContent = `${prefix}${analyticsData.viewsTrend}%`;
+      }
+      
+      if (revenueTrendElement && analyticsData.revenueTrend !== undefined) {
+        const prefix = analyticsData.revenueTrend > 0 ? '+' : '';
+        revenueTrendElement.textContent = `${prefix}${analyticsData.revenueTrend}%`;
+      }
+      
+      if (conversionRateElement) {
+        conversionRateElement.textContent = `${analyticsData.conversionRate || 0}%`;
+      }
+      
+      if (conversionTrendElement && analyticsData.conversionTrend !== undefined) {
+        const prefix = analyticsData.conversionTrend > 0 ? '+' : (analyticsData.conversionTrend < 0 ? '' : '±');
+        conversionTrendElement.textContent = `${prefix}${analyticsData.conversionTrend}%`;
+      }
+      
+      // メタ情報の表示
+      if (episodeNumberElement) {
+        const episodeNum = analyticsData.episodeNumber || getQueryParam('episodeNumber') || '?';
+        episodeNumberElement.textContent = `第 ${episodeNum} 話`;
+      }
+      
+      if (publishDateElement) {
+        publishDateElement.textContent = analyticsData.publishDate || '2023-01-01';
+      }
+      
+      if (thumbnailElement && analyticsData.thumbnailUrl) {
+        thumbnailElement.src = analyticsData.thumbnailUrl;
+        thumbnailElement.alt = episodeTitle || 'エピソードサムネイル';
+      }
       
       // UIコンポーネントの設定
       // DOM要素が確実に利用可能な状態で実行

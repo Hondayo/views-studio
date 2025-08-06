@@ -27,9 +27,10 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // 静的ファイルの提供設定
-app.use(express.static(path.join(__dirname, '/')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/stylesheet', express.static(path.join(__dirname, 'stylesheet')));
-app.use('/public', express.static(path.join(__dirname, 'public'))); 
+app.use('/js', express.static(path.join(__dirname, 'public/js')));
+app.use('/css', express.static(path.join(__dirname, 'public/css'))); 
 
 /* ---------- DB ---------- */
 const MONGO_URI = process.env.MONGO_URI;

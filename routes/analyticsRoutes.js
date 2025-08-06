@@ -122,60 +122,12 @@ router.get('/works/:id/analyze', asyncHandler(async (req, res) => {
 router.get('/works/:workId/episodes/:episodeId/analyze', asyncHandler(async (req, res) => {
   const { workId, episodeId } = req.params;
   
-  // 作品とエピソードのデータを取得
-  const work = await Work.findById(workId);
+  // エピソードが存在するか確認
   const episode = await Episode.findById(episodeId);
-  if (!work || !episode) return res.status(404).send('作品またはエピソードが見つかりません');
+  if (!episode) return res.status(404).send('エピソードが見つかりません');
   
-  // 同じ作品の他のエピソードも取得（サイドバー用）
-  const episodes = await Episode.find({ workId }).sort({ episodeNumber: 1 });
-  
-  // 分析データ取得（現状はダミーデータを使用）
-  const viewsData = generateDummyData(30);
-  const retentionData = generateRetentionData();
-  
-  // リード獲得データ（ダミー）
-  const leadsData = generateDummyData(30).map(item => ({
-    ...item,
-    views: Math.floor(item.views * 0.3), // 視聴の30%がリード
-    completions: Math.floor(item.completions * 0.3),
-  }));
-  
-  // マネタイズデータ（ダミー）
-  const monetizationData = {
-    totalRevenue: viewsData.reduce((sum, item) => sum + item.revenue, 0),
-    conversionRate: 0.05, // 5%の人が購入
-  };
-  
-  // デバイス別視聴データ（ダミー）
-  const deviceData = [
-    { device: 'モバイル', percentage: 55 },
-    { device: 'タブレット', percentage: 15 },
-    { device: 'デスクトップ', percentage: 30 }
-  ];
-  
-  // ユーザー属性データ（ダミー）
-  const userAttributesData = [
-    { type: '新規ユーザー', percentage: 65 },
-    { type: 'リピーター', percentage: 25 },
-    { type: 'VIPユーザー', percentage: 10 }
-  ];
-  
-  res.render('partials/episodeAnalytics', {
-    layout: 'layout',
-    title: `${episode.title} - 分析`,
-    pageStyle: 'analytics',
-    bodyClass: 'dark',
-    work,
-    episode,
-    episodes,
-    viewsData: JSON.stringify(viewsData),
-    retentionData: JSON.stringify(retentionData),
-    leadsData: JSON.stringify(leadsData),
-    monetizationData: JSON.stringify(monetizationData),
-    deviceData: JSON.stringify(deviceData),
-    userAttributesData: JSON.stringify(userAttributesData)
-  });
+  // 完全な表示用のルートにリダイレクト
+  res.redirect(`/episode/${episodeId}`);
 }));
 
 // 分析API - 視聴データ取得
@@ -274,7 +226,9 @@ router.get('/work/:id', asyncHandler(async (req, res) => {
     title: ep.title || `第${ep.episodeNumber}話`,
     episodeNumber: ep.episodeNumber,
     views: Math.floor(Math.random() * 2000) + 500,
-    revenue: Math.floor(Math.random() * 20000) + 5000
+    revenue: Math.floor(Math.random() * 20000) + 5000,
+    thumbnailUrl: ep.thumbnailUrl || null ,
+    cloudinaryUrl: ep.cloudinaryUrl // サムネイルURLを追加
   }));
   
   res.render('partials/workAnalytics', {
@@ -304,10 +258,32 @@ router.get('/episode/:id', asyncHandler(async (req, res) => {
   
   // 関連する作品を取得
   const work = await Work.findById(episode.workId);
+  if (!work) return res.status(404).send('作品が見つかりません');
   
-  // 分析データ生成（現段階はサンプルでよい）
+  // 同じ作品の他のエピソードも取得
+  const allEpisodes = await Episode.find({ workId: episode.workId }).sort({ episodeNumber: 1 });
+  
+  // エピソードデータの加工
+  const episodes = allEpisodes.map(ep => {
+    // 各エピソードのダミー視聴データ
+    const epViews = Math.floor(Math.random() * 2000) + 500;
+    
+    return {
+      id: ep._id,
+      title: ep.title || `第${ep.episodeNumber}話`,
+      episodeNumber: ep.episodeNumber,
+      views: epViews,
+      thumbnailUrl: ep.thumbnailUrl || '/images/no-image.jpg'
+    };
+  });
+  
+  // 現在のエピソードの分析データ生成（サンプル）
   const views = Math.floor(Math.random() * 2000) + 500;
   const revenue = Math.floor(Math.random() * 20000) + 5000;
+  
+  // グラフ用データの生成（サンプル）
+  const viewsData = generateDummyData(30);
+  const retentionData = generateRetentionData();
   
   res.render('partials/episodeAnalytics', {
     title: `${episode.title || `第${episode.episodeNumber}話`} - 分析`,
@@ -315,12 +291,18 @@ router.get('/episode/:id', asyncHandler(async (req, res) => {
     episode: {
       id: episode._id,
       title: episode.title || `第${episode.episodeNumber}話`,
+      episodeNumber: episode.episodeNumber,
       workId: episode.workId,
-      workTitle: work ? work.title : 'Unknown Work',
+      workTitle: work.title,
+      thumbnailUrl: episode.thumbnailUrl || '/images/no-image.jpg',
       publishDate: episode.createdAt ? new Date(episode.createdAt).toLocaleDateString('ja-JP') : '',
       views: views,
-      revenue: revenue
+      revenue: revenue,
+      unitPrice: 350 // サンプル価格
     },
+    episodes: episodes,
+    viewsData: JSON.stringify(viewsData),
+    retentionData: JSON.stringify(retentionData),
     layout: 'layout'
   });
 }));

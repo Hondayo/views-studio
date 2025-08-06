@@ -183,7 +183,30 @@
 
 
 
-.ep-title {
+.preview-phone-screen .episode-card,
+.preview-phone-screen .episode-card:hover {
+  display: block !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  background: #222 !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* original episode card */
+.episode-card {
+  border: none !important;
+  box-shadow: none !important;
+  background: #222;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  padding: 10px;
+  color: #9c9c9c;
+  font-size: 0.93em;
+}
+
+.pre-ep-title {
   font-weight: bold;
   font-size: 1em;
   margin-bottom: 2px;
@@ -202,6 +225,13 @@
   object-fit: cover;
   border-radius: 12px;
   margin-bottom: 4px;
+}
+
+.ep-title {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0 0 2px;
+  color: #fff;
 }
 
 .ep-desc {
@@ -225,6 +255,13 @@
   line-clamp: unset;
   max-height: none;
   overflow: visible;
+}
+.ep-duration {
+  color: #ffffff;
+}
+
+.ep-price {
+  color: #ffffff;
 }
 
 /* 続きを見るトグル - 中央配置 */
