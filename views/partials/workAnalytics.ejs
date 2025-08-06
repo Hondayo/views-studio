@@ -4,7 +4,6 @@
      - エピソード別の詳細データ表示
    ============================== -->
 
-<!-- ===== 分析用CSS読み込み ===== -->
 
 
 <div class="analytics-page">
@@ -15,7 +14,7 @@
             <div class="analytics-header">
                 <div class="analytics-title">
                     <h1><%= work.title %></h1>
-                    <p class="subtitle">エピソード別の視聴状況を確認</p>
+                    <p class="subtitle">作品全体の視聴状況を確認</p>
                 </div>
             </div>
             
@@ -24,64 +23,156 @@
                 <div class="analytics-card">
                     <h3>総視聴回数</h3>
                     <div class="card-value"><%= work.totalViews.toLocaleString() %></div>
-                    <div class="card-trend trend-up">
-                        全エピソード合計
-                    </div>
                 </div>
                 <div class="analytics-card">
-                    <h3>エピソード数</h3>
-                    <div class="card-value"><%= episodes.length %></div>
-                    <div class="card-trend trend-up">
-                        公開済み
+                    <h3>総売上</h3>
+                    <div class="card-value">¥<%= work.totalRevenue ? work.totalRevenue.toLocaleString() : '0' %></div>
+                </div>
+            </div>
+            
+            <!-- タブナビゲーション -->
+            <div class="work-analytics-tabs">
+                <div class="work-tab-nav">
+                    <button class="work-tab-button active" data-tab="viewers">視聴者</button>
+                    <button class="work-tab-button" data-tab="leads">リード獲得</button>
+                </div>
+                
+                <!-- 視聴者タブ -->
+                <div class="work-tab-content active" id="viewers-tab">
+                    <!-- 視聴数推移グラフ -->
+                    <div class="analytics-section">
+                        <h2 class="section-title">視聴数推移</h2>
+                        <div class="compact-chart-container">
+                            <canvas id="viewsChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- 視聴者属性 -->
+                    <div class="viewer-demographics">
+                        <div class="demographics-chart">
+                            <h2 class="section-title">視聴者の性別</h2>
+                            <div class="gender-chart-container">
+                                <canvas id="genderChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="demographics-chart">
+                            <h2 class="section-title">視聴者の年齢層</h2>
+                            <div class="age-chart-container">
+                                <canvas id="ageChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                </div>
+                
+                <!-- リード獲得タブ -->
+                <div class="work-tab-content" id="leads-tab">
+                    <!-- リーチ元分析 -->
+                    <div class="analytics-section">
+                        <h2 class="section-title">リーチ元別分析</h2>
+                        <div class="reach-chart-container">
+                            <canvas id="reachChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- 切り抜き動画詳細 -->
+                    <div class="analytics-section">
+                        <h2 class="section-title">切り抜き動画からのリード獲得詳細</h2>
+                        
+                        <!-- 切り抜き動画1 -->
+                        <div class="clip-detail-card" onclick="toggleClipDetails(this)">
+                            <!-- 基本情報（常時表示） - トグル展開後もデザイン不変 -->
+                            <div class="clip-basic-info">
+                                <!-- サムネイル -->
+                                <div class="clip-thumbnail">
+                                    <img src="/images/clips/11のコピー.png" alt="切り抜きサムネイル" class="clip-thumb-img">
+                                    <div class="clip-duration">2:34</div>
+                                </div>
+                                
+                                <!-- 説明・タグ情報 -->
+                                <div class="clip-info">
+                                    <p class="clip-description">主人公の感動的な最終決戦シーンを厳選してまとめた切り抜き動画です。涙なしには見られない名場面の数々をお楽しみください。</p>
+                                    
+                                    <!-- タグ -->
+                                    <div class="clip-tags">
+                                        <span class="clip-tag">#感動</span>
+                                        <span class="clip-tag">#最終回</span>
+                                        <span class="clip-tag">#名シーン</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- 展開アイコン -->
+                                <div class="clip-toggle-icon">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 詳細情報（トグル展開時のみ表示） - 基本情報の下部に配置 -->
+                        <div class="clip-details-expanded" style="display: none;">
+                            <!-- 詳細情報ヘッダー -->
+                            <div class="details-header">
+                                <h4>詳細情報</h4>
+                                <div class="details-date">最終更新: 2023年7月30日</div>
+                            </div>
+                            
+                            <!-- 詳細情報コンテンツ -->
+                            <div class="clip-details-content">
+                                
+                                <!-- リード先情報 -->
+                                <div class="clip-lead-info">
+                                    <div class="clip-lead-destination">
+                                        <span class="lead-label">リード先:</span>
+                                        <span class="lead-work">アメイジング・スパイダーマン</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- 統計情報（上段） -->
+                                <div class="clip-metrics-row">
+                                    <div class="metric-item">
+                                        <div class="metric-value">45,678</div>
+                                        <div class="metric-label">視聴回数</div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="metric-value">1,234</div>
+                                        <div class="metric-label">リーチ回数</div>
+                                    </div>
+                                    <div class="metric-item conversion-rate">
+                                        <div class="metric-value">18.5%</div>
+                                        <div class="metric-label">コンバージョン率</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 視聴者の属性情報 -->
+                                <div class="viewers-info">
+                                    <div class="analytics-sections viewers-analytics">
+                                        <!-- 性別 -->
+                                        <div class="analytics-section gender-section">
+                                            <div class="donut-chart-container">
+                                                <canvas id="clipGenderChart" width="200" height="200"></canvas>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 年齢層 -->
+                                        <div class="analytics-section age-section">
+                                            <div class="donut-chart-container">
+                                                <canvas id="clipAgeChart" width="200" height="200"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                       
                     </div>
                 </div>
             </div>
             
-            <!-- コンパクトグラフ部分 -->
-            <div class="analytics-section">
-                <h2 class="section-title">視聴数推移</h2>
-                <div class="compact-chart-container">
-                    <canvas id="viewsChart"></canvas>
-                </div>
-            </div>
-            
-            <!-- 視聴者属性 -->
-            <div class="analytics-sections">
-                <div class="analytics-section">
-                    <h3>性別</h3>
-                    <div class="donut-chart-container">
-                        <canvas id="genderChart" width="200" height="200"></canvas>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- ランキング -->
-            <div class="ranking-container">
-                <h3>エピソード別売上ランキング</h3>
-                <ul class="ranking-list">
-                    <li class="ranking-item">
-                        <div class="ranking-number">1</div>
-                        <div class="ranking-content">
-                            <div class="ranking-title">第1話: 始まりの物語</div>
-                            <div class="ranking-value">¥60,000</div>
-                        </div>
-                    </li>
-                    <li class="ranking-item">
-                        <div class="ranking-number">2</div>
-                        <div class="ranking-content">
-                            <div class="ranking-title">第3話: 運命の選択</div>
-                            <div class="ranking-value">¥45,000</div>
-                        </div>
-                    </li>
-                    <li class="ranking-item">
-                        <div class="ranking-number">3</div>
-                        <div class="ranking-content">
-                            <div class="ranking-title">第2話: 新たな出会い</div>
-                            <div class="ranking-value">¥23,000</div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+
         </div>
         
         <!-- エピソード一覧サイドバー -->
@@ -95,16 +186,14 @@
             <div class="episodes-list">
                 <% if (episodes && episodes.length > 0) { %>
                     <% episodes.forEach((episode, index) => { %>
-                        <div class="episode-card" data-episode-id="<%= episode._id %>">
-                            <img src="<%= episode.thumbnailUrl || '/images/no-image.jpg' %>" alt="<%= episode.title %>" class="episode-thumb">
+                        <div class="episode-card" data-episode-id="<%= episode.id %>" onclick="navigateToEpisodeAnalytics('<%= episode.id %>', '<%= episode.title %>')">
+                            <div>
+                                <% if (episode.thumbnailUrl) { %>
+                                    <img src="<%= episode.thumbnailUrl %>"class="episode-thumb-container">
+                                  <% } %>
+                            </div>
                             <div class="episode-info">
                                 <h3 class="episode-title"><%= episode.title %></h3>
-                                <div class="episode-stats">
-                                    <div class="episode-stat-item">
-                                        <div class="stat-label">視聴回数</div>
-                                        <div class="stat-value"><%= episode.views ? episode.views.toLocaleString() : '0' %></div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     <% }); %>
@@ -126,177 +215,319 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <!-- 分析用JavaScript -->
 <script>
-    // 固定のダミーデータ
-    const viewsTimeSeries = [{date: '2024-07-01', views: 200}, {date: '2024-07-02', views: 250}]; 
-    const leadsTimeSeries = [{date: '2024-07-01', leads: 20}, {date: '2024-07-02', leads: 30}]; 
-    const episodesData = [{title: 'サンプルエピソード1', views: 100}, {title: 'サンプルエピソード2', views: 80}]; 
-    
-    // ページ読み込み時の処理
+    // 固定のダミーデータ - 視聴数推移（過去14日間）
+    /* ===== 作品全体ダミーデータ ===== */
+
+// 視聴数推移（過去14日間・全エピソード合算）
+const viewsTimeSeries = [
+  { date: '2024-07-18', views: 1450 },
+  { date: '2024-07-19', views: 1680 },
+  { date: '2024-07-20', views: 2100 },
+  { date: '2024-07-21', views: 1920 },
+  { date: '2024-07-22', views: 2060 },
+  { date: '2024-07-23', views: 2210 },
+  { date: '2024-07-24', views: 2440 },
+  { date: '2024-07-25', views: 2250 },
+  { date: '2024-07-26', views: 2350 },
+  { date: '2024-07-27', views: 2610 },
+  { date: '2024-07-28', views: 2950 },
+  { date: '2024-07-29', views: 3180 },
+  { date: '2024-07-30', views: 3480 },
+  { date: '2024-07-31', views: 3750 }
+];
+
+// 視聴者の性別構成（全話平均）
+const genderData = [
+  { gender: '男性', percentage: 60 },
+  { gender: '女性', percentage: 37 },
+  { gender: 'その他', percentage: 3 }
+];
+
+// 視聴者の年齢層（全話平均）
+const ageData = [
+  { age: '10-19歳', percentage: 7 },
+  { age: '20-29歳', percentage: 33 },
+  { age: '30-39歳', percentage: 29 },
+  { age: '40-49歳', percentage: 19 },
+  { age: '50-59歳', percentage: 9 },
+  { age: '60歳以上', percentage: 3 }
+];
+
+// リード獲得推移（過去14日間・全エピソード合算）
+const leadsTimeSeries = [
+  { date: '2024-07-18', leads: 150 },
+  { date: '2024-07-19', leads: 180 },
+  { date: '2024-07-20', leads: 220 },
+  { date: '2024-07-21', leads: 190 },
+  { date: '2024-07-22', leads: 210 },
+  { date: '2024-07-23', leads: 235 },
+  { date: '2024-07-24', leads: 260 },
+  { date: '2024-07-25', leads: 240 },
+  { date: '2024-07-26', leads: 275 },
+  { date: '2024-07-27', leads: 310 },
+  { date: '2024-07-28', leads: 340 },
+  { date: '2024-07-29', leads: 370 },
+  { date: '2024-07-30', leads: 400 },
+  { date: '2024-07-31', leads: 430 }
+];
+
+// リーチ元分析（全話合算）
+const reachSourceData = [
+  { source: '検索',       count: 8500 },
+  { source: '切り抜き',   count: 6200 },
+  { source: 'ブラウジング', count: 4500 },
+  { source: '関連動画',   count: 2800 },
+  { source: 'その他',     count: 1800 }
+];
+
+// 切り抜きA からのリード獲得推移
+const clipLeadsData1 = [
+  { date: '2024-07-25', leads: 120 },
+  { date: '2024-07-26', leads: 180 },
+  { date: '2024-07-27', leads: 225 },
+  { date: '2024-07-28', leads: 205 },
+  { date: '2024-07-29', leads: 260 },
+  { date: '2024-07-30', leads: 300 },
+  { date: '2024-07-31', leads: 350 }
+];
+
+// 切り抜きB からのリード獲得推移
+const clipLeadsData2 = [
+  { date: '2024-07-25', leads: 80 },
+  { date: '2024-07-26', leads: 105 },
+  { date: '2024-07-27', leads: 145 },
+  { date: '2024-07-28', leads: 125 },
+  { date: '2024-07-29', leads: 165 },
+  { date: '2024-07-30', leads: 185 },
+  { date: '2024-07-31', leads: 225 }
+];
+
+    // 図表初期化
     document.addEventListener('DOMContentLoaded', function() {
-        // タブ切り替え処理
-        const tabs = document.querySelectorAll('.tab-btn');
-        const tabPanes = document.querySelectorAll('.tab-pane');
+        // タブ切り替え
+        const tabBtns = document.querySelectorAll('.work-tab-button');
+        const tabPanes = document.querySelectorAll('.work-tab-content');
         
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // アクティブタブの更新
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // ボタンのactive切り替え
+                tabBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
                 
-                // アクティブパネルの更新
-                const tabId = tab.getAttribute('data-tab');
+                // タブパネルの切り替え
+                const tabId = this.getAttribute('data-tab');
                 tabPanes.forEach(pane => pane.classList.remove('active'));
-                document.getElementById(`${tabId}-tab`).classList.add('active');
+                document.getElementById(tabId + '-tab').classList.add('active');
+                
+                // 選択タブに応じた図表再描画
+                initCharts();
             });
         });
         
-        // グラフ初期化
+        // サイドバーのエピソード検索機能
+        const searchSidebar = document.getElementById('episodeSearchSidebar');
+        if (searchSidebar) {
+            searchSidebar.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                const episodes = document.querySelectorAll('#episodeSidebarList li');
+                
+                episodes.forEach(episode => {
+                    const title = episode.querySelector('.episode-title').textContent.toLowerCase();
+                    const episodeNumber = episode.querySelector('.episode-number').textContent.toLowerCase();
+                    
+                    if (title.includes(query) || episodeNumber.includes(query)) {
+                        episode.style.display = '';
+                    } else {
+                        episode.style.display = 'none';
+                    }
+                });
+            });
+        }
+        
+        // エピソードサムネイルにホバー時のエフェクト
+        const episodeThumb = document.querySelector('.episode-thumb-large');
+        if (episodeThumb) {
+            episodeThumb.addEventListener('mouseover', function() {
+                this.classList.add('hover');
+            });
+            
+            episodeThumb.addEventListener('mouseout', function() {
+                this.classList.remove('hover');
+            });
+        }
+        
+        // 図表初期化
         initCharts();
     });
     
     function initCharts() {
-        // コンパクト視聴数推移グラフ
-        const viewsCtx = document.getElementById('viewsChart').getContext('2d');
-        new Chart(viewsCtx, {
-            type: 'line',
-            data: {
-                labels: ['7/1', '7/2', '7/3', '7/4', '7/5', '7/6', '7/7'],
-                datasets: [{
-                    label: '視聴数',
-                    data: [120, 150, 180, 220, 200, 250, 300],
-                    borderColor: 'rgb(75, 192, 192)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    tension: 0.4,
-                    pointRadius: 3,
-                    pointHoverRadius: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
+        const active = document.querySelector('.work-tab-button.active')?.dataset.tab;
+    if (active === 'viewers') initViewerCharts();
+    if (active === 'leads')   initReachCharts();
+    }
+    /* ===== Chart.js インスタンス保持用 ===== */
+let viewerViewsChart  = null;
+let viewerGenderChart = null;
+let viewerAgeChart    = null;
+let leadsChart   = null;   
+let reachChart   = null;   
+let clip1Chart   = null;   
+let clip2Chart   = null;   
+/* ======================================= */
+
+function initViewerCharts() {
+  const views =  document.getElementById('viewsChart');
+  const gender = document.getElementById('genderChart');
+  const age =    document.getElementById('ageChart');
+  if (!views) return;
+
+  // タブが非表示で幅 0 なら 1 フレーム後に再挑戦
+  if (views.parentElement.offsetWidth === 0) {
+    requestAnimationFrame(initViewerCharts);
+    return;
+  }
+
+  /* 既存チャートを破棄 */
+  viewerViewsChart?.destroy();
+  viewerGenderChart?.destroy();
+  viewerAgeChart?.destroy();
+
+  /* ---- 視聴数 ---- */
+  viewerViewsChart = new Chart(views.getContext('2d'), {
+    type:'line',
+    data:{labels:['7/1','7/2','7/3','7/4','7/5','7/6','7/7'],
+          datasets:[{label:'視聴数',
+            data:[1245,1567,1823,2156,1987,2345,2678],
+            borderColor:'rgb(75,192,192)',
+            backgroundColor:'rgba(75,192,192,0.2)', tension:0.4,
+            pointRadius:3, pointHoverRadius:5}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false}},y:{beginAtZero:true}}}
+  });
+
+  /* ---- 性別 ---- */
+  viewerGenderChart = new Chart(gender.getContext('2d'), {
+    type:'doughnut',
+    data:{labels:['男性','女性','その他'],
+          datasets:[{data:[52.3,41.8,5.9],
+            backgroundColor:['#4e73df','#e74a3b','#858796'],
+            circumference:180,rotation:270}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'50%',
+      plugins:{legend:{position:'bottom',labels:{padding:20,usePointStyle:true}}}}
+  });
+
+  /* ---- 年齢層 ---- */
+  viewerAgeChart = new Chart(age.getContext('2d'), {
+    type:'bar',
+    data:{labels:['10代','20代','30代','40代','50代+'],
+          datasets:[{label:'視聴者数',
+            data:[8.2,34.7,28.9,19.4,8.8],
+            backgroundColor:['#4e73df','#1cc88a','#f6c23e','#e74a3b','#858796'],
+            borderWidth:0}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{beginAtZero:true,grid:{display:true,color:'rgba(0,0,0,0.1)'},
+                 ticks:{callback:v=>v+'%'}},
+              y:{grid:{display:false}}}}
+  });
+}
+
+        
+        // リーチ元分析グラフ
+        const reachCtx = document.getElementById('reachChart');
+        if (reachCtx) {
+            reachChart?.destroy();
+            new Chart(reachCtx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: reachSourceData.map(item => item.source),
+                    datasets: [{
+                        label: 'リーチ数',
+                        data: reachSourceData.map(item => item.count),
+                        backgroundColor:  ['#4e73df', '#1cc88a', '#f6c23e', '#e74a3b', '#858796'],
+                        borderWidth: 1
+                    }]
                 },
-                scales: {
-                    x: {
-                        grid: {
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
                             display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.raw.toLocaleString()} 回`;
+                                }
+                            }
                         }
                     },
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-        
-        // リード獲得推移グラフ
-        const leadsCtx = document.getElementById('leadsChart').getContext('2d');
-        new Chart(leadsCtx, {
-            type: 'line',
-            data: {
-                labels: leadsTimeSeries.map(item => item.date),
-                datasets: [{
-                    label: 'リード獲得数',
-                    data: leadsTimeSeries.map(item => item.leads),
-                    borderColor: '#36b9cc',
-                    backgroundColor: 'rgba(54, 185, 204, 0.05)',
-                    borderWidth: 2,
-                    pointRadius: 3,
-                    pointBackgroundColor: '#36b9cc',
-                    pointBorderColor: '#fff',
-                    pointHoverRadius: 5,
-                    fill: true,
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString();
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            }
                         }
-                    },
-                    y: {
-                        beginAtZero: true
                     }
                 }
-            }
-        });
+            });
+        }
         
-        // 性別ドーナツチャート
-        const genderCtx = document.getElementById('genderChart').getContext('2d');
-        new Chart(genderCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['男性', '女性', 'その他'],
-                datasets: [{
-                    data: [60, 35, 5],
-                    backgroundColor: ['#4e73df', '#e74a3b', '#858796']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '70%'
-            }
-        });
+        // 切り抜きのリード獲得推移
+        const conversionCtx1 = document.getElementById('conversionChart1');
+        if (conversionCtx1) {
+            new Chart(conversionCtx1.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['コンバージョン', '非コンバージョン'],
+                    datasets: [{
+                        data: [18.5, 81.5],
+                        backgroundColor: ['#4e73df', '#e3e6f0'],
+                        borderWidth: 0,
+                        cutout: '70%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
         
-        // 年齢層ドーナツチャート
-        const ageCtx = document.getElementById('ageChart').getContext('2d');
-        new Chart(ageCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['10代', '20代', '30代', '40代', '50代+'],
-                datasets: [{
-                    data: [15, 40, 25, 15, 5],
-                    backgroundColor: ['#4e73df', '#1cc88a', '#f6c23e', '#e74a3b', '#858796']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '70%'
-            }
-        });
-        
-        // デバイスドーナツチャート
-        const deviceCtx = document.getElementById('deviceChart').getContext('2d');
-        new Chart(deviceCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['スマートフォン', 'タブレット', 'デスクトップ'],
-                datasets: [{
-                    data: [70, 15, 15],
-                    backgroundColor: ['#4e73df', '#1cc88a', '#f6c23e']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '70%'
-            }
-        });
-        
-        // 売上推移グラフ
-        const revenueCtx = document.getElementById('revenueChart');
-        if (revenueCtx) {
-            new Chart(revenueCtx.getContext('2d'), {
+        // 切り抜き2のリード獲得推移
+        const clipLeadsCtx2 = document.getElementById('clipLeadsChart2');
+        if (clipLeadsCtx2) {
+            clip2Chart?.destroy();
+            new Chart(clipLeadsCtx2.getContext('2d'), {
                 type: 'line',
                 data: {
-                    labels: ['7/1', '7/2', '7/3', '7/4', '7/5', '7/6', '7/7'],
+                    labels: clipLeadsData2.map(item => item.date),
                     datasets: [{
-                        label: '売上',
-                        data: [12500, 14300, 9800, 11200, 15400, 13600, 17800],
+                        label: 'リード獲得数',
+                        data: clipLeadsData2.map(item => item.leads),
                         borderColor: '#1cc88a',
                         backgroundColor: 'rgba(28, 200, 138, 0.05)',
                         borderWidth: 2,
@@ -320,14 +551,251 @@
                         x: {
                             grid: {
                                 display: false
+                            },
+                            ticks: {
+                                maxRotation: 0,
+                                autoSkip: true,
+                                maxTicksLimit: 5
                             }
                         },
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            suggestedMax: 30
                         }
                     }
                 }
             });
         }
+    // クリップ詳細のトグル機能
+    function toggleClipDetails(card) {
+        // クリックイベントが重複しないように処理
+        event.stopPropagation();
+        
+        // カードセクションの直後にある詳細セクションを取得
+        const expandedSection = card.nextElementSibling;
+        
+        if (expandedSection && expandedSection.classList.contains('clip-details-expanded')) {
+            // 全ての展開セクションを一旦閉じる（このカードに関連するものを除く）
+            document.querySelectorAll('.clip-details-expanded').forEach(function(el) {
+                if (el !== expandedSection) {
+                    el.classList.remove('active');
+                    el.style.display = 'none';
+                    
+                    // 関連するカードの展開状態も解除
+                    const prevCard = el.previousElementSibling;
+                    if (prevCard && prevCard.classList.contains('clip-detail-card')) {
+                        prevCard.classList.remove('expanded');
+                    }
+                }
+            });
+            
+            // 現在のカードの状態をトグルする
+            if (expandedSection.style.display === 'none' || expandedSection.style.display === '') {
+                // 展開
+                expandedSection.style.display = 'block';
+                card.classList.add('expanded');
+                
+                // アニメーション表示のために少し遅延を入れる
+                setTimeout(() => {
+                    expandedSection.classList.add('active');
+                    
+                    // スクロール位置の調整
+                    const cardRect = card.getBoundingClientRect();
+                    const windowHeight = window.innerHeight;
+                    
+                    // カードが画面の下半分にある場合はスクロールを調整
+                    if (cardRect.bottom > windowHeight * 0.7) {
+                        window.scrollBy({
+                            top: cardRect.height / 2,
+                            behavior: 'smooth'
+                        });
+                    }
+                    
+                    // 展開時にグラフを初期化
+                    // 少し遅延させてグラフの要素が表示されてから初期化
+                    setTimeout(() => {
+                        // このカードのグラフを探す
+                        initClipViewerCharts();
+                    }, 200);
+                }, 10);
+            } else {
+                // 閉じる
+                expandedSection.classList.remove('active');
+                card.classList.remove('expanded');
+                setTimeout(() => {
+                    expandedSection.style.display = 'none';
+                }, 300);
+            }
+        }
     }
+
+    // チャートインスタンスを保持するオブジェクト
+    const chartInstances = {};
+
+    // 切り抜き視聴者グラフの初期化
+    function initClipViewerCharts() {
+        console.log('切り抜き視聴者グラフ初期化開始');
+
+        // 古いチャートを破棄
+        if (chartInstances.clipGenderChart) {
+            console.log('古い性別グラフを破棄します');
+            chartInstances.clipGenderChart.destroy();
+            chartInstances.clipGenderChart = null;
+        }
+        
+        if (chartInstances.clipAgeChart) {
+            console.log('古い年齢層グラフを破棄します');
+            chartInstances.clipAgeChart.destroy();
+            chartInstances.clipAgeChart = null;
+        }
+
+        // 切り抜き視聴者の性別グラフ
+        const clipGenderCtx = document.getElementById('clipGenderChart');
+        console.log('clipGenderChart要素:', clipGenderCtx);
+        
+        try {
+            if (clipGenderCtx) {
+                console.log('clipGenderChart要素が見つかりました');
+                chartInstances.clipGenderChart = new Chart(clipGenderCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['男性', '女性', 'その他'],
+                        datasets: [{
+                            data: [65, 35, 0],
+                            backgroundColor: ['#4e73df', '#e74a3b', '#858796']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        circumference: 180,
+                        rotation: -90,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 20
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: '視聴者の性別',
+                                position: 'top',
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                },
+                                padding: {
+                                    top: 10,
+                                    bottom: 20
+                                }
+                            }
+                        }
+                    }
+                });
+                console.log('性別グラフ作成完了');
+            }
+        } catch (error) {
+            console.error('性別グラフ作成エラー:', error);
+        }
+
+        // 切り抜き視聴者の年齢層グラフ
+        const clipAgeCtx = document.getElementById('clipAgeChart');
+        console.log('clipAgeChart要素:', clipAgeCtx);
+        
+        try {
+            if (clipAgeCtx) {
+                console.log('clipAgeChart要素が見つかりました');
+                chartInstances.clipAgeChart = new Chart(clipAgeCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['10代', '20代', '30代', '40代', '50代+'],
+                        datasets: [{
+                            data: [10, 35, 30, 18, 7],
+                            backgroundColor: ['#4e73df', '#1cc88a', '#f6c23e', '#e74a3b', '#858796'],
+                            borderWidth: 0,
+                            maxBarThickness: 40
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                grid: {
+                                    display: true,
+                                    color: '#f0f0f0'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + '%';
+                                    },
+                                    font: {
+                                        size: 11
+                                    }
+                                },
+                                max: 35
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: '視聴者の年齢層',
+                                position: 'top',
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                },
+                                padding: {
+                                    top: 10,
+                                    bottom: 20
+                                }
+                            }
+                        }
+                    }
+                });
+                console.log('年齢層グラフ作成完了');
+            }
+        } catch (error) {
+            console.error('年齢層グラフ作成エラー:', error);
+        }
+        
+        console.log('切り抜き視聴者グラフ初期化完了');
+    }
+
+    // エピソード分析画面へ遷移する関数
+    function navigateToEpisodeAnalytics(episodeId, episodeTitle) {
+        // デバッグ情報を出力
+        console.log('エピソード分析に遷移:', episodeId, episodeTitle);
+        
+        // 直接エピソード分析画面へのURLを構築
+        const url = `/episode/${episodeId}`;
+        console.log('遷移先URL:', url);
+        
+        // 分析画面に遷移
+        window.location.href = url;
+    }
+    
+    // 初期化
+    document.addEventListener('DOMContentLoaded', function() {
+        initTabs();
+        initClipToggle();
+        
+        // 初期表示は視聴者タブ
+        initViewerCharts();
+    });
+
+
 </script>

@@ -215,8 +215,8 @@
               </div>
               
               <!-- タイトル・詳細ボタン、クリックで編集可能 -->
-              <div class="title-row section-selectable" data-section="title">
-                <div class="preview-title" id="previewTitle"><%= work.title %></div>
+              <div data-section="title">
+                <div class="preview-Title"><%= work.title %></div>
                 <button type="button" id="toggleExtra" class="extra-toggle-btn">詳細</button>
                 <div class="section-indicator">クリックで編集</div>
               </div>
@@ -249,7 +249,6 @@
             
             <!-- エピソードリスト -->
             <% if (typeof episodes !== 'undefined' && episodes && episodes.length > 0) { %>
-              <h3 class="episode-list-title">エピソード一覧</h3>
               <% episodes.forEach(ep => { %>
                 <div class="episode-card section-selectable" data-section="episode" data-episode-id="<%= ep._id %>">
                   <div class="ep-thumb-16x9">

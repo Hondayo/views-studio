@@ -456,7 +456,6 @@ body, .viewer-page, .viewer-container, .workdetail-header, .workdetail-meta, .wo
 
 
 
-
 .epcard-title {
   font-weight: bold;
   font-size: 1.3em;
@@ -523,7 +522,7 @@ body, .viewer-page, .viewer-container, .workdetail-header, .workdetail-meta, .wo
 .viewer-page .preview-title,
 .viewer-page .work-title,
 .viewer-page .epcard-title {
-  color: #fff !important;
+  color: #000000;
   font-weight: 700 !important;
 }
 /* あらすじや詳細説明 */

@@ -529,17 +529,24 @@ body {
   gap: 8px;
 }
 
+.sh-ep-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #000;
+}
+
 .ep-title {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: #333;
+  color: #000000;
 }
 
 .ep-desc {
   margin: 0;
   font-size: 0.9rem;
-  color: #555;
+  color: #000000;
   line-height: 1.4;
 }
 
@@ -552,12 +559,12 @@ body {
 }
 
 .ep-duration {
-  color: #666;
+  color: #000000;
 }
 
 .ep-price {
   font-weight: bold;
-  color: #555;
+  color: #000000;
   background: rgba(0, 0, 0, 0.05);
   padding: 2px 8px;
   border-radius: 4px;

@@ -4,9 +4,12 @@
 // - タブ切替（有料コンテンツ／切り抜き）
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('コンテンツページの初期化を開始します');
+  
   setupCardMenu();
   setupDeleteAction();
   setupTabSwitch();
+  setupCardLinks();
 });
 
 // =============================
@@ -20,6 +23,11 @@ function setupCardMenu() {
   grid.addEventListener('click', evt => {
     const btn = evt.target.closest('.menu-btn');
     if (!btn) return;
+    
+    // メニューボタンクリック時はイベント伝播を停止して作品詳細画面への遷移を防止
+    evt.preventDefault();
+    evt.stopPropagation();
+    
     const menu = btn.nextElementSibling;
     if (!menu) return;
     document.querySelectorAll('.card-menu.open').forEach(m => {
@@ -46,6 +54,11 @@ function setupDeleteAction() {
   grid.addEventListener('click', async evt => {
     const del = evt.target.closest('.menu-delete');
     if (!del) return;
+    
+    // 削除ボタンクリック時はイベント伝播を停止
+    evt.preventDefault();
+    evt.stopPropagation();
+    
     const card = del.closest('.work-card');
     const workId = card?.dataset.workId;
     if (!workId) return;
@@ -77,18 +90,49 @@ function setupTabSwitch() {
   const tabShorts = document.getElementById('tab-shorts');
   const worksSection = document.getElementById('works-section');
   const shortsSection = document.getElementById('shorts-section');
-  if (!(tabWorks && tabShorts && worksSection && shortsSection)) return;
+  
+  if (!(tabWorks && tabShorts && worksSection && shortsSection)) {
+    console.error('タブ要素が見つかりません');
+    return;
+  }
 
-  tabWorks.addEventListener('click', () => {
+  tabWorks.addEventListener('click', (e) => {
+    e.preventDefault();
     tabWorks.classList.add('active');
     tabShorts.classList.remove('active');
-    worksSection.style.display = '';
+    worksSection.style.display = 'block';
     shortsSection.style.display = 'none';
   });
-  tabShorts.addEventListener('click', () => {
+  
+  tabShorts.addEventListener('click', (e) => {
+    e.preventDefault();
     tabShorts.classList.add('active');
     tabWorks.classList.remove('active');
     worksSection.style.display = 'none';
-    shortsSection.style.display = '';
+    shortsSection.style.display = 'block';
+  });
+}
+
+// =============================
+// ④ 作品カードのリンク処理の改善
+// =============================
+function setupCardLinks() {
+  const cards = document.querySelectorAll('.work-card');
+  
+  cards.forEach(card => {
+    const link = card.querySelector('.card-link');
+    
+    if (link) {
+      // カード全体のクリックでリンク先に移動（メニューボタンとメニュー除く）
+      card.addEventListener('click', (e) => {
+        // メニューボタンまたはメニュー内の要素がクリックされた場合は何もしない
+        if (e.target.closest('.menu-btn') || e.target.closest('.card-menu')) {
+          return;
+        }
+        
+        // リンク先へ遷移
+        link.click();
+      });
+    }
   });
 }
