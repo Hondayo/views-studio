@@ -1,0 +1,92 @@
+<!-- =============================
+     ダッシュボード - Views Studio
+   ============================== -->
+<div class="home-dashboard-container">
+    <div class="home-dashboard-grid">
+        <!-- エピソード追加カード -->
+        <div class="home-dashboard-card home-episode-card">
+            <div class="home-card-header">
+                <div class="home-card-icon">
+                    <img src="https://img.icons8.com/?size=100&id=24717&format=png&color=000000" alt="エピソード追加" class="home-icon-img">
+                </div>
+                <h3 class="home-card-title">エピソードを追加</h3>
+            </div>
+            
+            <% if (works && works.length) { %>
+                <div class="home-works-list">
+                    <% works.forEach(function(w){ %>
+                        <div class="home-work-item">
+                            <img src="<%= w.thumbnailUrl %>" alt="<%= w.title %>" class="home-work-thumb">
+                            <div class="home-work-info">
+                                <div class="home-work-title"><%= w.title %></div>
+                                <a href="/works/<%= w._id %>/episodes/new" class="home-add-episode-btn">
+                                    <%= typeof w.episodeCount === 'number' ? w.episodeCount + 1 : 1 %>話を公開する
+                                </a>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="home-empty-state">
+                    <p class="home-empty-text">まだ公開中の作品がありません</p>
+                    <a href="/works/new" class="home-primary-btn">新しい作品を作成する</a>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- 視聴者分析カード -->
+        <a href="/analytics" class="home-dashboard-card home-analytics-card clickable">
+            <div class="home-card-header">
+                <div class="home-card-icon">
+                    <img src="https://img.icons8.com/?size=100&id=98067&format=png&color=000000" alt="分析" class="home-icon-img">
+                </div>
+                <h3 class="home-card-title">視聴者を分析</h3>
+            </div>
+            <!-- 色付き棒グラフ -->
+            <div class="home-analytics-chart">
+                <div class="home-chart-bar" style="height: 60%; background: #0088ff;"></div>
+                <div class="home-chart-bar" style="height: 80%; background: #32c98d;"></div>
+                <div class="home-chart-bar" style="height: 45%; background: #ff6b6b;"></div>
+                <div class="home-chart-bar" style="height: 70%; background: #9c88ff;"></div>
+                <div class="home-chart-bar" style="height: 55%; background: #ffa726;"></div>
+            </div>
+            <p class="home-card-desc">視聴者属性や視聴傾向を確認します</p>
+        </a>
+
+        <!-- 総売上カード -->
+        <div class="home-dashboard-card home-stats-card">
+            <div class="home-card-header">
+                <div class="home-card-icon">
+                    <img src="https://img.icons8.com/?size=100&id=f52DOeSwTmcd&format=png&color=000000" alt="総売上" class="home-icon-img">
+                </div>
+                <h3 class="home-card-title">総売上</h3>
+            </div>
+            <div class="home-stats-value">¥<%= typeof totalRevenue !== 'undefined' ? totalRevenue.toLocaleString() : '0' %></div>
+        </div>
+
+        <!-- 新規作成カード -->
+        <div class="home-dashboard-card home-create-card">
+            <div class="home-card-header">
+                <div class="home-card-icon">
+                    <img src="https://img.icons8.com/?size=100&id=6697&format=png&color=000000" alt="新規作成" class="home-icon-img">
+                </div>
+                <h3 class="home-card-title">新規作成</h3>
+            </div>
+            <div class="home-create-options">
+                <a href="/works/new" class="home-create-option">
+                    <i class="fas fa-film"></i>
+                    <span>新しい作品を公開</span>
+                </a>
+                <a href="/shorts/new" class="home-create-option">
+                    <i class="fas fa-scissors"></i>
+                    <span>切り抜きを投稿</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+  
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  
