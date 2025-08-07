@@ -13,6 +13,30 @@ const { asyncHandler, upload, uploadToCloudinary, deleteCloudinaryResource } = r
 
 /* ========== Episode routes ========== */
 
+/** ダッシュボードからのエピソード新規作成フォーム */
+router.get('/works/:id/episodes/new', asyncHandler(async (req, res) => {
+  const work = await Work.findById(req.params.id);
+  if (!work) return res.status(404).send('作品が見つかりません');
+
+  // 次のエピソード番号を計算
+  const episodeCount = await Episode.countDocuments({ workId: work._id });
+  const nextEpisodeNumber = episodeCount + 1;
+
+  const episodes = await Episode.find({ workId: work._id }).sort({ episodeNumber: 1 });
+  const created = req.query.created === '1';
+
+  res.render('partials/uploadEpisode', {
+    layout: 'layout',
+    title: `${work.title} - ${nextEpisodeNumber}話を公開`,
+    pageStyle: 'episodeUpload',
+    bodyClass: 'dark',
+    work,
+    episodes,
+    created,
+    nextEpisodeNumber  // テンプレートで使用可能
+  });
+}));
+
 /** アップロードフォーム */
 router.get('/works/:id/episodes/video', asyncHandler(async (req, res) => {
   const work = await Work.findById(req.params.id);

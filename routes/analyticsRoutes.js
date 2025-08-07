@@ -82,6 +82,10 @@ router.get('/works/:id/analyze', asyncHandler(async (req, res) => {
     completions: Math.floor(item.completions * 0.3),
   }));
   
+  // 総視聴回数（ダミー）
+  const totalViews = viewsData.reduce((sum, item) => sum + item.views, 0);
+  const totalRevenue = viewsData.reduce((sum, item) => sum + item.revenue, 0);
+
   // マネタイズデータ（ダミー）
   const monetizationData = {
     totalRevenue: viewsData.reduce((sum, item) => sum + item.revenue, 0),
@@ -92,6 +96,8 @@ router.get('/works/:id/analyze', asyncHandler(async (req, res) => {
       revenue: Math.floor(Math.random() * 5000) + 1000
     }))
   };
+  work.totalViews = totalViews;
+  work.totalRevenue = totalRevenue;
   
   // エピソードごとの視聴データ（ダミー）
   const episodesViewData = episodes.map(ep => ({
@@ -108,6 +114,7 @@ router.get('/works/:id/analyze', asyncHandler(async (req, res) => {
     title: `${work.title} - 分析`,
     pageStyle: 'analytics',
     bodyClass: 'dark',
+    
     work,
     episodes,
     episodesViewData: JSON.stringify(episodesViewData),
